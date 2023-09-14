@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - frontend_cicd_dev
   pull_request:
     branches: ['main']
 
