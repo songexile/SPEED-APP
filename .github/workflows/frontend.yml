@@ -13,19 +13,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set working directory
+        run: cd speed-frontend
+
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
           node-version: 16
 
       - name: Install dependencies
-        run: npm install
+        run: cd speed-frontend && npm install
+
+      # - name: Run Tests
+      #   run: npm test
 
       - name: Build
-        run: npm run build
+        run: cd speed-frontend && npm run build
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
           name: build-artifacts
-          path: build/ # Replace with the path to your built artifacts
+          path: dist/
