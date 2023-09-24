@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import Home from './page'
+import Home from '../../src/pages'
 
 test('renders welcome message and buttons', () => {
   render(<Home />) // Use 'render' directly without destructuring

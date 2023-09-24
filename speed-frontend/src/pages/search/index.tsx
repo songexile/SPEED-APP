@@ -1,4 +1,5 @@
 import Nav from '@/components/Nav'
+
 const SearchPage = () => {
   return (
     <div>
