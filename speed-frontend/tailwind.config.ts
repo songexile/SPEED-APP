@@ -6,7 +6,14 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  // Add the important option, using the id of app wrapper. For example, #__next for Next.js
+  // important: '#__next',
+  darkMode: "class",
   theme: {
+    container: {
+      center: true,
+      padding: "1rem",
+    },
     extend: {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
