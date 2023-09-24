@@ -33,7 +33,7 @@ const Nav = () => {
             d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <span className="btm-nav-label">Submit Page</span>
+        <span className="btm-nav-label">Submit </span>
       </button>
       <button className="bg-primary primary-focus  text-accent">
         <svg
@@ -50,41 +50,55 @@ const Nav = () => {
             d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
           />
         </svg>
-        <span className="btm-nav-label">Analyst Page</span>
+        <span className="btm-nav-label">Analyst </span>
       </button>
       <button className="bg-primary text-accent">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-5 w-5"
-          fill="none"
           viewBox="0 0 24 24"
+          fill="none"
           stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-          />
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12" y2="16"></line>
         </svg>
-        <span className="btm-nav-label">Moderator Page</span>
+        <span className="btm-nav-label">Moderator</span>
       </button>
       <button className="bg-primary text-accent">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-5 w-5"
-          fill="none"
           viewBox="0 0 24 24"
+          fill="none"
           stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-          />
+          <path d="M11 17l-5-5m0 0l5-5m-5 5h12"></path>
         </svg>
         <span className="btm-nav-label">Log Out</span>
+      </button>
+      <button className="bg-primary text-accent">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M4 12l2.5 2.5L9 12M15 12l-2.5 2.5L9 12m6 4h2M4 8h16M4 16h16"></path>
+        </svg>
+        <span className="btm-nav-label">Admin</span>
       </button>
     </div>
   )
