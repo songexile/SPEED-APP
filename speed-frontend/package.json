@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest --watchAll",
-    "test:ci": "jest --ci"
+    "test:ci": "jest --ci",
+    "clear-jest-cache": "jest --clearCache"
   },
   "dependencies": {
     "@types/node": "20.5.9",
