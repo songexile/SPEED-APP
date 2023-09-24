@@ -26,6 +26,7 @@
     "@testing-library/react": "^14.0.0",
     "@types/jest": "^29.5.4",
     "babel-eslint": "^10.1.0",
+    "daisyui": "^3.7.7",
     "eslint": "^8.49.0",
     "eslint-config-next": "13.4.19",
     "eslint-config-prettier": "^9.0.0",
