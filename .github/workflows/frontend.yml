@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - frontend_cicd_dev
   pull_request:
     branches: ['main']
 
@@ -14,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [16.x, 18.x, 20.x]
 
     steps:
       - name: Checkout code
@@ -28,11 +27,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: Install pnpm
+        run: npm install -g pnpm
+
       - name: Install dependencies
-        run: cd speed-frontend && npm install
+        run: cd speed-frontend && pnpm install
 
       - name: Run Tests
-        run: cd speed-frontend && npm run test:ci
+        run: cd speed-frontend && pnpm run test:ci
 
       - name: Build
-        run: cd speed-frontend && npm run build
+        run: cd speed-frontend && pnpm run build
