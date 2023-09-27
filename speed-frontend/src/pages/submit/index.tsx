@@ -12,6 +12,9 @@ const SubmitPage = () => {
     doi: '',
   })
 
+  const [errors, setErrors] = useState({})
+  const [success, setSuccess] = useState(false)
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prevData) => ({
@@ -20,7 +23,27 @@ const SubmitPage = () => {
     }))
   }
 
+  const validateForm = () => {
+    const newErrors = {}
+
+    if (!formData.title) newErrors.title = 'Title is required'
+    if (!formData.authors) newErrors.authors = 'Authors are required'
+    if (!formData.journal) newErrors.journal = 'Journal is required'
+    if (!formData.year) {
+      newErrors.year = 'Year is required'
+    } else if (/[^0-9]/.test(formData.year)) {
+      newErrors.year = 'Year can only contain numbers'
+    } else if (formData.year.length !== 4) {
+      newErrors.year = 'Year must be 4 digits'
+    }
+    if (!formData.doi) newErrors.doi = 'DOI is required'
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   const submitToDb = () => {
+    if (!validateForm()) return // If form is not valid, do not submit
     fetch('http://localhost:3001/submissions', {
       method: 'POST',
       headers: {
@@ -28,65 +51,125 @@ const SubmitPage = () => {
       },
       body: JSON.stringify(formData),
     })
-    console.log('Submitted')
+    setSuccess(true)
   }
+
   return (
     <div className="bg-base-100 flex flex-col items-center justify-center min-h-screen">
-      <div className="flex flex-col space-y-4">
-        <input
-          type="text"
-          name="title"
-          placeholder="Title"
-          onChange={handleChange}
-          className="input input-bordered w-full max-w-xs"
-        />
-        <input
-          type="text"
-          name="authors"
-          placeholder="Author(s)"
-          onChange={handleChange}
-          className="input input-bordered w-full max-w-xs"
-        />
-        <input
-          type="text"
-          name="journal"
-          placeholder="Journal Name"
-          onChange={handleChange}
-          className="input input-bordered w-full max-w-xs"
-        />
+      <div className="grid grid-cols-2 gap-4">
+        {/* Title */}
+        <div>
+          <label htmlFor="title">
+            Title <small className="text-xs text-gray-500">Required</small>
+          </label>
+          <input
+            type="text"
+            name="title"
+            placeholder="Title"
+            onChange={handleChange}
+            className="input input-bordered w-full"
+          />
+          <div className="text-red-500 h-5">{errors.title || ''}</div>
+        </div>
 
-        <input
-          type="text"
-          name="year"
-          placeholder="Year of publication"
-          onChange={handleChange}
-          className="input input-bordered w-full max-w-xs"
-        />
-        <input
-          type="text"
-          name="volume"
-          placeholder="Volume (Optional)"
-          onChange={handleChange}
-          className="input input-bordered w-full max-w-xs"
-        />
-        <input
-          type="text"
-          name="pages"
-          placeholder="Pages (Optional)"
-          onChange={handleChange}
-          className="input input-bordered w-full max-w-xs"
-        />
-        <input
-          type="text"
-          name="doi"
-          placeholder="DOI"
-          onChange={handleChange}
-          className="input input-bordered w-full max-w-xs"
-        />
-        <button onClick={submitToDb} className="btn btn-primary">
-          Submit
-        </button>
+        {/* Authors */}
+        <div>
+          <label htmlFor="authors">
+            Authors <small className="text-xs text-gray-500">Required</small>
+          </label>
+          <input
+            type="text"
+            name="authors"
+            placeholder="Author(s)"
+            onChange={handleChange}
+            className="input input-bordered w-full"
+          />
+          <div className="text-red-500 h-5">{errors.authors || ''}</div>
+        </div>
+
+        {/* Journal */}
+        <div>
+          <label htmlFor="journal">
+            Journal <small className="text-xs text-gray-500">Required</small>
+          </label>
+          <input
+            type="text"
+            name="journal"
+            placeholder="Journal Name"
+            onChange={handleChange}
+            className="input input-bordered w-full"
+          />
+          <div className="text-red-500 h-5">{errors.journal || ''}</div>
+        </div>
+
+        {/* Year */}
+        <div>
+          <label htmlFor="year">
+            Year <small className="text-xs text-gray-500">Required</small>
+          </label>
+          <input
+            type="text"
+            name="year"
+            placeholder="Year of publication"
+            onChange={handleChange}
+            className="input input-bordered w-full"
+          />
+          <div className="text-red-500 h-5">{errors.year || ''}</div>
+        </div>
+
+        {/* Volume */}
+        <div>
+          <label htmlFor="volume">
+            Volume <small className="text-xs text-gray-500">Optional</small>
+          </label>
+          <input
+            type="text"
+            name="volume"
+            placeholder="Volume"
+            onChange={handleChange}
+            className="input input-bordered w-full"
+          />
+          <div className="text-red-500 h-5">{errors.volume || ''}</div>
+        </div>
+
+        {/* Pages */}
+        <div>
+          <label htmlFor="pages">
+            Pages <small className="text-xs text-gray-500">Optional</small>
+          </label>
+          <input
+            type="text"
+            name="pages"
+            placeholder="Pages"
+            onChange={handleChange}
+            className="input input-bordered w-full"
+          />
+          <div className="text-red-500 h-5">{errors.pages || ''}</div>
+        </div>
+
+        {/* DOI */}
+        <div>
+          <label htmlFor="doi">
+            DOI <small className="text-xs text-gray-500">Required</small>
+          </label>
+          <input
+            type="text"
+            name="doi"
+            placeholder="DOI"
+            onChange={handleChange}
+            className="input input-bordered w-full"
+          />
+          <div className="text-red-500 h-5">{errors.doi || ''}</div>
+        </div>
       </div>
+
+      <button onClick={submitToDb} className="btn btn-primary mt-4">
+        Submit
+      </button>
+      {success && (
+        <div>Congrats, it has been submitted. We look forward to reviewing your submission 😀.</div>
+      )}
+      {!success && <div>Please fix the errors listed above and then we can submit.😀.</div>}
       <Nav />
     </div>
   )
