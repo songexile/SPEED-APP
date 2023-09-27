@@ -26,17 +26,35 @@ const SubmitPage = () => {
   const validateForm = () => {
     const newErrors = {}
 
-    if (!formData.title) newErrors.title = 'Title is required'
-    if (!formData.authors) newErrors.authors = 'Authors are required'
-    if (!formData.journal) newErrors.journal = 'Journal is required'
+    if (!formData.title) {
+      newErrors.title = 'Title is required'
+    } else if (formData.title.length < 5) {
+      newErrors.title = 'Title must be at least 5 characters'
+    }
+    if (!formData.authors) {
+      newErrors.authors = 'Authors are required'
+    } else if (formData.authors.length < 5) {
+      newErrors.authors = 'Authors must be at least 5 characters'
+    }
+    if (!formData.journal) {
+      newErrors.journal = 'Journal is required'
+    } else if (formData.journal.length < 5) {
+      newErrors.journal = 'Journal must be at least 5 characters'
+    }
     if (!formData.year) {
       newErrors.year = 'Year is required'
     } else if (/[^0-9]/.test(formData.year)) {
       newErrors.year = 'Year can only contain numbers'
     } else if (formData.year.length !== 4) {
       newErrors.year = 'Year must be 4 digits'
+    } else if (formData.year < 1900 || formData.year > 2023) {
+      newErrors.year = 'Year must be between 1900 and 2023'
     }
-    if (!formData.doi) newErrors.doi = 'DOI is required'
+    if (!formData.doi) {
+      newErrors.doi = 'DOI is required'
+    } else if (formData.doi.length < 4) {
+      newErrors.doi = 'DOI must be at least 4 characters'
+    }
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
