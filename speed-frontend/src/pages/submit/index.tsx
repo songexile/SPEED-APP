@@ -15,7 +15,7 @@ const SubmitPage = () => {
   const [errors, setErrors] = useState({})
   const [success, setSuccess] = useState(false)
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prevData) => ({
       ...prevData,
