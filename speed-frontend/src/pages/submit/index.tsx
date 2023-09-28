@@ -1,8 +1,28 @@
 import Nav from '@/components/Nav'
 import { useState } from 'react'
 
+type Errors = {
+  title?: string
+  authors?: string
+  journal?: string
+  year?: string
+  volume?: string
+  pages?: string
+  doi?: string
+}
+
+type FormData = {
+  title: string
+  authors: string
+  journal: string
+  year: string
+  volume: string
+  pages: string
+  doi: string
+}
+
 const SubmitPage = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     title: '',
     authors: '',
     journal: '',
@@ -12,7 +32,7 @@ const SubmitPage = () => {
     doi: '',
   })
 
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState<Errors>({})
   const [success, setSuccess] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,7 +44,7 @@ const SubmitPage = () => {
   }
 
   const validateForm = () => {
-    const newErrors = {}
+    const newErrors: Errors = {}
 
     if (!formData.title) {
       newErrors.title = 'Title is required'
@@ -47,7 +67,7 @@ const SubmitPage = () => {
       newErrors.year = 'Year can only contain numbers'
     } else if (formData.year.length !== 4) {
       newErrors.year = 'Year must be 4 digits'
-    } else if (formData.year < 1900 || formData.year > 2023) {
+    } else if (parseInt(formData.year) < 1900 || parseInt(formData.year) > 2023) {
       newErrors.year = 'Year must be between 1900 and 2023'
     }
     if (!formData.doi) {
