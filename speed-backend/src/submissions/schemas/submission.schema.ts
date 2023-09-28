@@ -1,14 +1,4 @@
-import { Schema, Document } from 'mongoose';
-
-export interface Submission extends Document {
-  title: string;
-  authors: string;
-  journal: string;
-  year: string;
-  volume?: string;
-  pages?: string;
-  doi: string;
-}
+import { Schema } from 'mongoose';
 
 export const SubmissionSchema = new Schema({
   title: { type: String, required: true },

@@ -3,15 +3,16 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 
-import { BooksService } from './books/books.service';
-import { BooksController } from './books/books.controller';
 import { BookSchema } from './books/schemas/book.schema';
+import { BooksController } from './books/books.controller';
+import { BooksService } from './books/books.service';
+
 import { SubmissionSchema } from './submissions/schemas/submission.schema';
+import { SubmissionsController } from './submissions/submissions.controller';
+import { SubmissionsService } from './submissions/submissions.service';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { SubmissionsController } from './submissions/submissions.controller';
-import { SubmissionsService } from './submissions/submissions.service';
 
 @Module({
   imports: [
@@ -25,4 +26,4 @@ import { SubmissionsService } from './submissions/submissions.service';
   controllers: [AppController, BooksController, SubmissionsController],
   providers: [AppService, BooksService, SubmissionsService],
 })
-export class AppModule {}
+export class AppModule { }
