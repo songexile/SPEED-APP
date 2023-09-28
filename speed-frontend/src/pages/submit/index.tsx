@@ -34,6 +34,7 @@ const SubmitPage = () => {
 
   const [errors, setErrors] = useState<Errors>({})
   const [success, setSuccess] = useState(false)
+  const [failure, setFailure] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -81,7 +82,11 @@ const SubmitPage = () => {
   }
 
   const submitToDb = () => {
-    if (!validateForm()) return // If form is not valid, do not submit
+    if (!validateForm()) {
+      setFailure(true)
+      return // If form is not valid, do not submit
+    }
+
     fetch('http://localhost:3001/submissions', {
       method: 'POST',
       headers: {
@@ -90,6 +95,7 @@ const SubmitPage = () => {
       body: JSON.stringify(formData),
     })
     setSuccess(true)
+    setFailure(false)
   }
 
   return (
@@ -207,7 +213,7 @@ const SubmitPage = () => {
       {success && (
         <div>Congrats, it has been submitted. We look forward to reviewing your submission 😀.</div>
       )}
-      {!success && <div>Please fix the errors listed above and then we can submit.😀.</div>}
+      {failure && <div>Please fix the errors listed above and then we can submit.😀.</div>}
       <Nav />
     </div>
   )
