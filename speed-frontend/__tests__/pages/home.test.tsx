@@ -1,9 +1,18 @@
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import Home from '../../src/pages'
+
+import Home from '../../src/pages/index'
+
+// Mock Next.js router
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+    pathname: '/',
+    push: jest.fn(),
+  }),
+}))
 
 test('renders welcome message and buttons', () => {
-  render(<Home />) // Use 'render' directly without destructuring
+  render(<Home />)
 
   // Check if the welcome message is rendered
   const welcomeMessage = screen.getByText('Welcome to SPEED!')
@@ -19,7 +28,7 @@ test('renders welcome message and buttons', () => {
 })
 
 test('renders software engineering claim span', () => {
-  render(<Home />) // Use 'render' directly without destructuring
+  render(<Home />)
 
   // Use a custom text matcher function to search for a substring of the text
   const claimSpan = screen.getByText((content, element) => {
