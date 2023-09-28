@@ -23,3 +23,14 @@ export type FormData = {
   pages: string
   doi: string
 }
+
+export interface CustomNavButtonsProps {
+  href: string;
+  icon: JSX.Element;
+  label: string;
+}
+
+export interface IconProps {
+  path: string;
+  className: string;
+}
