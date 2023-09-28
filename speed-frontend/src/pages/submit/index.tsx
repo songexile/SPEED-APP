@@ -1,4 +1,5 @@
 import Nav from '@/components/Nav'
+import { Meta } from '@/layouts/Meta'
 import { Errors, FormData } from '@/types'
 import { ChangeEvent, useState } from 'react'
 
@@ -92,123 +93,133 @@ const SubmitPage = () => {
   }
 
   return (
-    <div className="bg-base-100 flex flex-col items-center justify-center min-h-screen">
-      <div className="grid grid-cols-2 gap-4">
-        {/* Title */}
-        <div>
-          <label htmlFor="title">
-            Title <small className="text-xs text-gray-500">Required</small>
-          </label>
-          <input
-            type="text"
-            name="title"
-            placeholder="Title"
-            onChange={handleChange}
-            className="input input-bordered w-full"
-          />
-          <div className="text-red-500 h-5">{errors.title || ''}</div>
-        </div>
+    <main>
+      <section>
+        <Meta
+          title="SPEED APP"
+          description="Submit Your Favorite Claim Article About Software Engineering Methods"
+        />
+        <div className="bg-base-100 flex flex-col items-center justify-center min-h-screen">
+          <div className="grid grid-cols-2 gap-4">
+            {/* Title */}
+            <div>
+              <label htmlFor="title">
+                Title <small className="text-xs text-gray-500">Required</small>
+              </label>
+              <input
+                type="text"
+                name="title"
+                placeholder="Title"
+                onChange={handleChange}
+                className="input input-bordered w-full"
+              />
+              <div className="text-red-500 h-5">{errors.title || ''}</div>
+            </div>
 
-        {/* Authors */}
-        <div>
-          <label htmlFor="authors">
-            Authors <small className="text-xs text-gray-500">Required</small>
-          </label>
-          <input
-            type="text"
-            name="authors"
-            placeholder="Author(s)"
-            onChange={handleChange}
-            className="input input-bordered w-full"
-          />
-          <div className="text-red-500 h-5">{errors.authors || ''}</div>
-        </div>
+            {/* Authors */}
+            <div>
+              <label htmlFor="authors">
+                Authors <small className="text-xs text-gray-500">Required</small>
+              </label>
+              <input
+                type="text"
+                name="authors"
+                placeholder="Author(s)"
+                onChange={handleChange}
+                className="input input-bordered w-full"
+              />
+              <div className="text-red-500 h-5">{errors.authors || ''}</div>
+            </div>
 
-        {/* Journal */}
-        <div>
-          <label htmlFor="journal">
-            Journal <small className="text-xs text-gray-500">Required</small>
-          </label>
-          <input
-            type="text"
-            name="journal"
-            placeholder="Journal Name"
-            onChange={handleChange}
-            className="input input-bordered w-full"
-          />
-          <div className="text-red-500 h-5">{errors.journal || ''}</div>
-        </div>
+            {/* Journal */}
+            <div>
+              <label htmlFor="journal">
+                Journal <small className="text-xs text-gray-500">Required</small>
+              </label>
+              <input
+                type="text"
+                name="journal"
+                placeholder="Journal Name"
+                onChange={handleChange}
+                className="input input-bordered w-full"
+              />
+              <div className="text-red-500 h-5">{errors.journal || ''}</div>
+            </div>
 
-        {/* Year */}
-        <div>
-          <label htmlFor="year">
-            Year <small className="text-xs text-gray-500">Required</small>
-          </label>
-          <input
-            type="text"
-            name="year"
-            placeholder="Year of publication"
-            onChange={handleChange}
-            className="input input-bordered w-full"
-          />
-          <div className="text-red-500 h-5">{errors.year || ''}</div>
-        </div>
+            {/* Year */}
+            <div>
+              <label htmlFor="year">
+                Year <small className="text-xs text-gray-500">Required</small>
+              </label>
+              <input
+                type="text"
+                name="year"
+                placeholder="Year of publication"
+                onChange={handleChange}
+                className="input input-bordered w-full"
+              />
+              <div className="text-red-500 h-5">{errors.year || ''}</div>
+            </div>
 
-        {/* Volume */}
-        <div>
-          <label htmlFor="volume">
-            Volume <small className="text-xs text-gray-500">Optional</small>
-          </label>
-          <input
-            type="text"
-            name="volume"
-            placeholder="Volume"
-            onChange={handleChange}
-            className="input input-bordered w-full"
-          />
-          <div className="text-red-500 h-5">{errors.volume || ''}</div>
-        </div>
+            {/* Volume */}
+            <div>
+              <label htmlFor="volume">
+                Volume <small className="text-xs text-gray-500">Optional</small>
+              </label>
+              <input
+                type="text"
+                name="volume"
+                placeholder="Volume"
+                onChange={handleChange}
+                className="input input-bordered w-full"
+              />
+              <div className="text-red-500 h-5">{errors.volume || ''}</div>
+            </div>
 
-        {/* Pages */}
-        <div>
-          <label htmlFor="pages">
-            Pages <small className="text-xs text-gray-500">Optional</small>
-          </label>
-          <input
-            type="text"
-            name="pages"
-            placeholder="Pages"
-            onChange={handleChange}
-            className="input input-bordered w-full"
-          />
-          <div className="text-red-500 h-5">{errors.pages || ''}</div>
-        </div>
+            {/* Pages */}
+            <div>
+              <label htmlFor="pages">
+                Pages <small className="text-xs text-gray-500">Optional</small>
+              </label>
+              <input
+                type="text"
+                name="pages"
+                placeholder="Pages"
+                onChange={handleChange}
+                className="input input-bordered w-full"
+              />
+              <div className="text-red-500 h-5">{errors.pages || ''}</div>
+            </div>
 
-        {/* DOI */}
-        <div>
-          <label htmlFor="doi">
-            DOI <small className="text-xs text-gray-500">Required</small>
-          </label>
-          <input
-            type="text"
-            name="doi"
-            placeholder="DOI"
-            onChange={handleChange}
-            className="input input-bordered w-full"
-          />
-          <div className="text-red-500 h-5">{errors.doi || ''}</div>
-        </div>
-      </div>
+            {/* DOI */}
+            <div>
+              <label htmlFor="doi">
+                DOI <small className="text-xs text-gray-500">Required</small>
+              </label>
+              <input
+                type="text"
+                name="doi"
+                placeholder="DOI"
+                onChange={handleChange}
+                className="input input-bordered w-full"
+              />
+              <div className="text-red-500 h-5">{errors.doi || ''}</div>
+            </div>
+          </div>
 
-      <button onClick={submitToDb} className="btn btn-primary mt-4">
-        Submit
-      </button>
-      {success && (
-        <div>Congrats, it has been submitted. We look forward to reviewing your submission 😀.</div>
-      )}
-      {failure && <div>Please fix the errors listed above and then we can submit.😀.</div>}
-      <Nav />
-    </div>
+          <button onClick={submitToDb} className="btn btn-primary mt-4">
+            Submit
+          </button>
+          {success && (
+            <div>
+              Congrats, it has been submitted. We look forward to reviewing your submission 😀.
+            </div>
+          )}
+          {failure && <div>Please fix the errors listed above and then we can submit.😀.</div>}
+          <Nav />
+        </div>
+      </section>
+    </main>
   )
 }
 
