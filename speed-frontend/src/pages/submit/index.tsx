@@ -1,25 +1,6 @@
 import Nav from '@/components/Nav'
-import { useState } from 'react'
-
-type Errors = {
-  title?: string
-  authors?: string
-  journal?: string
-  year?: string
-  volume?: string
-  pages?: string
-  doi?: string
-}
-
-type FormData = {
-  title: string
-  authors: string
-  journal: string
-  year: string
-  volume: string
-  pages: string
-  doi: string
-}
+import { Errors, FormData } from '@/types'
+import { ChangeEvent, useState } from 'react'
 
 const SubmitPage = () => {
   const [formData, setFormData] = useState<FormData>({
@@ -36,7 +17,7 @@ const SubmitPage = () => {
   const [success, setSuccess] = useState(false)
   const [failure, setFailure] = useState(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prevData) => ({
       ...prevData,
@@ -87,15 +68,27 @@ const SubmitPage = () => {
       return // If form is not valid, do not submit
     }
 
-    fetch('http://localhost:3001/submissions', {
+    const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || `http://localhost:3001/`
+
+    fetch(`${apiEndpoint}submissions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData),
     })
-    setSuccess(true)
-    setFailure(false)
+      .then((response) => {
+        if (response.ok) {
+          setSuccess(true)
+          setFailure(false)
+        } else {
+          // Handle the case where the API request fails
+          console.error('API request failed')
+        }
+      })
+      .catch((error) => {
+        console.error('An error occurred while making the API request', error)
+      })
   }
 
   return (
