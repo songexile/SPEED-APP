@@ -4,30 +4,69 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 export default NextAuth({
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      id: 'credentials',
+      name: 'next-gen cise',
       credentials: {
         username: { label: 'Username', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials, req) {
-        // TODO add login with from the backend api endpoint
-        // Add logic here to look up the user from the credentials supplied
-        const user = { id: "1", name: "J Smith", email: "jsmith@example.com" }
+      async authorize(credentials) {
+        const payload = {
+          username: credentials.username,
+          password: credentials.password,
+        };
 
-        if (user) {
-          // Any object returned will be saved in `user` property of the JWT
-          return user
-        } else {
-          // If you return null then an error will be displayed advising the user to check their details.
-          return null
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
+        try {
+          const res = await fetch(`${apiUrl}auth/login`, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.message || 'Authentication failed');
+          }
+
+          const user = await res.json();
+
+          return user;
+        } catch (error) {
+          throw new Error(error.message || 'Authentication failed');
         }
-      }
+      },
     }),
+    // Add more providers here if needed
   ],
+  secret: process.env.NEXT_PUBLIC_API_JWT_SECRET,
   pages: {
     signIn: '/login',
   },
-  // Add other NextAuth.js configurations as needed
+  callbacks: {
+    async jwt({ token, user, account }) {
+      if (account && user) {
+        return {
+          ...token,
+          accessToken: user.token,
+          refreshToken: user.refreshToken,
+        };
+      }
+
+      return token;
+    },
+
+    async session({ session, token }) {
+      session.user.accessToken = token.accessToken;
+      session.user.refreshToken = token.refreshToken;
+      session.user.accessTokenExpires = token.accessTokenExpires;
+
+      return session;
+    },
+  },
+  // Enable debug messages in the console if you are having problems
+  debug: process.env.NODE_ENV === 'development',
 });
