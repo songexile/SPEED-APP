@@ -1,8 +1,10 @@
+import { LoginProps } from '@/types'
+import { GetServerSideProps } from 'next'
 import { signIn, getCsrfToken } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { SyntheticEvent, useState } from 'react'
 
-const Login = ({ csrfToken }) => {
+const Login: React.FC<LoginProps> = ({ csrfToken }) => {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -88,7 +90,7 @@ const Login = ({ csrfToken }) => {
 export default Login
 
 // This is the recommended way for Next.js 9.3 or newer
-export async function getServerSideProps(context) {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       csrfToken: await getCsrfToken(context),

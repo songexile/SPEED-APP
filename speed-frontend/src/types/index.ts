@@ -34,3 +34,7 @@ export interface IconProps {
   path: string;
   className: string;
 }
+
+export interface LoginProps {
+  csrfToken: string
+}
