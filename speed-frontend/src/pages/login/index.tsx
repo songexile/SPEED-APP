@@ -8,16 +8,16 @@ const Login = () => {
     e.preventDefault()
 
     const target = e.target as typeof e.target & {
-      email: { value: string }
+      username: { value: string }
       password: { value: string }
     }
 
-    const email = target.email.value
+    const username = target.username.value
     const password = target.password.value
 
     try {
       const result = await signIn('credentials', {
-        email,
+        username,
         password,
         callbackUrl: '/',
       })
@@ -42,12 +42,12 @@ const Login = () => {
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="label">
-              <span className="text-base label-text">Email</span>
+              <span className="text-base label-text">Username</span>
             </label>
             <input
               type="text"
-              name="email"
-              placeholder="Email Address"
+              name="username"
+              placeholder="Username"
               className="w-full input input-bordered -mb-3"
             />
           </div>
