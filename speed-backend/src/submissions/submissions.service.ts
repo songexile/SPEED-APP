@@ -8,7 +8,16 @@ import { Submission } from './interfaces/submission.interface';
 export class SubmissionsService {
   constructor(
     @InjectModel('Submission') private readonly submissionModel: Model<any>,
-  ) { }
+  ) {}
+
+  async findById(id: string): Promise<Submission | null> {
+    try {
+      const submission = await this.submissionModel.findById(id).exec();
+      return submission;
+    } catch (error) {
+      throw new NotFoundException('Submission not found');
+    }
+  }
 
   async create(createSubmissionDto: Submission): Promise<Submission> {
     const createdSubmission = new this.submissionModel(createSubmissionDto);
