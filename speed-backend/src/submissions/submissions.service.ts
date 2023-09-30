@@ -19,6 +19,15 @@ export class SubmissionsService {
     }
   }
 
+  async findAll(): Promise<Submission[]> {
+    try {
+      const submissions = await this.submissionModel.find().exec();
+      return submissions;
+    } catch (error) {
+      throw new NotFoundException('Submissions not found');
+    }
+  }
+
   async create(createSubmissionDto: Submission): Promise<Submission> {
     const createdSubmission = new this.submissionModel(createSubmissionDto);
 

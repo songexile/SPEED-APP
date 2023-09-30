@@ -8,6 +8,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { SubmissionsService } from './submissions.service';
+import { Submission } from './interfaces/submission.interface'; // Import the Submission interface
 
 @Controller('submissions')
 export class SubmissionsController {
@@ -24,5 +25,11 @@ export class SubmissionsController {
       throw new NotFoundException('Submission not found');
     }
     return submission;
+  }
+
+  @Get()
+  async getAllSubmissions(): Promise<Submission[]> {
+    const submissions = await this.submissionsService.findAll();
+    return submissions;
   }
 }
