@@ -1,8 +1,11 @@
-import { signIn } from 'next-auth/react'
+import { signIn, getCsrfToken } from 'next-auth/react'
+import { useRouter } from 'next/router'
 import { SyntheticEvent, useState } from 'react'
 
-const Login = () => {
-  const [error, setError] = useState<string>()
+const Login = ({ csrfToken }) => {
+  const router = useRouter()
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
@@ -15,23 +18,30 @@ const Login = () => {
     const username = target.username.value
     const password = target.password.value
 
+    setIsLoading(true)
+
     try {
       const result = await signIn('credentials', {
+        redirect: false,
         username,
         password,
         callbackUrl: '/',
       })
 
       if (result && !result.error) {
-        // Authentication succeeded, and user is redirected to the callbackUrl
+        // Authentication succeeded, and the user is redirected to the callbackUrl
+        router.push(result.url || '/')
       } else if (result && result.error) {
-        setError(result.error)
+        setError('Incorrect username or password.')
       } else {
         console.error('Unexpected authentication result:', result)
+        setError('An unexpected error occurred.')
       }
     } catch (error) {
-      // Handle other errors like network issues or api issues
       console.error('Login error:', error)
+      setError('An error occurred. Please try again later.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -40,6 +50,7 @@ const Login = () => {
       <div className="w-full p-6 bg-white border-t-4 border-gray-600 rounded-md shadow-md border-top lg:max-w-lg">
         <h1 className="text-3xl font-semibold text-center text-gray-700">SPEED APP (Next Gen)</h1>
         <form className="space-y-4" onSubmit={handleSubmit}>
+          <input type="hidden" name="csrfToken" defaultValue={csrfToken} />
           <div>
             <label className="label">
               <span className="text-base label-text">Username</span>
@@ -63,8 +74,8 @@ const Login = () => {
             />
           </div>
           <div>
-            <button type="submit" className="btn btn-block">
-              Login
+            <button type="submit" className="btn btn-block" disabled={isLoading}>
+              {isLoading ? 'Logging In...' : 'Login'}
             </button>
           </div>
           {error && <div className="text-red-500">{error}</div>}
@@ -75,3 +86,12 @@ const Login = () => {
 }
 
 export default Login
+
+// This is the recommended way for Next.js 9.3 or newer
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      csrfToken: await getCsrfToken(context),
+    },
+  }
+}
