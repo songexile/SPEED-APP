@@ -7,16 +7,17 @@ export default NextAuth({
       id: 'credentials',
       name: 'next-gen cise',
       credentials: {
-        username: { label: 'Username', type: 'text' },
+        email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         const payload = {
-          username: credentials.username,
+          email: credentials.email,
           password: credentials.password,
         };
 
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const apiUrl = process.env.NEXT_PUBLIC_API_ENDPOINT_URI;
+        // console.log(`${apiUrl}auth/login`);
 
         try {
           const res = await fetch(`${apiUrl}auth/login`, {

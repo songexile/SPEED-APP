@@ -13,11 +13,11 @@ const Login: React.FC<LoginProps> = ({ csrfToken }) => {
     e.preventDefault()
 
     const target = e.target as typeof e.target & {
-      username: { value: string }
+      email: { value: string }
       password: { value: string }
     }
 
-    const username = target.username.value
+    const email = target.email.value
     const password = target.password.value
 
     setIsLoading(true)
@@ -25,7 +25,7 @@ const Login: React.FC<LoginProps> = ({ csrfToken }) => {
     try {
       const result = await signIn('credentials', {
         redirect: false,
-        username,
+        email,
         password,
         callbackUrl: '/',
       })
@@ -34,7 +34,7 @@ const Login: React.FC<LoginProps> = ({ csrfToken }) => {
         // Authentication succeeded, and the user is redirected to the callbackUrl
         router.push(result.url || '/')
       } else if (result && result.error) {
-        setError('Incorrect username or password.')
+        setError('Incorrect email or password.')
       } else {
         console.error('Unexpected authentication result:', result)
         setError('An unexpected error occurred.')
@@ -55,12 +55,12 @@ const Login: React.FC<LoginProps> = ({ csrfToken }) => {
           <input type="hidden" name="csrfToken" defaultValue={csrfToken} />
           <div>
             <label className="label">
-              <span className="text-base label-text">Username</span>
+              <span className="text-base label-text">Email</span>
             </label>
             <input
-              type="text"
-              name="username"
-              placeholder="Username"
+              type="email"
+              name="email"
+              placeholder="Email"
               className="w-full input input-bordered -mb-3"
             />
           </div>
