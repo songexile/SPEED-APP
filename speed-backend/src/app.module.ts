@@ -8,15 +8,20 @@ import { SubmissionsService } from './submissions/submissions.service';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+
 import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(), // Load environment variables
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+      isGlobal: true,
+    }), // Load environment variables
     MongooseModule.forRoot(process.env.MONGODB_URI),
     MongooseModule.forFeature([
       { name: 'Submission', schema: SubmissionSchema },
-    ]), AuthModule, // Inject schema
+    ]),
+    AuthModule, // Inject schema
   ],
   controllers: [AppController, SubmissionsController],
   providers: [AppService, SubmissionsService],
