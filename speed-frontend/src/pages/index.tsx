@@ -21,7 +21,7 @@ export default function Home() {
           <div className="flex flex-col mt-16 w-1/3 sm:w-1/6 space-y-4">
             {session ? (
               <button className="btn btn-warning" onClick={() => signOut()}>
-                Sign Out 🔍
+                Sign Out ↪
               </button>
             ) : (
               <button className="btn btn-primary" onClick={() => signIn()}>
