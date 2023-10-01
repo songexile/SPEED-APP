@@ -6,7 +6,7 @@ import { Document } from 'mongoose';
 })
 export class User extends Document {
     @Prop()
-    name: string;
+    username: string;
 
     @Prop({ unique: [true, 'Duplicate email entered'] })
     email: string;
