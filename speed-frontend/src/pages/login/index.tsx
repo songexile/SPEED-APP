@@ -1,13 +1,21 @@
 import { LoginProps } from '@/types'
 import { GetServerSideProps } from 'next'
-import { signIn, getCsrfToken } from 'next-auth/react'
+import { signIn, getCsrfToken, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { SyntheticEvent, useState } from 'react'
+import { SyntheticEvent, useEffect, useState } from 'react'
 
 const Login: React.FC<LoginProps> = ({ csrfToken }) => {
   const router = useRouter()
+  const { data: session } = useSession()
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    // Redirect authenticated (logged-in) users to another page
+    if (session) {
+      router.push('/') // Redirect to the home page or any other page of your choice
+    }
+  }, [session])
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
