@@ -24,13 +24,15 @@ export default function Home() {
                 Sign Out ↪
               </button>
             ) : (
-              <button className="btn btn-primary" onClick={() => signIn()}>
-                Login 🔍
-              </button>
+              <>
+                <button className="btn btn-primary" onClick={() => signIn()}>
+                  Login 🔍
+                </button>
+                <Link href="/register" className="btn btn-secondary md:text-[17px]">
+                  <button className="uppercase">Create an Account ⭐</button>
+                </Link>
+              </>
             )}
-            <Link href="/register" className="btn btn-secondary md:text-[17px]">
-              <button className="uppercase">Create an Account ⭐</button>
-            </Link>
           </div>
           <Nav />
         </div>
