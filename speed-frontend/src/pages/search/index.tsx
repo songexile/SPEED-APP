@@ -33,7 +33,7 @@ const SearchPage = () => {
               placeholder="End Year"
               className="input input-bordered w-full max-w-xs"
             ></input>
-            <button className="btn btn-primary">Submit</button>
+            <button className="btn btn-primary">Search</button>
           </div>
         </div>
         <Nav />

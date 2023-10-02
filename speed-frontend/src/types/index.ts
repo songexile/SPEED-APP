@@ -34,3 +34,18 @@ export interface IconProps {
   path: string;
   className: string;
 }
+
+export interface LoginProps {
+  csrfToken: string
+}
+
+export interface RegisterProps {
+  csrfToken: string
+}
+
+export interface UserNextAuthTypes {
+  // other properties
+  token: string;
+  refreshToken: string;
+  accessTokenExpires: number;
+}
