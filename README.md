@@ -12,7 +12,7 @@ FrontEnd | Next.js, TypeScript, ESLint, Prettier, Jest, Vercel, Tailwind CSS, Da
 
 ### Live Demo: [next-gen](https://next-gen.miguelemmara.me/)
 
-### Code Repo: [GitHub](https://github.com/songexile/cise_assignment_1b)
+### Documentation: [next-gen-docs](https://next-gen-docs.miguelemmara.me/)
 
 ### Features
 
