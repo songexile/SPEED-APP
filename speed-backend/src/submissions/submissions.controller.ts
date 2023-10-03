@@ -19,6 +19,20 @@ export class SubmissionsController {
     return await this.submissionsService.create(createSubmissionDto);
   }
 
+  @Get('by-year-range') // Move this route handler before the @Get(':id') handler
+  async findSubmissionsByYearRange(
+    @Query('startYear') startYear: string,
+    @Query('endYear') endYear: string,
+  ): Promise<Submission[]> {
+    const parsedStartYear = parseInt(startYear, 10);
+    const parsedEndYear = parseInt(endYear, 10);
+
+    return this.submissionsService.findSubmissionsByYearRange(
+      parsedStartYear,
+      parsedEndYear,
+    );
+  }
+
   @Get(':id')
   async getSubmissionById(@Param('id') id: string): Promise<any> {
     const submission = await this.submissionsService.findById(id);
@@ -32,19 +46,5 @@ export class SubmissionsController {
   async getAllSubmissions(): Promise<Submission[]> {
     const submissions = await this.submissionsService.findAll();
     return submissions;
-  }
-
-  @Get('by-year-range') // This is the correct route for year-range search
-  async findSubmissionsByYearRange(
-    @Query('startYear') startYear: string, // Change the type to string
-    @Query('endYear') endYear: string, // Change the type to string
-  ): Promise<Submission[]> {
-    const parsedStartYear = parseInt(startYear, 10);
-    const parsedEndYear = parseInt(endYear, 10);
-
-    return this.submissionsService.findSubmissionsByYearRange(
-      parsedStartYear,
-      parsedEndYear,
-    );
   }
 }
