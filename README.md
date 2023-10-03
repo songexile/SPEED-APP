@@ -4,38 +4,56 @@
   <a href="https://next-gen.miguelemmara.me/"><img height="350" src="screenshots/app_image.png?raw=true" alt="Next Gen Speed App"></a>
 </p>
 
-🚀 Speed App for CISE AUT PAPER 2023, Next Gen Group (5508)
+🚀 Speed App for CISE AUT PAPER 2023 Sem 2, Next Gen Group (5508)
 <br>
-FrontEnd    | Next.js, TypeScript, ESLint, Prettier, Jest, Testing Library, Vercel, Tailwind CSS, DaisyUI
+BackEnd | Nest.js, MongoDB
 <br>
-BackEnd     | Nest.js, MongoDB
+FrontEnd | Next.js, TypeScript, ESLint, Prettier, Jest, Vercel, Tailwind CSS, DaisyUI
 
-Live Demo: [next-gen](https://next-gen.miguelemmara.me/)
+### Live Demo: [next-gen](https://next-gen.miguelemmara.me/)
+
+### Code Repo: [GitHub](https://github.com/songexile/cise_assignment_1b)
 
 ### Features
 
-- Searching
-- Submit
+- Sign Up
+- Login / Logout
+- Search Articles
+- Submit Articles
 - [TODO]
 
 ### Requirements
 
 - Node.js 16+
+- MongoDB
 
 ### Getting started
 
-[Front End Getting Stared](https://next-gen-docs.miguelemmara.me/documentation/frontend/getting-started.html)
+[Back End Getting Started](https://next-gen-docs.miguelemmara.me/documentation/backend/getting-started.html)
 <br>
-[Back End Getting Stared](https://next-gen-docs.miguelemmara.me/documentation/backend/getting-started.html)
+[Front End Getting Started](https://next-gen-docs.miguelemmara.me/documentation/frontend/getting-started.html)
+
+### APIs Documentation
+
+[Endpoints](https://next-gen-docs.miguelemmara.me/documentation/backend/api-documentation.html)
+
+### Iterations
+
+[One](https://next-gen-docs.miguelemmara.me/iterations/iteration-1.html)
+<br>
+[Two](https://next-gen-docs.miguelemmara.me/iterations/iteration-2.html)
+<br>
+[Three](https://next-gen-docs.miguelemmara.me/iterations/iteration-3.html)
 
 ### Author
-Glenn
+
+Glenn Neil
 <br>
-Miguel
+Miguel Emmara
 <br>
-Otis
+Otis Jay
 <br>
-Munish
+Munish Kumar
 
 ### License
 
