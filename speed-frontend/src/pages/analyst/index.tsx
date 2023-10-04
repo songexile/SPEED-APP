@@ -26,6 +26,21 @@ const AnalystPage = () => {
 
   const handleSubmit = (index: number) => {
     const combinedData = { ...articles[index], ...formData[index] }
+    alert('Sending data to the server: ' + JSON.stringify(combinedData))
+    fetch(`${apiEndpoint}analyst`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(combinedData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        alert('Success: ' + JSON.stringify(data))
+      })
+      .catch((error) => {
+        alert('Error: ' + error)
+      })
   }
 
   useEffect(() => {
