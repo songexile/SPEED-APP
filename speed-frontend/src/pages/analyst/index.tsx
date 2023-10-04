@@ -1,19 +1,33 @@
 import Nav from '@/components/Nav'
 import { Meta } from '@/layouts/Meta'
 import { ChangeEvent, useState, useEffect } from 'react'
-import { Errors, FormData } from '@/types'
+import { Errors, FormData, Analyst } from '@/types'
 
 const AnalystPage = () => {
   const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
-  const [articles, setArticles] = useState([]) //used for fetching list of articles
-  const [formData, setFormData] = useState({})
+  const [articles, setArticles] = useState<Analyst[]>([])
+  const [formData, setFormData] = useState<Analyst[]>([])
+  const [buttonDisabled, setButtonDisabled] = useState<boolean[]>(
+    new Array(articles.length).fill(true)
+  )
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }))
+  useEffect(() => {
+    const newButtonDisabled = formData.map((form) => {
+      return form.claim === null || form.method === null || form.agreeDisagree === null
+    })
+    setButtonDisabled(newButtonDisabled)
+  }, [])
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, index: number) => {
+    const { name, value, type } = e.target
+    const newFormData = [...formData]
+    newFormData[index] = { ...newFormData[index], [name]: value }
+    setFormData(newFormData)
+  }
+
+  const handleSubmit = (index: number) => {
+    const combinedData = { ...articles[index], ...formData[index] }
+    console.log('Submitted data for article:', index, combinedData)
   }
 
   useEffect(() => {
@@ -26,7 +40,11 @@ const AnalystPage = () => {
       .then((response) => response.json())
       .then((data) => {
         setArticles(data)
-        console.log(data) // Moved inside .then()
+        const initialFormData = data.map(() => ({} as Analyst)) // Initialize with empty objects
+        setFormData(initialFormData)
+        setButtonDisabled(new Array(data.length).fill(true)) // Update buttonDisabled here
+        console.log('my buttons')
+        console.log(buttonDisabled)
       })
       .catch((error) => console.log('Error:', error))
   }, [])
@@ -55,24 +73,37 @@ const AnalystPage = () => {
                 <span className="font-bold">Agree/Disagree:</span>
                 <input
                   type="radio"
-                  name={`radio-${index}`}
+                  name={`agreeDisagree-${index}`}
+                  value="Agree"
                   className="radio radio-success"
-                  checked
+                  onChange={(e) => handleChange(e, index)}
                 />
-                <input type="radio" name={`radio-${index}`} className="radio radio-error" />
+                <input
+                  type="radio"
+                  name={`agreeDisagree-${index}`}
+                  value="Disagree"
+                  onChange={(e) => handleChange(e, index)}
+                  className="radio radio-error"
+                />
               </div>
               <div className="flex flex-col  mb-4">
                 <div className="w-1/2 ">
                   <span className="font-bold mr-4">Claim:</span>
                   <input
                     type="text"
+                    name="claim"
                     placeholder="Type the claim here"
                     className="input input-bordered w-full max-w-md"
+                    onChange={(e) => handleChange(e, index)}
                   />
                 </div>
                 <div className="w-1/2 mt-4">
                   <span className="font-bold">Software Engineering method:</span>
-                  <select className="select select-bordered w-full max-w-xs bg-secondary">
+                  <select
+                    name="method"
+                    className="select select-bordered w-full max-w-xs bg-secondary"
+                    onChange={(e) => handleChange(e, index)}
+                  >
                     <option disabled="" selected="">
                       Rapid Application Development
                     </option>
@@ -81,7 +112,13 @@ const AnalystPage = () => {
                   </select>
                 </div>
               </div>
-              <button className="btn btn-primary mt-4 w-full">Submit</button>
+              <button
+                disabled={buttonDisabled[index]}
+                className="btn btn-primary mt-4 w-full"
+                onClick={() => handleSubmit(index)}
+              >
+                Submit
+              </button>
             </div>
           ))}
         </div>

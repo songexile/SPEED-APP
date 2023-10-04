@@ -24,15 +24,21 @@ export type FormData = {
   doi: string
 }
 
+export interface Analyst extends FormData {
+  claim?: string
+  method?: string
+  agreeDisagree?: string
+}
+
 export interface CustomNavButtonsProps {
-  href: string;
-  icon: JSX.Element;
-  label: string;
+  href: string
+  icon: JSX.Element
+  label: string
 }
 
 export interface IconProps {
-  path: string;
-  className: string;
+  path: string
+  className: string
 }
 
 export interface LoginProps {
@@ -45,7 +51,7 @@ export interface RegisterProps {
 
 export interface UserNextAuthTypes {
   // other properties
-  token: string;
-  refreshToken: string;
-  accessTokenExpires: number;
+  token: string
+  refreshToken: string
+  accessTokenExpires: number
 }
