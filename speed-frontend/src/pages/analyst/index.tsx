@@ -1,25 +1,24 @@
 import Nav from '@/components/Nav'
 import { Meta } from '@/layouts/Meta'
 import { ChangeEvent, useState, useEffect } from 'react'
-import { Errors, FormData, Analyst } from '@/types'
+import { Analyst } from '@/types'
 
 const AnalystPage = () => {
   const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
   const [articles, setArticles] = useState<Analyst[]>([])
   const [formData, setFormData] = useState<Analyst[]>([])
-  const [buttonDisabled, setButtonDisabled] = useState<boolean[]>(
-    new Array(articles.length).fill(true)
-  )
+  const [buttonDisabled, setButtonDisabled] = useState<boolean[]>([])
 
   useEffect(() => {
-    const newButtonDisabled = formData.map((form) => {
-      return form.claim === null || form.method === null || form.agreeDisagree === null
+    const newButtonDisabled = formData.map((form, index) => {
+      const agreeDisagreeField = form[`agreeDisagree-${index}`] || form.agreeDisagree
+      return !form.claim || !form.method || !agreeDisagreeField
     })
     setButtonDisabled(newButtonDisabled)
-  }, [])
+  }, [formData])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, index: number) => {
-    const { name, value, type } = e.target
+    const { name, value } = e.target
     const newFormData = [...formData]
     newFormData[index] = { ...newFormData[index], [name]: value }
     setFormData(newFormData)
@@ -27,7 +26,6 @@ const AnalystPage = () => {
 
   const handleSubmit = (index: number) => {
     const combinedData = { ...articles[index], ...formData[index] }
-    console.log('Submitted data for article:', index, combinedData)
   }
 
   useEffect(() => {
@@ -40,20 +38,18 @@ const AnalystPage = () => {
       .then((response) => response.json())
       .then((data) => {
         setArticles(data)
-        const initialFormData = data.map(() => ({} as Analyst)) // Initialize with empty objects
+        const initialFormData = data.map(() => ({} as Analyst))
         setFormData(initialFormData)
-        setButtonDisabled(new Array(data.length).fill(true)) // Update buttonDisabled here
-        console.log('my buttons')
-        console.log(buttonDisabled)
+        const newButtonDisabled = initialFormData.map(() => true)
+        setButtonDisabled(newButtonDisabled)
       })
-      .catch((error) => console.log('Error:', error))
   }, [])
 
   return (
     <main>
       <section>
         <Meta title="SPEED APP" description="Search Software Engineering methods to find claims." />
-        <div className="bg-base-100 flex flex-col items-center  min-h-screen">
+        <div className="bg-base-100 flex flex-col items-center min-h-screen">
           <h1 className="text-4xl font-bold text-center mt-8">Analyst Page</h1>
           {articles.map((article, index) => (
             <div className="mt-8 flex flex-col w-1/2 p-8 rounded-md border shadow-lg" key={index}>
@@ -86,8 +82,8 @@ const AnalystPage = () => {
                   className="radio radio-error"
                 />
               </div>
-              <div className="flex flex-col  mb-4">
-                <div className="w-1/2 ">
+              <div className="flex flex-col mb-4">
+                <div className="w-1/2">
                   <span className="font-bold mr-4">Claim:</span>
                   <input
                     type="text"
@@ -104,8 +100,8 @@ const AnalystPage = () => {
                     className="select select-bordered w-full max-w-xs bg-secondary"
                     onChange={(e) => handleChange(e, index)}
                   >
-                    <option disabled="" selected="">
-                      Rapid Application Development
+                    <option disabled="" value="">
+                      Select Method
                     </option>
                     <option>Waterfall</option>
                     <option>Agile</option>
