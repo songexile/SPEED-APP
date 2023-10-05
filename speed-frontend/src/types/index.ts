@@ -49,3 +49,14 @@ export interface UserNextAuthTypes {
   refreshToken: string;
   accessTokenExpires: number;
 }
+
+export interface ArticleProps {
+  _id: string;
+  title: string;
+  authors: string;
+  journal: string;
+  year: string;
+  volume?: string;
+  pages?: string;
+  doi: string;
+}

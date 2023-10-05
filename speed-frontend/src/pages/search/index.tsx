@@ -1,7 +1,27 @@
 import Nav from '@/components/Nav'
 import { Meta } from '@/layouts/Meta'
+import { useState } from 'react'
+import { ArticleProps } from '@/types'
 
 const SearchPage = () => {
+  const [searchResults, setSearchResults] = useState<ArticleProps[]>([])
+
+  const handleSearchClick = async () => {
+    const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || `http://localhost:3001/`
+
+    try {
+      const response = await fetch(`${apiEndpoint}submissions`)
+      if (response.ok) {
+        const data = await response.json()
+        setSearchResults(data)
+      } else {
+        console.error('Failed to fetch data from the server.')
+      }
+    } catch (error) {
+      console.error('An error occurred:', error)
+    }
+  }
+
   return (
     <main>
       <section>
@@ -33,8 +53,42 @@ const SearchPage = () => {
               placeholder="End Year"
               className="input input-bordered w-full max-w-xs"
             ></input>
-            <button className="btn btn-primary">Search</button>
+            <button className="btn btn-primary" onClick={handleSearchClick}>
+              Search
+            </button>
           </div>
+          {/* Display the search results in a table */}
+          {searchResults.length > 0 && (
+            <div className="overflow-x-auto container">
+              <table className="table">
+                {/* head */}
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Authors</th>
+                    <th>Journal</th>
+                    <th>Year</th>
+                    <th>Volume</th>
+                    <th>Number of Pages</th>
+                    <th>Doi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {searchResults.map((result) => (
+                    <tr key={result._id}>
+                      <td>{result.title}</td>
+                      <td>{result.authors}</td>
+                      <td>{result.journal}</td>
+                      <td>{result.year}</td>
+                      <td>{result.volume}</td>
+                      <td>{result.pages}</td>
+                      <td>{result.doi}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
         <Nav />
       </section>
