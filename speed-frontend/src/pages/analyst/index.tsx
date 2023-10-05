@@ -10,6 +10,26 @@ const AnalystPage = () => {
   const [buttonDisabled, setButtonDisabled] = useState<boolean[]>([])
 
   useEffect(() => {
+    //This will fetch all the articles from submission, IN THE FUTURE THIS WILL RETRIEVE FROM MODERATOR DB.
+    fetch(`${apiEndpoint}submissions`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setArticles(data)
+        console.log(data)
+        const initialFormData = data.map(() => ({} as Analyst))
+        setFormData(initialFormData)
+        const newButtonDisabled = initialFormData.map(() => true)
+        setButtonDisabled(newButtonDisabled)
+      })
+  }, [])
+
+  useEffect(() => {
+    //Everytime the form is updated, we will check if we can enable the button (If the user has filled out the claim, method and agree/dsagree)
     const newButtonDisabled = formData.map((form, index) => {
       const agreeDisagreeField = form[`agreeDisagree-${index}`] || form.agreeDisagree
       return !form.claim || !form.method || !agreeDisagreeField
@@ -19,26 +39,25 @@ const AnalystPage = () => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, index: number) => {
     const { name, value } = e.target
+
+    let fieldName = name
+    if (name.startsWith('agreeDisagree')) {
+      fieldName = 'agreeDisagree' // Use a non-indexed key for agree/disagree
+    }
+
     const newFormData = [...formData]
-    newFormData[index] = { ...newFormData[index], [name]: value }
+    newFormData[index] = { ...newFormData[index], [fieldName]: value }
     setFormData(newFormData)
   }
 
-  const deleteSubmission = (id: string) => {
-    fetch(`${apiEndpoint}submissions/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-  }
-
   const handleSubmit = (index: number) => {
+    //Submit to DB and delete article from Submissions (This will need to be changed to moderator later)
     const combinedData = { ...articles[index], ...formData[index] }
     alert('Sending data to the server: ' + JSON.stringify(combinedData))
 
     // First, submit the data
     fetch(`${apiEndpoint}analyst`, {
+      //Add to DB
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -51,6 +70,7 @@ const AnalystPage = () => {
 
         // Then, delete the submission if the POST was successful
         return fetch(`${apiEndpoint}submissions/${articles[index]._id}`, {
+          //Delete from submission (change to moderator next sprint)
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -71,25 +91,6 @@ const AnalystPage = () => {
         alert('Error: ' + error.message)
       })
   }
-
-  useEffect(() => {
-    //inital fetch
-    fetch(`${apiEndpoint}submissions`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setArticles(data)
-        console.log(data)
-        const initialFormData = data.map(() => ({} as Analyst))
-        setFormData(initialFormData)
-        const newButtonDisabled = initialFormData.map(() => true)
-        setButtonDisabled(newButtonDisabled)
-      })
-  }, [])
 
   return (
     <main>
