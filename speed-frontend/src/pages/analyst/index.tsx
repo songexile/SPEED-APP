@@ -24,9 +24,20 @@ const AnalystPage = () => {
     setFormData(newFormData)
   }
 
+  const deleteSubmission = (id: string) => {
+    fetch(`${apiEndpoint}submissions/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  }
+
   const handleSubmit = (index: number) => {
     const combinedData = { ...articles[index], ...formData[index] }
     alert('Sending data to the server: ' + JSON.stringify(combinedData))
+
+    // First, submit the data
     fetch(`${apiEndpoint}analyst`, {
       method: 'POST',
       headers: {
@@ -37,13 +48,32 @@ const AnalystPage = () => {
       .then((response) => response.json())
       .then((data) => {
         alert('Success: ' + JSON.stringify(data))
+
+        // Then, delete the submission if the POST was successful
+        return fetch(`${apiEndpoint}submissions/${articles[index]._id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+      })
+      .then((response) => {
+        if (response.ok) {
+          // Update the local state to remove the deleted article
+          const updatedArticles = articles.filter((article) => article._id !== articles[index]._id)
+          setArticles(updatedArticles)
+          alert('Submission deleted successfully.')
+        } else {
+          alert('Error deleting the submission.')
+        }
       })
       .catch((error) => {
-        alert('Error: ' + error)
+        alert('Error: ' + error.message)
       })
   }
 
   useEffect(() => {
+    //inital fetch
     fetch(`${apiEndpoint}submissions`, {
       method: 'GET',
       headers: {
@@ -53,6 +83,7 @@ const AnalystPage = () => {
       .then((response) => response.json())
       .then((data) => {
         setArticles(data)
+        console.log(data)
         const initialFormData = data.map(() => ({} as Analyst))
         setFormData(initialFormData)
         const newButtonDisabled = initialFormData.map(() => true)
@@ -64,7 +95,7 @@ const AnalystPage = () => {
     <main>
       <section>
         <Meta title="SPEED APP" description="Search Software Engineering methods to find claims." />
-        <div className="bg-base-100 flex flex-col items-center min-h-screen">
+        <div className="bg-base-100 flex flex-col items-center min-h-screen text-white">
           <h1 className="text-4xl font-bold text-center mt-8">Analyst Page</h1>
           {articles.map((article, index) => (
             <div className="mt-8 flex flex-col w-1/2 p-8 rounded-md border shadow-lg" key={index}>
