@@ -5,15 +5,49 @@ import { ArticleProps } from '@/types'
 
 const SearchPage = () => {
   const [searchResults, setSearchResults] = useState<ArticleProps[]>([])
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSearchClick = async () => {
+  const handleSearchClick = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || `http://localhost:3001/`
 
+    const startYear = (document.getElementById('startYear') as HTMLInputElement)?.value
+    const endYear = (document.getElementById('endYear') as HTMLInputElement)?.value
+
+    const isNumeric = (value: any) => !isNaN(value) && isFinite(value)
+
+    let url = `${apiEndpoint}submissions`
+
+    // This if statement
+    // Wil run if the user input only one field
+    // (Either start year / end year)
+    if (startYear && endYear && isNumeric(startYear) && isNumeric(endYear)) {
+      if (parseInt(startYear) > parseInt(endYear)) {
+        setError('Start year cannot be greater than end year.')
+        return
+      }
+      url = `${apiEndpoint}submissions/by-year-range?startYear=${startYear}&endYear=${endYear}`
+    } else if (startYear || endYear) {
+      // Display an error message if either startYear or endYear is not numeric
+      setError(
+        'Please input both start and end years with valid numbers. Otherwise leave it empty to display all articles.'
+      )
+      return
+    }
+
     try {
-      const response = await fetch(`${apiEndpoint}submissions`)
+      const response = await fetch(url)
       if (response.ok) {
         const data = await response.json()
-        setSearchResults(data)
+
+        if (data.length === 0) {
+          setError('No results found.')
+        } else {
+          if (error?.length) {
+            setError('')
+          }
+          setSearchResults(data)
+        }
       } else {
         console.error('Failed to fetch data from the server.')
       }
@@ -30,38 +64,42 @@ const SearchPage = () => {
           <h1 className="text-4xl font-bold text-center">
             Search Software Engineering methods to find claims.
           </h1>
-          <div className="space-y-4 flex flex-col">
-            <label className="label mt-4">
-              <span className="">Choose a Software Engineering Method</span>
-            </label>
-            <select
-              className="select select-bordered w-full max-w-xs bg-secondary"
-              defaultValue="Rapid Application Development"
-            >
-              <option disabled>Rapid Application Development</option>
-              <option>Waterfall</option>
-              <option>Agile</option>
-            </select>
+          <form onSubmit={handleSearchClick}>
+            <div className="space-y-4 flex flex-col">
+              <label className="label mt-4">
+                <span className="">Choose a Software Engineering Method</span>
+              </label>
+              <select
+                className="select select-bordered w-full max-w-xs bg-secondary"
+                defaultValue="Rapid Application Development"
+              >
+                <option disabled>Rapid Application Development</option>
+                <option>Waterfall</option>
+                <option>Agile</option>
+              </select>
 
-            <input
-              type="text"
-              placeholder="Start Year"
-              className="input input-bordered w-full max-w-xs"
-            ></input>
-            <input
-              type="text"
-              placeholder="End Year"
-              className="input input-bordered w-full max-w-xs"
-            ></input>
-            <button className="btn btn-primary" onClick={handleSearchClick}>
-              Search
-            </button>
-          </div>
+              <input
+                type="text"
+                placeholder="Start Year"
+                className="input input-bordered w-full max-w-xs"
+                id="startYear"
+              ></input>
+              <input
+                type="text"
+                placeholder="End Year"
+                className="input input-bordered w-full max-w-xs"
+                id="endYear"
+              ></input>
+              <button type="submit" className="btn btn-primary">
+                Search
+              </button>
+            </div>
+          </form>
+          {error && <div className="text-red-500">{error}</div>}
           {/* Display the search results in a table */}
           {searchResults.length > 0 && (
             <div className="overflow-x-auto container">
               <table className="table">
-                {/* head */}
                 <thead>
                   <tr>
                     <th>Title</th>
