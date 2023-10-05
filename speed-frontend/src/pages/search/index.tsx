@@ -6,6 +6,7 @@ import { ArticleProps } from '@/types'
 const SearchPage = () => {
   const [searchResults, setSearchResults] = useState<ArticleProps[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
   const handleSearchClick = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -36,6 +37,9 @@ const SearchPage = () => {
     }
 
     try {
+      setLoading(true)
+      setError(null)
+
       const response = await fetch(url)
       if (response.ok) {
         const data = await response.json()
@@ -53,6 +57,10 @@ const SearchPage = () => {
       }
     } catch (error) {
       console.error('An error occurred:', error)
+    } finally {
+      setTimeout(() => {
+        setLoading(false)
+      }, 300)
     }
   }
 
@@ -96,36 +104,46 @@ const SearchPage = () => {
             </div>
           </form>
           {error && <div className="text-red-500">{error}</div>}
-          {/* Display the search results in a table */}
-          {searchResults.length > 0 && (
-            <div className="overflow-x-auto container">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Title</th>
-                    <th>Authors</th>
-                    <th>Journal</th>
-                    <th>Year</th>
-                    <th>Volume</th>
-                    <th>Number of Pages</th>
-                    <th>Doi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {searchResults.map((result) => (
-                    <tr key={result._id}>
-                      <td>{result.title}</td>
-                      <td>{result.authors}</td>
-                      <td>{result.journal}</td>
-                      <td>{result.year}</td>
-                      <td>{result.volume}</td>
-                      <td>{result.pages}</td>
-                      <td>{result.doi}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {loading ? (
+            // Show loading skeleton while fetching data
+            <div className="container mt-5 w-max">
+              <span className="loading loading-spinner loading-lg"></span>
+              <p>Loading...</p>
             </div>
+          ) : (
+            <>
+              {/* Display the search results in a table */}
+              {searchResults.length > 0 && (
+                <div className="overflow-x-auto container">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Title</th>
+                        <th>Authors</th>
+                        <th>Journal</th>
+                        <th>Year</th>
+                        <th>Volume</th>
+                        <th>Number of Pages</th>
+                        <th>Doi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {searchResults.map((result) => (
+                        <tr key={result._id}>
+                          <td>{result.title}</td>
+                          <td>{result.authors}</td>
+                          <td>{result.journal}</td>
+                          <td>{result.year}</td>
+                          <td>{result.volume}</td>
+                          <td>{result.pages}</td>
+                          <td>{result.doi}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </>
           )}
         </div>
         <Nav />
