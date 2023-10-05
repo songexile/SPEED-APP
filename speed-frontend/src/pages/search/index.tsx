@@ -146,7 +146,9 @@ const SearchPage = () => {
             </>
           )}
         </div>
-        <Nav />
+        <div className="mt-20">
+          <Nav />
+        </div>
       </section>
     </main>
   )
