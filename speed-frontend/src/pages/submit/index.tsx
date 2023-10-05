@@ -100,7 +100,7 @@ const SubmitPage = () => {
           description="Submit Your Favorite Claim Article About Software Engineering Methods"
         />
         <div className="bg-base-100 flex flex-col items-center justify-center min-h-screen">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 container w-auto">
             {/* Title */}
             <div>
               <label htmlFor="title">
