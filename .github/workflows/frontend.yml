@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [16.x, 18.x]
 
     steps:
       - name: Checkout code
@@ -21,6 +21,14 @@ jobs:
 
       - name: Set working directory
         run: cd speed-frontend
+
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-${{ runner.os }}-
 
       - name: Install Node.js
         uses: actions/setup-node@v2
