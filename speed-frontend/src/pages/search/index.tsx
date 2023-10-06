@@ -1,7 +1,39 @@
+import React, { useState } from 'react'
 import Nav from '@/components/Nav'
+import SearchResultsTable from '@/components/SearchResultsTable'
 import { Meta } from '@/layouts/Meta'
 
-const SearchPage = () => {
+interface Articles {
+  _id: string
+  title: string
+  authors: string
+  journal: string
+  year: number
+  volume: string
+  pages: string
+  doi: string
+}
+
+const SearchPage: React.FC = () => {
+  // Using the useState hook to initialize state
+  const [data, setData] = useState<Articles[]>([])
+
+  const fetchData = async () => {
+    try {
+      // Fetching data from the submission API endpoint
+      const res = await fetch('https://my-cise-test-vercel.vercel.app/submissions')
+      const newData = await res.json()
+      setData(newData)
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    }
+  }
+
+  const handleSearch = () => {
+    //need to add other search queries
+    fetchData()
+  }
+
   return (
     <main>
       <section>
@@ -33,8 +65,11 @@ const SearchPage = () => {
               placeholder="End Year"
               className="input input-bordered w-full max-w-xs"
             ></input>
-            <button className="btn btn-primary">Search</button>
+            <button className="btn btn-primary" onClick={handleSearch}>
+              Submit
+            </button>
           </div>
+          {data.length > 0 && <SearchResultsTable data={data} />}
         </div>
         <Nav />
       </section>
