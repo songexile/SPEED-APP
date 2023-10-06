@@ -1,12 +1,28 @@
 import Nav from '@/components/Nav'
 import { Meta } from '@/layouts/Meta'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ArticleProps } from '@/types'
+import { useRouter } from 'next/router'
 
 const SearchPage = () => {
   const [searchResults, setSearchResults] = useState<ArticleProps[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    const { startYear, endYear } = router.query
+
+    if (startYear && endYear) {
+      const startYearInput = document.getElementById('startYear') as HTMLInputElement
+      const endYearInput = document.getElementById('endYear') as HTMLInputElement
+
+      if (startYearInput && endYearInput) {
+        startYearInput.value = startYear as string
+        endYearInput.value = endYear as string
+      }
+    }
+  }, [router.query])
 
   const handleSearchClick = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -51,6 +67,17 @@ const SearchPage = () => {
             setError('')
           }
           setSearchResults(data)
+
+          // Update the URL with the selected filters
+          const queryParams = new URLSearchParams()
+          queryParams.set('startYear', startYear)
+          queryParams.set('endYear', endYear)
+
+          // Add more parameters as needed
+          // queryParams.set('method', selectedMethod);
+
+          const newUrl = `${window.location.pathname}?${queryParams.toString()}`
+          window.history.pushState({}, '', newUrl)
         }
       } else {
         console.error('Failed to fetch data from the server.')
