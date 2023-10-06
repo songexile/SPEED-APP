@@ -25,6 +25,7 @@ export type FormData = {
 }
 
 export interface Analyst extends FormData {
+  _id: any
   claim?: string
   method?: string
   agreeDisagree?: string

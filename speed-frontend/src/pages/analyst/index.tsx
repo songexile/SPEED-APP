@@ -3,9 +3,15 @@ import { Meta } from '@/layouts/Meta'
 import { ChangeEvent, useState, useEffect } from 'react'
 import { Analyst } from '@/types'
 
+interface FormData {
+  claim?: string
+  method?: string
+  agreeDisagree?: string
+}
+
 const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
 
-const fetchFromAPI = (endpoint, options = {}) => {
+const fetchFromAPI = (endpoint: string, options = {}) => {
   return fetch(`${API_ENDPOINT}${endpoint}`, {
     headers: {
       'Content-Type': 'application/json',
@@ -16,14 +22,14 @@ const fetchFromAPI = (endpoint, options = {}) => {
 
 const AnalystPage = () => {
   const [articles, setArticles] = useState<Analyst[]>([])
-  const [formData, setFormData] = useState<Analyst[]>([])
+  const [formData, setFormData] = useState<FormData[]>([])
   const [buttonDisabled, setButtonDisabled] = useState<boolean[]>([])
   const [showArticles, setShowArticles] = useState(false)
 
   useEffect(() => {
     fetchFromAPI('submissions').then((data) => {
       setArticles(data)
-      const initialFormData = data.map(() => ({} as Analyst))
+      const initialFormData = data.map(() => ({} as FormData))
       setFormData(initialFormData)
       setButtonDisabled(initialFormData.map(() => true))
     })
@@ -50,13 +56,13 @@ const AnalystPage = () => {
   }
 
   const handleSubmit = (index: number) => {
-    //Submit to DB and delete article from Submissions (This will need to be changed to moderator later)
+    // Submit to DB and delete article from Submissions (This will need to be changed to moderator later)
     const combinedData = { ...articles[index], ...formData[index] }
     alert('Sending data to the server: ' + JSON.stringify(combinedData))
 
     // First, submit the data
     fetch(`${API_ENDPOINT}analyst`, {
-      //Add to DB
+      // Add to DB
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -68,22 +74,30 @@ const AnalystPage = () => {
         alert('Success: ' + JSON.stringify(data))
 
         // Then, delete the submission if the POST was successful
-        return fetch(`${API_ENDPOINT}submissions/${articles[index]._id}`, {
-          //Delete from submission (change to moderator next sprint)
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-      })
-      .then((response) => {
-        if (response.ok) {
-          // Update the local state to remove the deleted article
-          const updatedArticles = articles.filter((article) => article._id !== articles[index]._id)
-          setArticles(updatedArticles)
-          alert('Submission deleted successfully.')
-        } else {
-          alert('Error deleting the submission.')
+        const articleToDelete = articles[index]
+        if (articleToDelete && articleToDelete._id) {
+          fetch(`${API_ENDPOINT}submissions/${articleToDelete._id}`, {
+            // Delete from submission (change to moderator next sprint)
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+            .then((response) => {
+              if (response.ok) {
+                // Update the local state to remove the deleted article
+                const updatedArticles = articles.filter(
+                  (article) => article._id !== articleToDelete._id
+                )
+                setArticles(updatedArticles)
+                alert('Submission deleted successfully.')
+              } else {
+                alert('Error deleting the submission.')
+              }
+            })
+            .catch((error) => {
+              alert('Error: ' + error.message)
+            })
         }
       })
       .catch((error) => {
@@ -152,9 +166,7 @@ const AnalystPage = () => {
                       className="select select-bordered w-full max-w-xs bg-secondary"
                       onChange={(e) => handleChange(e, index)}
                     >
-                      <option disabled="" value="">
-                        Select Method
-                      </option>
+                      <option value="">Select Method</option>
                       <option>Waterfall</option>
                       <option>Agile</option>
                     </select>
