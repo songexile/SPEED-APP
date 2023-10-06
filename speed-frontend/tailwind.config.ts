@@ -9,11 +9,11 @@ const config: Config = {
   ],
   // Add the important option, using the id of app wrapper. For example, #__next for Next.js
   // important: '#__next',
-  darkMode: "class",
+  darkMode: 'class',
   theme: {
     container: {
       center: true,
-      padding: "1rem",
+      padding: '1rem',
     },
     extend: {
       backgroundImage: {

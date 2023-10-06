@@ -6,6 +6,7 @@ import {
   Body,
   NotFoundException,
   Query,
+  Delete,
 } from '@nestjs/common';
 import { SubmissionsService } from './submissions.service';
 import { Submission } from './interfaces/submission.interface'; // Import the Submission interface
@@ -46,5 +47,11 @@ export class SubmissionsController {
   async getAllSubmissions(): Promise<Submission[]> {
     const submissions = await this.submissionsService.findAll();
     return submissions;
+  }
+
+  @Delete(':id')
+  async deleteSubmission(@Param('id') id: string) {
+    console.log('Trying to delete submission with ID:', id);
+    return this.submissionsService.deleteById(id);
   }
 }

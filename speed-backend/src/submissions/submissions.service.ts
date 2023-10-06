@@ -27,6 +27,17 @@ export class SubmissionsService {
     return submissions as Submission[]; // Explicitly specify the return type as Submission[]
   }
 
+  async deleteById(id: string): Promise<Submission | null> {
+    const deletedSubmission = await this.submissionModel
+      .findByIdAndDelete(id)
+      .exec();
+
+    if (!deletedSubmission) {
+      throw new NotFoundException('Submission not found');
+    }
+    return deletedSubmission;
+  }
+
   async findSubmissionsByYearRange(
     startYear: number,
     endYear: number,
