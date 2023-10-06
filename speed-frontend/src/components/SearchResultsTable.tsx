@@ -43,6 +43,7 @@ const SearchResultsTable: React.FC<SearchResultsTableProps> = ({ data }) => {
           </tr>
         ))}
       </tbody>
+      <div className="mt-20"></div>
     </table>
   )
 }
