@@ -18,10 +18,14 @@ const SearchPage: React.FC = () => {
   // Using the useState hook to initialize state
   const [data, setData] = useState<Articles[]>([])
 
+  const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || `http://localhost:3001/`
+
+  let url = `${apiEndpoint}submissions`
+
   const fetchData = async () => {
     try {
       // Fetching data from the submission API endpoint
-      const res = await fetch('https://my-cise-test-vercel.vercel.app/submissions')
+      const res = await fetch(`${url}`)
       const newData = await res.json()
       setData(newData)
     } catch (error) {
