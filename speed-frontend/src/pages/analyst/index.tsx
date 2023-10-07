@@ -5,6 +5,7 @@ import { Analyst, AnalystFormData } from '@/types'
 import { CustomReusableButton, FormComponent } from '@/components'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import jwt_decode from 'jwt-decode'
 
 const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
 
@@ -16,6 +17,16 @@ const AnalystPage = () => {
     // Redirect authenticated (NON logged-in) users to another page
     if (!session) {
       router.push('/')
+    } else {
+      if (session && session.user && session.user.accessToken) {
+        const token = session.user.accessToken
+        const decodedToken = jwt_decode(token)
+        const userRole = decodedToken.role.toLowerCase()
+        if (userRole !== 'analyst' && userRole !== 'admin') {
+          // Redirect or deny access to unauthorized users
+          router.push('/')
+        }
+      }
     }
   }, [session])
 
