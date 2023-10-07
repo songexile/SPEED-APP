@@ -2,17 +2,7 @@ import React, { useState } from 'react'
 import Nav from '@/components/Nav'
 import SearchResultsTable from '@/components/SearchResultsTable'
 import { Meta } from '@/layouts/Meta'
-
-interface Articles {
-  _id: string
-  title: string
-  authors: string
-  journal: string
-  year: number
-  volume: string
-  pages: string
-  doi: string
-}
+import { Articles } from '../../types/index'
 
 const SearchPage: React.FC = () => {
   // Using the useState hook to initialize state

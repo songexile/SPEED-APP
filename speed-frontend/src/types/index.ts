@@ -67,3 +67,14 @@ export interface SearchResultData {
   pages: string
   doi: string
 }
+
+export interface Articles {
+  _id: string
+  title: string
+  authors: string
+  journal: string
+  year: number
+  volume: string
+  pages: string
+  doi: string
+}
