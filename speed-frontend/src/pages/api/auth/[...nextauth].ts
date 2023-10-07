@@ -61,6 +61,7 @@ export default NextAuth({
           ...token,
           accessToken: user.token,
           refreshToken: user.refreshToken,
+          userRole: user.role
         };
       }
 
@@ -71,7 +72,7 @@ export default NextAuth({
       if (token) {
         session.user.accessToken = token.accessToken;
         session.user.refreshToken = token.refreshToken;
-        session.user.accessTokenExpires = token.accessTokenExpires;
+        session.user.userRole = token.userRole;
       }
 
       return session;

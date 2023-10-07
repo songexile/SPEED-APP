@@ -31,6 +31,12 @@ export interface Analyst extends FormData {
   agreeDisagree?: string
 }
 
+export interface AnalystFormData {
+  claim?: string
+  method?: string
+  agreeDisagree?: string
+}
+
 export interface CustomNavButtonsProps {
   href: string
   icon: JSX.Element
@@ -80,4 +86,15 @@ export interface CustomReusableButtonProps {
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
   title?: string;
+}
+
+export interface User {
+  accessToken?: string | null | undefined;
+  name?: string | null | undefined;
+  email?: string | null | undefined;
+  image?: string | null | undefined;
+}
+
+export interface DecodedToken {
+  role: string;
 }
