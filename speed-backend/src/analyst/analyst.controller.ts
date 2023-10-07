@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query } from '@nestjs/common';
 
 import { AnalystService } from './analyst.service';
 import { Analyst } from './interfaces/analyst.interface';
@@ -10,6 +10,20 @@ export class AnalystController {
   @Post()
   async addAnalyst(@Body() analystServiceDta: any): Promise<any> {
     return await this.analystService.create(analystServiceDta);
+  }
+
+  @Get('by-year-range')
+  async findSubmissionsByYearRange(
+    @Query('startYear') startYear: string,
+    @Query('endYear') endYear: string,
+  ): Promise<Analyst[]> {
+    const parsedStartYear = parseInt(startYear, 10);
+    const parsedEndYear = parseInt(endYear, 10);
+
+    return this.analystService.findSubmissionsByYearRange(
+      parsedStartYear,
+      parsedEndYear,
+    );
   }
 
   @Get()
