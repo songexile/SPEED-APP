@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import jwt_decode from 'jwt-decode'
 import { DecodedToken, User } from '@/types/index'
 
-const Admin = () => {
+const Accounts = () => {
   const { data: session } = useSession()
   const router = useRouter()
 
@@ -96,7 +96,7 @@ const Admin = () => {
               </ul>
             </div>
             <div className="h-screen flex-1 p-7">
-              <h1 className="text-2xl font-semibold ">{`Welcome Back, ${userName}`}</h1>
+              <h1 className="text-2xl font-semibold ">Account List Below</h1>
             </div>
           </div>
           <Nav />
@@ -106,4 +106,4 @@ const Admin = () => {
   )
 }
 
-export default Admin
+export default Accounts

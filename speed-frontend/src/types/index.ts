@@ -97,4 +97,5 @@ export interface User {
 
 export interface DecodedToken {
   role: string;
+  username: string;
 }
