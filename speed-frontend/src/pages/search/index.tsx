@@ -35,10 +35,10 @@ const SearchPage: React.FC = () => {
 
     const isNumeric = (value: any) => !isNaN(value) && isFinite(value)
 
-    let url = `${apiEndpoint}submissions`
+    let url = `${apiEndpoint}analyst`
 
     // This if statement
-    // Wil run if the user input only one field
+    // Will run if the user input only one field
     // (Either start year / end year)
     if (startYear && endYear && isNumeric(startYear) && isNumeric(endYear)) {
       if (parseInt(startYear) > parseInt(endYear)) {
@@ -76,7 +76,7 @@ const SearchPage: React.FC = () => {
           queryParams.set('startYear', startYear)
           queryParams.set('endYear', endYear)
 
-          // Add more parameters as needed
+          // Add more parameters as needed later on
           // queryParams.set('method', selectedMethod);
 
           const newUrl = `${window.location.pathname}?${queryParams.toString()}`
@@ -95,7 +95,6 @@ const SearchPage: React.FC = () => {
   }
 
   const handleSearchClick = (e: React.FormEvent<HTMLFormElement>) => {
-    //need to add other search queries
     fetchData(e)
   }
 
