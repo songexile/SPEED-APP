@@ -14,7 +14,7 @@ export class AuthService {
         @InjectModel(User.name)
         private userModel: Model<User>,
         private jwtService: JwtService,
-    ) { }
+    ) {}
 
     async signUp(signUpDto: SignUpDto): Promise<{ token: string }> {
         const { username, email, password, role } = signUpDto;
@@ -52,7 +52,8 @@ export class AuthService {
             throw new UnauthorizedException('Invalid email or password');
         }
 
-        const token = this.jwtService.sign({ id: user._id });
+        // Include the user's role in the token payload
+        const token = this.jwtService.sign({ id: user._id, role: user.role, username: user.username });
 
         return { token };
     }
