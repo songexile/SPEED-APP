@@ -56,3 +56,14 @@ export interface UserNextAuthTypes {
   refreshToken: string
   accessTokenExpires: number
 }
+
+export interface SearchResultData {
+  _id: string
+  title: string
+  authors: string
+  journal: string
+  year: number
+  volume: string
+  pages: string
+  doi: string
+}

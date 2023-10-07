@@ -1,19 +1,7 @@
-// components/SearchResultsTable.tsx
-import React from 'react'
-
-interface Book {
-  _id: string
-  title: string
-  authors: string
-  journal: string
-  year: number
-  volume: string
-  pages: string
-  doi: string
-}
+import { SearchResultData } from '../types/index'
 
 interface SearchResultsTableProps {
-  data: Book[]
+  data: SearchResultData[]
 }
 
 const SearchResultsTable: React.FC<SearchResultsTableProps> = ({ data }) => {
