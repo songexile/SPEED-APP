@@ -66,17 +66,11 @@ export interface SearchResultData {
   volume: string
   pages: string
   doi: string
+  claim: string
+  method: string
 }
 
-export interface Articles {
-  _id: string
-  title: string
-  authors: string
-  journal: string
-  year: number
-  volume: string
-  pages: string
-  doi: string
+export interface ArticleProps extends SearchResultData {
 }
 
 export interface CustomReusableButtonProps {
