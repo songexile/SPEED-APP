@@ -17,7 +17,6 @@ export class SubmissionsController {
   constructor(private readonly submissionsService: SubmissionsService) { }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
   async addSubmission(@Body() createSubmissionDto: any): Promise<any> {
     return await this.submissionsService.create(createSubmissionDto);
   }
