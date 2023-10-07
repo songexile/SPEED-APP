@@ -3,6 +3,7 @@ import { Meta } from '@/layouts/Meta'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import jwt_decode from 'jwt-decode'
 
 const Moderator = () => {
   const { data: session } = useSession()
@@ -12,6 +13,16 @@ const Moderator = () => {
     // Redirect authenticated (NON logged-in) users to another page
     if (!session) {
       router.push('/')
+    } else {
+      if (session && session.user && session.user.accessToken) {
+        const token = session.user.accessToken
+        const decodedToken = jwt_decode(token)
+        const userRole = decodedToken.role
+        if (userRole !== 'moderator' && userRole !== 'admin') {
+          // Redirect or deny access to unauthorized users
+          router.push('/')
+        }
+      }
     }
   }, [session])
 

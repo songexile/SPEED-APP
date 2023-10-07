@@ -18,7 +18,6 @@ const Admin = () => {
         const token = session.user.accessToken
         const decodedToken = jwt_decode(token)
         const userRole = decodedToken.role
-        console.log(userRole)
         if (userRole !== 'admin') {
           // Redirect or deny access to unauthorized users
           router.push('/')
