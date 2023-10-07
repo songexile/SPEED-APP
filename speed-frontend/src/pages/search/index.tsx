@@ -45,7 +45,7 @@ const SearchPage: React.FC = () => {
         setError('Start year cannot be greater than end year.')
         return
       }
-      url = `${apiEndpoint}submissions/by-year-range?startYear=${startYear}&endYear=${endYear}`
+      url = `${apiEndpoint}analyst/by-year-range?startYear=${startYear}&endYear=${endYear}`
     } else if (startYear || endYear) {
       // Display an error message if either startYear or endYear is not numeric
       setError(
@@ -113,9 +113,9 @@ const SearchPage: React.FC = () => {
               </label>
               <select
                 className="select select-bordered w-full max-w-xs bg-secondary"
-                defaultValue="Choose a claim"
+                defaultValue="Choose a method"
               >
-                <option>Choose a claim</option>
+                <option>Choose a method</option>
                 <option>Waterfall</option>
                 <option>Agile</option>
               </select>
