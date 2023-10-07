@@ -113,9 +113,9 @@ const SearchPage: React.FC = () => {
               </label>
               <select
                 className="select select-bordered w-full max-w-xs bg-secondary"
-                defaultValue="Rapid Application Development"
+                defaultValue="Choose a claim"
               >
-                <option disabled>Rapid Application Development</option>
+                <option>Choose a claim</option>
                 <option>Waterfall</option>
                 <option>Agile</option>
               </select>
