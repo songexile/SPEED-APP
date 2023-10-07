@@ -31,6 +31,12 @@ export interface Analyst extends FormData {
   agreeDisagree?: string
 }
 
+export interface AnalystFormData {
+  claim?: string
+  method?: string
+  agreeDisagree?: string
+}
+
 export interface CustomNavButtonsProps {
   href: string
   icon: JSX.Element
