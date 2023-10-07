@@ -87,3 +87,14 @@ export interface CustomReusableButtonProps {
   disabled?: boolean;
   title?: string;
 }
+
+export interface User {
+  accessToken?: string | null | undefined;
+  name?: string | null | undefined;
+  email?: string | null | undefined;
+  image?: string | null | undefined;
+}
+
+export interface DecodedToken {
+  role: string;
+}

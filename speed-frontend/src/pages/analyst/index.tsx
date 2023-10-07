@@ -1,7 +1,7 @@
 import Nav from '@/components/Nav'
 import { Meta } from '@/layouts/Meta'
 import { ChangeEvent, useState, useEffect } from 'react'
-import { Analyst, AnalystFormData } from '@/types'
+import { Analyst, AnalystFormData, DecodedToken, User } from '@/types'
 import { CustomReusableButton, FormComponent } from '@/components'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
@@ -14,21 +14,33 @@ const AnalystPage = () => {
   const router = useRouter()
 
   useEffect(() => {
+    const redirectToHomePage = () => {
+      router.push('/')
+    }
+
     // Redirect authenticated (NON logged-in) users to another page
     if (!session) {
-      router.push('/')
-    } else {
-      if (session && session.user && session.user.accessToken) {
-        const token = session.user.accessToken
-        const decodedToken = jwt_decode(token)
-        const userRole = decodedToken.role.toLowerCase()
-        if (userRole !== 'analyst' && userRole !== 'admin') {
-          // Redirect or deny access to unauthorized users
-          router.push('/')
-        }
-      }
+      redirectToHomePage()
+      return
     }
-  }, [session])
+
+    const user: User | undefined = session?.user
+
+    // If the session.user object is not available or accessToken is missing
+    if (!user || !user.accessToken) {
+      redirectToHomePage()
+      return
+    }
+
+    const token = user.accessToken
+    const decodedToken: DecodedToken = jwt_decode(token)
+    const userRole = decodedToken.role
+
+    if (userRole !== 'analyst' && userRole !== 'admin') {
+      // Redirect or deny access to unauthorized users
+      redirectToHomePage()
+    }
+  }, [session, router])
 
   const [articles, setArticles] = useState<Analyst[]>([])
   const [formData, setFormData] = useState<AnalystFormData[]>([])
@@ -37,9 +49,9 @@ const AnalystPage = () => {
 
   const fetchArticles = async () => {
     // Check if session and accessToken are available
-    if (session && session.user && session.user.accessToken) {
+    if (session && (session.user as any) && (session.user as any).accessToken) {
       const url = `${API_ENDPOINT}submissions`
-      const token = session.user.accessToken
+      const token = (session.user as any).accessToken
 
       try {
         const response = await fetch(url, {
@@ -84,8 +96,8 @@ const AnalystPage = () => {
     const combinedData = { ...articles[index], ...formData[index] }
 
     // Check if session and accessToken are available
-    if (session && session.user && session.user.accessToken) {
-      const token = session.user.accessToken
+    if (session && (session.user as any) && (session.user as any).accessToken) {
+      const token = (session.user as any).accessToken
 
       try {
         const response = await fetch(`${API_ENDPOINT}analyst`, {

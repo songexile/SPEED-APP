@@ -4,27 +4,40 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import jwt_decode from 'jwt-decode'
+import { DecodedToken, User } from '../../types/index'
 
 const Moderator = () => {
   const { data: session } = useSession()
   const router = useRouter()
 
   useEffect(() => {
+    const redirectToHomePage = () => {
+      router.push('/')
+    }
+
     // Redirect authenticated (NON logged-in) users to another page
     if (!session) {
-      router.push('/')
-    } else {
-      if (session && session.user && session.user.accessToken) {
-        const token = session.user.accessToken
-        const decodedToken = jwt_decode(token)
-        const userRole = decodedToken.role
-        if (userRole !== 'moderator' && userRole !== 'admin') {
-          // Redirect or deny access to unauthorized users
-          router.push('/')
-        }
-      }
+      redirectToHomePage()
+      return
     }
-  }, [session])
+
+    const user: User | undefined = session?.user
+
+    // If the session.user object is not available or accessToken is missing
+    if (!user || !user.accessToken) {
+      redirectToHomePage()
+      return
+    }
+
+    const token = user.accessToken
+    const decodedToken: DecodedToken = jwt_decode(token)
+    const userRole = decodedToken.role
+
+    if (userRole !== 'moderator' && userRole !== 'admin') {
+      // Redirect or deny access to unauthorized users
+      redirectToHomePage()
+    }
+  }, [session, router])
 
   return (
     <main>
