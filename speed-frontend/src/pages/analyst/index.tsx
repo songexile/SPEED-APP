@@ -6,6 +6,8 @@ import { CustomReusableButton, FormComponent } from '@/components'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import jwt_decode from 'jwt-decode'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
 
@@ -129,14 +131,40 @@ const AnalystPage = () => {
               (article) => article._id !== articleToDelete._id
             )
             setArticles(updatedArticles)
-            alert('Submission deleted successfully.')
           } else {
-            alert('Error deleting the submission.')
+            toast.error('Error deleting the submission.', {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: 'dark',
+            })
           }
         }
-        alert('Success: ' + JSON.stringify(data))
+        toast.success('Success Adding Article', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        })
       } catch (error) {
-        alert('Error: ' + error)
+        toast.error('Error: ' + error, {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        })
       }
     }
   }
@@ -170,6 +198,18 @@ const AnalystPage = () => {
         </div>
         <div className="h-64 bg-base-100"></div>
         <Nav />
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
       </section>
     </main>
   )

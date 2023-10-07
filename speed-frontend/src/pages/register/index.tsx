@@ -39,9 +39,6 @@ const Register = () => {
         password: formData.password,
       }
 
-      // Log the payload
-      // console.log('Payload:', payload)
-
       const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || `http://localhost:3001/`
 
       const response = await fetch(`${apiEndpoint}auth/signup`, {
