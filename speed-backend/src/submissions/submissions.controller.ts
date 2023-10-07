@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { SubmissionsService } from './submissions.service';
 import { Submission } from './interfaces/submission.interface'; // Import the Submission interface
-import { JwtAuthGuard } from 'src/auth.guard';
+import { JwtAuthGuard } from '../auth.guard';
 
 @Controller('submissions')
 export class SubmissionsController {
