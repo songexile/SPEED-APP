@@ -56,3 +56,34 @@ export interface UserNextAuthTypes {
   refreshToken: string
   accessTokenExpires: number
 }
+
+export interface SearchResultData {
+  _id: string
+  title: string
+  authors: string
+  journal: string
+  year: number
+  volume: string
+  pages: string
+  doi: string
+}
+
+export interface Articles {
+  _id: string
+  title: string
+  authors: string
+  journal: string
+  year: number
+  volume: string
+  pages: string
+  doi: string
+}
+
+export interface CustomReusableButtonProps {
+  text: string;
+  className?: string;
+  onClick?: () => void;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  title?: string;
+}

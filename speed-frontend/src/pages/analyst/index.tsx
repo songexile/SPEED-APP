@@ -2,6 +2,7 @@ import Nav from '@/components/Nav'
 import { Meta } from '@/layouts/Meta'
 import { ChangeEvent, useState, useEffect } from 'react'
 import { Analyst } from '@/types'
+import { CustomReusableButton } from '@/components'
 
 interface FormData {
   claim?: string
@@ -113,9 +114,11 @@ const AnalystPage = () => {
           <h1 className="text-4xl font-bold text-center mt-8">Analyst Page</h1>
 
           {!showArticles ? (
-            <button onClick={() => setShowArticles(true)} className="btn btn-primary mt-4">
-              View all articles
-            </button>
+            <CustomReusableButton
+              text="View all articles"
+              className="btn btn-primary mt-4"
+              onClick={() => setShowArticles(true)}
+            />
           ) : (
             articles.map((article, index) => (
               <div className="mt-8 flex flex-col w-1/2 p-8 rounded-md border shadow-lg" key={index}>

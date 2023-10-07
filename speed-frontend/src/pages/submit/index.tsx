@@ -1,3 +1,4 @@
+import { CustomReusableButton } from '@/components'
 import Nav from '@/components/Nav'
 import { Meta } from '@/layouts/Meta'
 import { Errors, FormData } from '@/types'
@@ -206,10 +207,11 @@ const SubmitPage = () => {
               <div className="text-red-500 h-5">{errors.doi || ''}</div>
             </div>
           </div>
-
-          <button onClick={submitToDb} className="btn btn-primary mt-4">
-            Submit
-          </button>
+          <CustomReusableButton
+            text="Submit"
+            className="btn btn-primary mt-4 w-64"
+            onClick={submitToDb}
+          />
           {success && (
             <div>
               Congrats, it has been submitted. We look forward to reviewing your submission 😀.

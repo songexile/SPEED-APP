@@ -1,3 +1,4 @@
+import { CustomReusableButton } from '@/components'
 import { LoginProps } from '@/types'
 import { GetServerSideProps } from 'next'
 import { signIn, getCsrfToken, useSession } from 'next-auth/react'
@@ -84,9 +85,12 @@ const Login: React.FC<LoginProps> = ({ csrfToken }) => {
             />
           </div>
           <div>
-            <button type="submit" className="btn btn-block" disabled={isLoading}>
-              {isLoading ? 'Logging In...' : 'Login'}
-            </button>
+            <CustomReusableButton
+              text={isLoading ? 'Logging In...' : 'Login'}
+              type="submit"
+              className="btn btn-block"
+              disabled={isLoading}
+            />
           </div>
           {error && <div className="text-red-500">{error}</div>}
         </form>

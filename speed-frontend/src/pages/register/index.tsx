@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
+import { CustomReusableButton } from '@/components'
 
 const Register = () => {
   const router = useRouter()
@@ -119,9 +120,12 @@ const Register = () => {
             />
           </div>
           <div>
-            <button type="submit" className="btn btn-block" disabled={isLoading}>
-              {isLoading ? 'Registering...' : 'Register'}
-            </button>
+            <CustomReusableButton
+              text={isLoading ? 'Registering...' : 'Register'}
+              type="submit"
+              className="btn btn-block"
+              disabled={isLoading}
+            />
           </div>
           {error && <div className="text-red-500">{error}</div>}
         </form>
