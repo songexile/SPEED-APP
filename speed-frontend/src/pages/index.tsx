@@ -3,6 +3,7 @@ import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 
 import Nav from '@/components/Nav'
+import { CustomReusableButton } from '@/components'
 
 export default function Home() {
   const { data: session } = useSession()
@@ -20,16 +21,20 @@ export default function Home() {
           {/* Buttons */}
           <div className="flex flex-col mt-16 w-1/3 sm:w-1/6 space-y-4">
             {session ? (
-              <button className="btn btn-warning" onClick={() => signOut()}>
-                Sign Out ↪
-              </button>
+              <CustomReusableButton
+                text="Sign Out ↪"
+                className="btn btn-warning"
+                onClick={() => signOut()}
+              />
             ) : (
               <>
-                <button className="btn btn-primary" onClick={() => signIn()}>
-                  Login 🔍
-                </button>
+                <CustomReusableButton
+                  text="Login 🔍"
+                  className="btn btn-primary"
+                  onClick={() => signIn()}
+                />
                 <Link href="/register" className="btn btn-secondary md:text-[17px]">
-                  <button className="uppercase">Create an Account ⭐</button>
+                  <CustomReusableButton className="uppercase" text="Create an Account ⭐" />
                 </Link>
               </>
             )}

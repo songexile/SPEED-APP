@@ -78,3 +78,12 @@ export interface Articles {
   pages: string
   doi: string
 }
+
+export interface CustomReusableButtonProps {
+  text: string;
+  className?: string;
+  onClick?: () => void;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  title?: string;
+}

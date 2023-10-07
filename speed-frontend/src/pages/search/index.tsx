@@ -3,6 +3,7 @@ import Nav from '@/components/Nav'
 import SearchResultsTable from '@/components/SearchResultsTable'
 import { Meta } from '@/layouts/Meta'
 import { Articles } from '../../types/index'
+import { CustomReusableButton } from '@/components'
 
 const SearchPage: React.FC = () => {
   // Using the useState hook to initialize state
@@ -59,9 +60,11 @@ const SearchPage: React.FC = () => {
               placeholder="End Year"
               className="input input-bordered w-full max-w-xs"
             ></input>
-            <button className="btn btn-primary" onClick={handleSearch}>
-              Submit
-            </button>
+            <CustomReusableButton
+              text="Submit"
+              className="btn btn-primary"
+              onClick={handleSearch}
+            />
           </div>
           {data.length > 0 && <SearchResultsTable data={data} />}
         </div>
