@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Analyst } from './interfaces/analyst.interface';
@@ -17,6 +17,17 @@ export class AnalystService {
   async findAll(): Promise<Analyst[]> {
     const analysts = await this.analystModel.find().exec();
     return analysts as Analyst[]; // Explicitly specify the return type as Analyst[]
+  }
+
+  async deleteById(id: string): Promise<Analyst | null> {
+    const deletedSubmission = await this.analystModel
+      .findByIdAndDelete(id)
+      .exec();
+
+    if (!deletedSubmission) {
+      throw new NotFoundException('Analyst Article not found');
+    }
+    return deletedSubmission;
   }
 
   async findSubmissionsByYearRange(

@@ -9,8 +9,8 @@ const Sidebar = () => {
 
   const Menus = [
     { title: 'Dashboard', route: '/admin' },
-    { title: 'Accounts', route: '/accounts' },
-    { title: 'Articles', route: '/articles', gap: true },
+    { title: 'Accounts', route: '/admin/accounts' },
+    { title: 'Articles', route: '/admin/articles', gap: true },
     { title: 'Log Out', route: session ? null : '/logout' },
   ]
 

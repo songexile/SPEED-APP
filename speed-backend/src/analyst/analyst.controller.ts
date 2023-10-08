@@ -1,11 +1,12 @@
-import { Controller, Post, Body, Get, Query } from '@nestjs/common';
+import { Controller, Post, Body, Get, Query, Delete, UseGuards, Param } from '@nestjs/common';
 
 import { AnalystService } from './analyst.service';
 import { Analyst } from './interfaces/analyst.interface';
+import { JwtAuthGuard } from 'src/auth.guard';
 
 @Controller('analyst')
 export class AnalystController {
-  constructor(private readonly analystService: AnalystService) {}
+  constructor(private readonly analystService: AnalystService) { }
 
   @Post()
   async addAnalyst(@Body() analystServiceDta: any): Promise<any> {
@@ -30,5 +31,11 @@ export class AnalystController {
   async getAllAnalysts(): Promise<Analyst[]> {
     const analysts = await this.analystService.findAll();
     return analysts;
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  async deleteAnalystsByID(@Param('id') id: string) {
+    return this.analystService.deleteById(id);
   }
 }

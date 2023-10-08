@@ -1,13 +1,12 @@
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-
 import { CustomNavButtonsProps } from '@/types'
 
 const CustomNavButtons: React.FC<CustomNavButtonsProps> = ({ href, icon, label }) => {
   const router = useRouter()
 
-  // Check if the current route matches the 'href' prop to determine if the button is active
-  const isActive = router.pathname === href
+  // Check if the current route matches the 'href' prop exactly or starts with 'href/'
+  const isActive = router.pathname === href || router.pathname.startsWith(`${href}/`)
   const buttonClassName = isActive ? 'active bg-primary text-accent border-blue-600' : 'bg-primary'
 
   return (
