@@ -10,7 +10,7 @@ import { useRouter } from 'next/router'
 
 const Articles = () => {
   const { data: session } = useSession()
-  const router = useRouter() // Initialize the router here
+  const router = useRouter()
   const [submissionArticles, setSubmissionArticles] = useState<Analyst[]>([])
   const [analystArticles, setAnalystArticles] = useState<Analyst[]>([])
 
@@ -56,7 +56,6 @@ const Articles = () => {
         )
       } // Handle other cases (Moderator) later on
     } catch (error) {
-      // Handle errors, e.g., show an error message
       console.error('Error deleting article:', error)
     }
   }
@@ -134,7 +133,7 @@ const Articles = () => {
             {/* Sidebar */}
             <Sidebar />
             <div className="h-screen flex-1 p-7">
-              <h1 className="text-2xl font-semibold">Articles List Below</h1>
+              <h1 className="text-2xl font-semibold mb-12">Articles List Below</h1>
 
               <h2 className="text-lg font-semibold">Analyst Articles</h2>
               <SearchResultsTable
