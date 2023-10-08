@@ -99,3 +99,9 @@ export interface DecodedToken {
   role: string;
   username: string;
 }
+
+export enum DeleteSource {
+  Submissions = 'submissions',
+  Analyst = 'analyst',
+  Moderator = 'moderator',
+}

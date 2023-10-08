@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react'
 import Nav from '@/components/Nav'
 import SearchResultsTable from '@/components/SearchResultsTable'
 import { Meta } from '@/layouts/Meta'
-import { ArticleProps, DecodedToken } from '@/types/index'
+import { ArticleProps, DeleteSource } from '@/types/index'
 import { CustomReusableButton } from '@/components'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
-import jwt_decode from 'jwt-decode'
 import { User } from 'next-auth'
 
 const SearchPage: React.FC = () => {
@@ -105,33 +104,36 @@ const SearchPage: React.FC = () => {
   }
 
   // HandleDelete function to delete articles
-  const handleDelete = async (articleId: string) => {
+  const handleDelete = async (articleId: string, source: DeleteSource) => {
     const user: User | any = session?.user
 
-    // Get User Role
+    // Get User Token
     const token = user.accessToken
-    const decodedToken: DecodedToken = jwt_decode(token)
-    const userRole = decodedToken.role
 
     try {
-      // Send a DELETE request to the appropriate endpoint based on the article type
-      const response = await fetch(
-        `${API_ENDPOINT}${userRole === 'admin' ? 'submissions' : 'analyst'}/${articleId}`,
-        {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      )
+      // Determine the endpoint based on the source
+      const endpoint =
+        source === DeleteSource.Submissions
+          ? DeleteSource.Submissions
+          : source === DeleteSource.Analyst
+          ? DeleteSource.Analyst
+          : DeleteSource.Moderator
+
+      // Send a DELETE request to the appropriate endpoint
+      const response = await fetch(`${API_ENDPOINT}${endpoint}/${articleId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
       // Remove the deleted article from the state
-      if (userRole === 'admin') {
+      if (source === DeleteSource.Analyst) {
         setData((prevArticles) => prevArticles.filter((article) => article._id !== articleId))
       }
     } catch (error) {
@@ -185,7 +187,14 @@ const SearchPage: React.FC = () => {
               <p>Loading...</p>
             </div>
           ) : (
-            <>{data.length > 0 && <SearchResultsTable data={data} onDelete={handleDelete} />}</>
+            <>
+              {data.length > 0 && (
+                <SearchResultsTable
+                  data={data}
+                  onDelete={(articleId) => handleDelete(articleId, DeleteSource.Analyst)}
+                />
+              )}
+            </>
           )}
         </div>
         <div className="mt-20">
