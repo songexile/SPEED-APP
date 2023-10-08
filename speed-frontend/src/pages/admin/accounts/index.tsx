@@ -7,6 +7,7 @@ import jwt_decode from 'jwt-decode'
 import { DecodedToken, User, Account } from '@/types/index'
 import Sidebar from '@/components/Dashboard/Sidebar'
 import UserTable from '@/components/Dashboard/UserTable'
+import { toast } from 'react-toastify'
 
 const Accounts = () => {
   const { data: session } = useSession()
@@ -49,13 +50,40 @@ const Accounts = () => {
             prevAccounts.filter((account) => account._id !== userId)
           )
         } else {
-          console.error('Error deleting user:', response.statusText)
+          toast.error('Error deleting user: ' + response.statusText, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'dark',
+          })
         }
       } catch (error) {
-        console.error('Error deleting user:', error)
+        toast.error('Error deleting user: ' + error, {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        })
       }
     } else {
-      console.error(`${API_ENDPOINT}auth/${userId} Unauthorized access to delete user`)
+      toast.error('Unauthorized access to delete user', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
     }
   }
 
@@ -66,6 +94,16 @@ const Accounts = () => {
 
     if (!session) {
       // Redirect authenticated (NON logged-in) users to another page
+      toast.error('You need to log in to access this page!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
       redirectToHomePage()
       return
     }
@@ -104,7 +142,16 @@ const Accounts = () => {
           setUserAccounts(userAccountsData) // Update the state with fetched accounts
         }
       } catch (error) {
-        console.error('Error fetching user accounts:', error)
+        toast.error('Error fetching user accounts: ' + error, {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        })
       }
     }
 

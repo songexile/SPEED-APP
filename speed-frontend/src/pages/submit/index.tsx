@@ -3,6 +3,7 @@ import Nav from '@/components/Nav'
 import { Meta } from '@/layouts/Meta'
 import { Errors, FormData } from '@/types'
 import { ChangeEvent, useState } from 'react'
+import { toast } from 'react-toastify'
 
 const SubmitPage = () => {
   const [formData, setFormData] = useState<FormData>({
@@ -84,12 +85,29 @@ const SubmitPage = () => {
           setSuccess(true)
           setFailure(false)
         } else {
-          // Handle the case where the API request fails
-          console.error('API request failed')
+          toast.error('API request failed', {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'dark',
+          })
         }
       })
       .catch((error) => {
-        console.error('An error occurred while making the API request', error)
+        toast.error('An error occurred while making the API request: ' + error, {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        })
       })
   }
 

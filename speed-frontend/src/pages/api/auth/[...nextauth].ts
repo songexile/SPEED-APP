@@ -19,7 +19,6 @@ export default NextAuth({
           };
 
           const apiUrl = process.env.NEXT_PUBLIC_API_ENDPOINT_URI;
-          // console.log(`${apiUrl}auth/login`);
 
           try {
             const res = await fetch(`${apiUrl}auth/login`, {

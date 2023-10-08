@@ -7,6 +7,7 @@ import { CustomReusableButton } from '@/components'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 import { User } from 'next-auth'
+import { toast } from 'react-toastify'
 
 const SearchPage: React.FC = () => {
   const [data, setData] = useState<ArticleProps[]>([])
@@ -88,10 +89,28 @@ const SearchPage: React.FC = () => {
           window.history.pushState({}, '', newUrl)
         }
       } else {
-        console.error('Failed to fetch data from the server.')
+        toast.error('Failed to fetch data from the server.', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        })
       }
     } catch (error) {
-      console.error('An error occurred:', error)
+      toast.error('An error occurred: ' + error, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
     } finally {
       setTimeout(() => {
         setLoading(false)
@@ -137,8 +156,16 @@ const SearchPage: React.FC = () => {
         setData((prevArticles) => prevArticles.filter((article) => article._id !== articleId))
       }
     } catch (error) {
-      // Handle errors, e.g., show an error message
-      console.error('Error deleting article:', error)
+      toast.error('Error deleting article: ' + error, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
     }
   }
 

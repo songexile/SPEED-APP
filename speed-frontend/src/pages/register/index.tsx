@@ -2,6 +2,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { CustomReusableButton } from '@/components'
+import { toast } from 'react-toastify'
 
 const Register = () => {
   const router = useRouter()
@@ -56,6 +57,16 @@ const Register = () => {
       }
 
       // Registration was successful
+      toast.success('Registration was successful', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
       router.push('/')
     } catch (error: any) {
       setError(error.message || 'Registration failed. Please check your input.')

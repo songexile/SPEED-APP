@@ -20,7 +20,12 @@ const UserTable: React.FC<UserTableProps> = ({ users, onDelete, userRole }) => {
               <td>{user.role}</td>
               {userRole === 'admin' && (
                 <td>
-                  <button onClick={() => onDelete && onDelete(user._id)}>Delete</button>
+                  <button
+                    onClick={() => onDelete && onDelete(user._id)}
+                    className="text-red-500 hover:underline cursor-pointer"
+                  >
+                    Delete
+                  </button>
                 </td>
               )}
             </tr>

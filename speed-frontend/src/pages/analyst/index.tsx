@@ -6,8 +6,7 @@ import { CustomReusableButton, FormComponent } from '@/components'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import jwt_decode from 'jwt-decode'
-import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import { toast } from 'react-toastify'
 
 const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
 
@@ -22,6 +21,16 @@ const AnalystPage = () => {
 
     // Redirect authenticated (NON logged-in) users to another page
     if (!session) {
+      toast.error('You need to log in to access this page!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
       redirectToHomePage()
       return
     }
@@ -75,7 +84,16 @@ const AnalystPage = () => {
         setButtonDisabled(initialFormData.map(() => true))
         setShowArticles(true)
       } catch (error) {
-        console.error('An error occurred while fetching the data: ', error)
+        toast.error('An error occurred while fetching the data: ' + error, {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        })
       }
     }
   }
@@ -197,18 +215,6 @@ const AnalystPage = () => {
         </div>
         <div className="h-64 bg-base-100"></div>
         <Nav />
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="dark"
-        />
       </section>
     </main>
   )

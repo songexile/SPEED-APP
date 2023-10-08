@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import jwt_decode from 'jwt-decode'
 import { DecodedToken, User } from '@/types/index'
 import Sidebar from '@/components/Dashboard/Sidebar'
+import { toast } from 'react-toastify'
 
 const Admin = () => {
   const { data: session } = useSession()
@@ -19,6 +20,16 @@ const Admin = () => {
 
     // Redirect authenticated (NON logged-in) users to another page
     if (!session) {
+      toast.error('You need to log in to access this page!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
       redirectToHomePage()
       return
     }

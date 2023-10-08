@@ -7,6 +7,7 @@ import { Analyst, DecodedToken, DeleteSource, User } from '@/types/index'
 import Sidebar from '@/components/Dashboard/Sidebar'
 import SearchResultsTable from '@/components/SearchResultsTable'
 import { useRouter } from 'next/router'
+import { toast } from 'react-toastify'
 
 const Articles = () => {
   const { data: session } = useSession()
@@ -56,7 +57,16 @@ const Articles = () => {
         )
       } // Handle other cases (Moderator) later on
     } catch (error) {
-      console.error('Error deleting article:', error)
+      toast.error('Error deleting article: ' + error, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
     }
   }
 
@@ -67,6 +77,16 @@ const Articles = () => {
 
     // Redirect authenticated (NON logged-in) users to another page
     if (!session) {
+      toast.error('You need to log in to access this page!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
       redirectToHomePage()
       return
     }
@@ -91,32 +111,62 @@ const Articles = () => {
 
     // Fetch Submission Articles for all users
     const fetchSubmissionArticles = async () => {
-      const submissionResponse = await fetch(`${API_ENDPOINT}submissions`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      })
+      try {
+        const submissionResponse = await fetch(`${API_ENDPOINT}submissions`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        })
 
-      if (submissionResponse.ok) {
+        if (!submissionResponse.ok) {
+          throw new Error(`Failed to fetch submission articles: ${submissionResponse.statusText}`)
+        }
+
         const submissionData = await submissionResponse.json()
         setSubmissionArticles(submissionData)
+      } catch (error: any) {
+        toast.error(`Fetch error for submission articles: ${error.message}`, {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        })
       }
     }
 
     // Fetch Analyst Articles for all users
     const fetchAnalystArticles = async () => {
-      const analystResponse = await fetch(`${API_ENDPOINT}analyst`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      try {
+        const analystResponse = await fetch(`${API_ENDPOINT}analyst`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
 
-      if (analystResponse.ok) {
+        if (!analystResponse.ok) {
+          throw new Error(`Failed to fetch analyst articles: ${analystResponse.statusText}`)
+        }
+
         const analystData = await analystResponse.json()
         setAnalystArticles(analystData)
+      } catch (error: any) {
+        toast.error(`Fetch error for analyst articles: ${error.message}`, {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        })
       }
     }
 
