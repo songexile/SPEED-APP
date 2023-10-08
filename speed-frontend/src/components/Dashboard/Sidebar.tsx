@@ -43,7 +43,8 @@ const Sidebar = () => {
               onClick={() => {
                 // Handle sign-out or navigation
                 if (Menu.route === null) {
-                  signOut() // Sign out when "Log Out" is clicked
+                  router.push('/')
+                  signOut()
                 } else {
                   router.push(Menu.route)
                 }
