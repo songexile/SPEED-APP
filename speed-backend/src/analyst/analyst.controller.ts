@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get, Query, Delete, UseGuards, Param } from '@n
 
 import { AnalystService } from './analyst.service';
 import { Analyst } from './interfaces/analyst.interface';
-import { JwtAuthGuard } from 'src/auth.guard';
+import { JwtAuthGuard } from '../auth.guard';
 
 @Controller('analyst')
 export class AnalystController {

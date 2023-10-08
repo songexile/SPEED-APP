@@ -2,7 +2,7 @@ import { BadRequestException, Body, Controller, Delete, Get, Param, Post, UseGua
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { SignUpDto } from './dto/signup.dto';
-import { JwtAuthGuard } from 'src/auth.guard';
+import { JwtAuthGuard } from '../auth.guard';
 import { User } from './schemas/user.schema';
 
 @Controller('auth')
