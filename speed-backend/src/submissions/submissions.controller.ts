@@ -41,7 +41,7 @@ export class SubmissionsController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async deleteSubmission(@Param('id') id: string) {
-    console.log('Trying to delete submission with ID:', id);
+    // console.log('Trying to delete submission with ID:', id);
     return this.submissionsService.deleteById(id);
   }
 }
