@@ -118,3 +118,9 @@ export interface UserTableProps {
   onDelete?: (id: string) => void
   userRole: string;
 }
+
+export interface CardProps {
+  title: string;
+  count: number;
+  icon: React.ReactNode;
+}

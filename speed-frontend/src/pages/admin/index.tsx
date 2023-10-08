@@ -7,6 +7,7 @@ import jwt_decode from 'jwt-decode'
 import { DecodedToken, User } from '@/types/index'
 import Sidebar from '@/components/Dashboard/Sidebar'
 import { toast } from 'react-toastify'
+import CardComponent from '@/components/Dashboard/CardComponent'
 
 const Admin = () => {
   const { data: session } = useSession()
@@ -66,8 +67,99 @@ const Admin = () => {
           <div className="flex">
             {/* Sidebar */}
             <Sidebar />
-            <div className="h-screen flex-1 p-7">
-              <h1 className="text-2xl font-semibold ">{`Welcome Back, ${userName}`}</h1>
+            <div className="h-fit flex-1 p-7 mb-52">
+              <h1 className="text-2xl font-semibold mb-12">{`Welcome Back, ${userName}`}</h1>
+
+              {/* Content */}
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+                <CardComponent
+                  title="Total Submission Articles"
+                  count={1000}
+                  icon={
+                    // https://iconsvg.xyz/
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="35"
+                      height="35"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#7be63e"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
+                      <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
+                    </svg>
+                  }
+                />
+
+                <CardComponent
+                  title="Total Moderator Articles"
+                  count={1000}
+                  icon={
+                    // https://iconsvg.xyz/
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="35"
+                      height="35"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#7be63e"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
+                      <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
+                    </svg>
+                  }
+                />
+
+                <CardComponent
+                  title="Total Analyst Articles"
+                  count={1000}
+                  icon={
+                    // https://iconsvg.xyz/
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="35"
+                      height="35"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#7be63e"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
+                      <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
+                    </svg>
+                  }
+                />
+
+                <CardComponent
+                  title="Total Accounts"
+                  count={5}
+                  icon={
+                    // https://iconsvg.xyz/
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="35"
+                      height="35"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#7be63e"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
+                      <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
+                    </svg>
+                  }
+                />
+              </div>
             </div>
           </div>
           <Nav />
