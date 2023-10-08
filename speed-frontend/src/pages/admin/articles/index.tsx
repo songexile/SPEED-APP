@@ -3,7 +3,7 @@ import { Meta } from '@/layouts/Meta'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import jwt_decode from 'jwt-decode'
-import { Analyst, DecodedToken, User } from '@/types/index'
+import { Analyst, DecodedToken, DeleteSource, User } from '@/types/index'
 import Sidebar from '@/components/Dashboard/Sidebar'
 import SearchResultsTable from '@/components/SearchResultsTable'
 import { useRouter } from 'next/router'
@@ -17,41 +17,44 @@ const Articles = () => {
   const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
 
   // HandleDelete function to delete articles
-  const handleDelete = async (articleId: string) => {
+  const handleDelete = async (articleId: string, source: DeleteSource) => {
     const user: User | any = session?.user
 
-    // Get User Role
+    // Get User Token
     const token = user.accessToken
-    const decodedToken: DecodedToken = jwt_decode(token)
-    const userRole = decodedToken.role
 
     try {
-      // Send a DELETE request to the appropriate endpoint based on the article type
-      const response = await fetch(
-        `${API_ENDPOINT}${userRole === 'admin' ? 'submissions' : 'analyst'}/${articleId}`,
-        {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      )
+      // Determine the endpoint based on the source
+      const endpoint =
+        source === DeleteSource.Submissions
+          ? DeleteSource.Submissions
+          : source === DeleteSource.Analyst
+          ? DeleteSource.Analyst
+          : DeleteSource.Moderator
+
+      // Send a DELETE request to the appropriate endpoint
+      const response = await fetch(`${API_ENDPOINT}${endpoint}/${articleId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
       // Remove the deleted article from the state
-      if (userRole === 'admin') {
+      if (source === DeleteSource.Submissions) {
         setSubmissionArticles((prevArticles) =>
           prevArticles.filter((article) => article._id !== articleId)
         )
-      } else {
+      } else if (source === DeleteSource.Analyst) {
         setAnalystArticles((prevArticles) =>
           prevArticles.filter((article) => article._id !== articleId)
         )
-      }
+      } // Handle other cases (Moderator) later on
     } catch (error) {
       // Handle errors, e.g., show an error message
       console.error('Error deleting article:', error)
@@ -134,10 +137,16 @@ const Articles = () => {
               <h1 className="text-2xl font-semibold">Articles List Below</h1>
 
               <h2 className="text-lg font-semibold">Analyst Articles</h2>
-              <SearchResultsTable data={analystArticles} onDelete={handleDelete} />
+              <SearchResultsTable
+                data={analystArticles}
+                onDelete={(articleId) => handleDelete(articleId, DeleteSource.Analyst)}
+              />
 
               <h2 className="text-lg font-semibold mt-20">Submission Articles</h2>
-              <SearchResultsTable data={submissionArticles} onDelete={handleDelete} />
+              <SearchResultsTable
+                data={submissionArticles}
+                onDelete={(articleId) => handleDelete(articleId, DeleteSource.Submissions)}
+              />
             </div>
           </div>
           <Nav />
