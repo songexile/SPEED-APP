@@ -105,3 +105,16 @@ export enum DeleteSource {
   Analyst = 'analyst',
   Moderator = 'moderator',
 }
+
+export interface Account {
+  _id: string;
+  username: string;
+  email: string;
+  role: string;
+}
+
+export interface UserTableProps {
+  users: Account[]
+  onDelete?: (id: string) => void
+  userRole: string;
+}
