@@ -13,6 +13,7 @@ const Accounts = () => {
   const { data: session } = useSession()
   const router = useRouter()
   const [userAccounts, setUserAccounts] = useState<Account[]>([])
+  const [calledPush, setCalledPush] = useState(false)
 
   const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
 
@@ -89,22 +90,29 @@ const Accounts = () => {
 
   useEffect(() => {
     const redirectToHomePage = () => {
+      // check if we have previously called router.push() before redirecting
+      if (calledPush) {
+        return // no need to call router.push() again
+      }
       router.push('/')
+      setCalledPush(true)
     }
 
+    // Redirect authenticated (NON logged-in) users to another page
     if (!session) {
-      // Redirect authenticated (NON logged-in) users to another page
-      toast.error('You need to log in to access this page!', {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'dark',
-      })
-      redirectToHomePage()
+      if (!calledPush) {
+        toast.error('You need to log in to access this page!', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        })
+        redirectToHomePage()
+      }
       return
     }
 
