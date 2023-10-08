@@ -1,13 +1,29 @@
 import React, { useState } from 'react'
-import { SearchResultData } from '../types/index'
+import { DecodedToken, SearchResultData } from '../types/index'
+import { useSession } from 'next-auth/react'
+import jwt_decode from 'jwt-decode'
+import { User } from 'next-auth'
 
 interface SearchResultsTableProps {
   data: SearchResultData[]
+  onDelete?: (id: string) => void
 }
 
-const SearchResultsTable: React.FC<SearchResultsTableProps> = ({ data }) => {
+const SearchResultsTable: React.FC<SearchResultsTableProps> = ({ data, onDelete }) => {
   const [sortColumn, setSortColumn] = useState<string | null>(null)
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+
+  const { data: session } = useSession()
+
+  const user: User | any = session?.user
+
+  // Get User Role
+  let userRole = ''
+  if (user?.accessToken) {
+    const token = user.accessToken
+    const decodedToken: DecodedToken = jwt_decode(token)
+    userRole = decodedToken.role
+  }
 
   const handleSort = (column: string) => {
     if (sortColumn === column) {
@@ -39,15 +55,24 @@ const SearchResultsTable: React.FC<SearchResultsTableProps> = ({ data }) => {
       <table className="table">
         <thead>
           <tr>
-          <th onClick={() => handleSort('title')}>Title {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
-            <th onClick={() => handleSort('authors')}>Authors {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
-            <th onClick={() => handleSort('journal')}>Journal {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
+            <th onClick={() => handleSort('title')}>Title {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
+            <th onClick={() => handleSort('authors')}>
+              Authors {sortOrder === 'asc' ? ' ▲' : ' ▼'}
+            </th>
+            <th onClick={() => handleSort('journal')}>
+              Journal {sortOrder === 'asc' ? ' ▲' : ' ▼'}
+            </th>
             <th onClick={() => handleSort('year')}>Year {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
             <th onClick={() => handleSort('volume')}>Volume {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
-            <th onClick={() => handleSort('pages')}>Number of Pages {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
+            <th onClick={() => handleSort('pages')}>
+              Number of Pages {sortOrder === 'asc' ? ' ▲' : ' ▼'}
+            </th>
             <th onClick={() => handleSort('doi')}>Doi {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
             <th onClick={() => handleSort('claim')}>Claim {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
-            <th onClick={() => handleSort('method')}>SE Method {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
+            <th onClick={() => handleSort('method')}>
+              SE Method {sortOrder === 'asc' ? ' ▲' : ' ▼'}
+            </th>
+            {userRole === 'admin' && <th>Actions</th>}
           </tr>
         </thead>
         <tbody>
@@ -62,6 +87,16 @@ const SearchResultsTable: React.FC<SearchResultsTableProps> = ({ data }) => {
               <td>{result.doi}</td>
               <td>{result.claim}</td>
               <td>{result.method}</td>
+              {userRole === 'admin' && (
+                <td>
+                  <button
+                    onClick={() => onDelete && onDelete(result._id)}
+                    className="text-red-500 hover:underline cursor-pointer"
+                  >
+                    Delete
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
