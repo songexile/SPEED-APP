@@ -2,7 +2,7 @@ import Nav from '@/components/Nav'
 import { Meta } from '@/layouts/Meta'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import jwt_decode from 'jwt-decode'
 import { DecodedToken, User } from '@/types/index'
 import Sidebar from '@/components/Dashboard/Sidebar'
@@ -10,7 +10,6 @@ import Sidebar from '@/components/Dashboard/Sidebar'
 const Accounts = () => {
   const { data: session } = useSession()
   const router = useRouter()
-  const [userName, setUserName] = useState('')
 
   useEffect(() => {
     const redirectToHomePage = () => {
@@ -35,11 +34,6 @@ const Accounts = () => {
     const token = user.accessToken
     const decodedToken: DecodedToken = jwt_decode(token)
     const userRole = decodedToken.role
-
-    // Get Admin Username
-    const userName = decodedToken.username
-    const capitalized = userName.charAt(0).toUpperCase() + userName.slice(1)
-    setUserName(capitalized)
 
     if (userRole !== 'admin') {
       // Redirect or deny access to unauthorized users

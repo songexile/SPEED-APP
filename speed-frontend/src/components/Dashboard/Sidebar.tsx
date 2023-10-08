@@ -5,7 +5,7 @@ import { useState } from 'react'
 const Sidebar = () => {
   const { data: session } = useSession()
   const router = useRouter()
-  const [open, setOpen] = useState(true)
+  const [open] = useState(true)
 
   const Menus = [
     { title: 'Dashboard', route: '/admin' },

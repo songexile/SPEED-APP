@@ -2,15 +2,22 @@ import React, { useEffect, useState } from 'react'
 import Nav from '@/components/Nav'
 import SearchResultsTable from '@/components/SearchResultsTable'
 import { Meta } from '@/layouts/Meta'
-import { ArticleProps } from '../../types/index'
+import { ArticleProps, DecodedToken } from '@/types/index'
 import { CustomReusableButton } from '@/components'
 import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
+import jwt_decode from 'jwt-decode'
+import { User } from 'next-auth'
 
 const SearchPage: React.FC = () => {
   const [data, setData] = useState<ArticleProps[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+
+  const { data: session } = useSession()
   const router = useRouter()
+
+  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || `http://localhost:3001/`
 
   useEffect(() => {
     const { startYear, endYear } = router.query
@@ -29,13 +36,12 @@ const SearchPage: React.FC = () => {
   const fetchData = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || `http://localhost:3001/`
     const startYear = (document.getElementById('startYear') as HTMLInputElement)?.value
     const endYear = (document.getElementById('endYear') as HTMLInputElement)?.value
 
     const isNumeric = (value: any) => !isNaN(value) && isFinite(value)
 
-    let url = `${apiEndpoint}analyst`
+    let url = `${API_ENDPOINT}analyst`
 
     // This if statement
     // Will run if the user input only one field
@@ -45,7 +51,7 @@ const SearchPage: React.FC = () => {
         setError('Start year cannot be greater than end year.')
         return
       }
-      url = `${apiEndpoint}analyst/by-year-range?startYear=${startYear}&endYear=${endYear}`
+      url = `${API_ENDPOINT}analyst/by-year-range?startYear=${startYear}&endYear=${endYear}`
     } else if (startYear || endYear) {
       // Display an error message if either startYear or endYear is not numeric
       setError(
@@ -98,6 +104,42 @@ const SearchPage: React.FC = () => {
     fetchData(e)
   }
 
+  // HandleDelete function to delete articles
+  const handleDelete = async (articleId: string) => {
+    const user: User | any = session?.user
+
+    // Get User Role
+    const token = user.accessToken
+    const decodedToken: DecodedToken = jwt_decode(token)
+    const userRole = decodedToken.role
+
+    try {
+      // Send a DELETE request to the appropriate endpoint based on the article type
+      const response = await fetch(
+        `${API_ENDPOINT}${userRole === 'admin' ? 'submissions' : 'analyst'}/${articleId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      // Remove the deleted article from the state
+      if (userRole === 'admin') {
+        setData((prevArticles) => prevArticles.filter((article) => article._id !== articleId))
+      }
+    } catch (error) {
+      // Handle errors, e.g., show an error message
+      console.error('Error deleting article:', error)
+    }
+  }
+
   return (
     <main>
       <section>
@@ -143,7 +185,7 @@ const SearchPage: React.FC = () => {
               <p>Loading...</p>
             </div>
           ) : (
-            <>{data.length > 0 && <SearchResultsTable data={data} />}</>
+            <>{data.length > 0 && <SearchResultsTable data={data} onDelete={handleDelete} />}</>
           )}
         </div>
         <div className="mt-20">

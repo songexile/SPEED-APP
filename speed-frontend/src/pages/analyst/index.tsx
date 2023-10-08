@@ -115,7 +115,6 @@ const AnalystPage = () => {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
 
-        const data = await response.json()
         const articleToDelete = articles[index]
         if (articleToDelete && articleToDelete._id) {
           const deleteResponse = await fetch(`${API_ENDPOINT}submissions/${articleToDelete._id}`, {

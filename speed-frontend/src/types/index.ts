@@ -18,7 +18,7 @@ export type FormData = {
   title: string
   authors: string
   journal: string
-  year: string
+  year: number | any
   volume: string
   pages: string
   doi: string
@@ -26,8 +26,8 @@ export type FormData = {
 
 export interface Analyst extends FormData {
   _id: any
-  claim?: string
-  method?: string
+  claim: string
+  method: string
   agreeDisagree?: string
 }
 
