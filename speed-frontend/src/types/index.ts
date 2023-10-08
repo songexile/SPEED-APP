@@ -18,7 +18,7 @@ export type FormData = {
   title: string
   authors: string
   journal: string
-  year: string
+  year: number | any
   volume: string
   pages: string
   doi: string
@@ -26,8 +26,8 @@ export type FormData = {
 
 export interface Analyst extends FormData {
   _id: any
-  claim?: string
-  method?: string
+  claim: string
+  method: string
   agreeDisagree?: string
 }
 
@@ -97,4 +97,30 @@ export interface User {
 
 export interface DecodedToken {
   role: string;
+  username: string;
+}
+
+export enum DeleteSource {
+  Submissions = 'submissions',
+  Analyst = 'analyst',
+  Moderator = 'moderator',
+}
+
+export interface Account {
+  _id: string;
+  username: string;
+  email: string;
+  role: string;
+}
+
+export interface UserTableProps {
+  users: Account[]
+  onDelete?: (id: string) => void
+  userRole: string;
+}
+
+export interface CardProps {
+  title: string;
+  count: number;
+  icon: React.ReactNode;
 }

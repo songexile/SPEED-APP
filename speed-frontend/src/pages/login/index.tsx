@@ -4,6 +4,7 @@ import { GetServerSideProps } from 'next'
 import { signIn, getCsrfToken, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { SyntheticEvent, useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
 const Login: React.FC<LoginProps> = ({ csrfToken }) => {
   const router = useRouter()
@@ -41,6 +42,16 @@ const Login: React.FC<LoginProps> = ({ csrfToken }) => {
 
       if (result && !result.error) {
         // Authentication succeeded, and the user is redirected to the callbackUrl
+        toast.success('Logged In Successfully', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        })
         router.push(result.url || '/')
       } else if (result && result.error) {
         setError('Incorrect email or password.')

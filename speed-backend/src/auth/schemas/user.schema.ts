@@ -14,7 +14,7 @@ export class User extends Document {
     @Prop()
     password: string;
 
-    @Prop({ default: 'submitter', enum: ['submitter', 'moderator', 'analyst', 'administrator'] })
+    @Prop({ default: 'submitter', enum: ['submitter', 'moderator', 'analyst', 'admin'] })
     role: string;
 }
 

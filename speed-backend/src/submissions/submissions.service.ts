@@ -37,16 +37,4 @@ export class SubmissionsService {
     }
     return deletedSubmission;
   }
-
-  async findSubmissionsByYearRange(
-    startYear: number,
-    endYear: number,
-  ): Promise<Submission[]> {
-    const submissions = await this.submissionModel
-      .find({
-        year: { $gte: startYear, $lte: endYear },
-      })
-      .exec();
-    return submissions as Submission[]; // Explicitly specify the return type as Submission[]
-  }
 }

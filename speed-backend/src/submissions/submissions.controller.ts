@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { SubmissionsService } from './submissions.service';
-import { Submission } from './interfaces/submission.interface'; // Import the Submission interface
+import { Submission } from './interfaces/submission.interface';
 import { JwtAuthGuard } from '../auth.guard';
 
 @Controller('submissions')
@@ -41,7 +41,6 @@ export class SubmissionsController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async deleteSubmission(@Param('id') id: string) {
-    console.log('Trying to delete submission with ID:', id);
     return this.submissionsService.deleteById(id);
   }
 }

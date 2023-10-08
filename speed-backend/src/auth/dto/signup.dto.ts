@@ -4,7 +4,7 @@ export enum UserRole {
     SUBMITTER = 'submitter',
     MODERATOR = 'moderator',
     ANALYST = 'analyst',
-    ADMINISTRATOR = 'administrator',
+    ADMIN = 'admin',
 }
 
 export class SignUpDto {

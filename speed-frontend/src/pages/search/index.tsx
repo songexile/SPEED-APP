@@ -2,15 +2,22 @@ import React, { useEffect, useState } from 'react'
 import Nav from '@/components/Nav'
 import SearchResultsTable from '@/components/SearchResultsTable'
 import { Meta } from '@/layouts/Meta'
-import { ArticleProps } from '../../types/index'
+import { ArticleProps, DeleteSource } from '@/types/index'
 import { CustomReusableButton } from '@/components'
 import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
+import { User } from 'next-auth'
+import { toast } from 'react-toastify'
 
 const SearchPage: React.FC = () => {
   const [data, setData] = useState<ArticleProps[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+
+  const { data: session } = useSession()
   const router = useRouter()
+
+  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || `http://localhost:3001/`
 
   useEffect(() => {
     const { startYear, endYear } = router.query
@@ -29,13 +36,12 @@ const SearchPage: React.FC = () => {
   const fetchData = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || `http://localhost:3001/`
     const startYear = (document.getElementById('startYear') as HTMLInputElement)?.value
     const endYear = (document.getElementById('endYear') as HTMLInputElement)?.value
 
     const isNumeric = (value: any) => !isNaN(value) && isFinite(value)
 
-    let url = `${apiEndpoint}analyst`
+    let url = `${API_ENDPOINT}analyst`
 
     // This if statement
     // Will run if the user input only one field
@@ -45,7 +51,7 @@ const SearchPage: React.FC = () => {
         setError('Start year cannot be greater than end year.')
         return
       }
-      url = `${apiEndpoint}analyst/by-year-range?startYear=${startYear}&endYear=${endYear}`
+      url = `${API_ENDPOINT}analyst/by-year-range?startYear=${startYear}&endYear=${endYear}`
     } else if (startYear || endYear) {
       // Display an error message if either startYear or endYear is not numeric
       setError(
@@ -83,10 +89,28 @@ const SearchPage: React.FC = () => {
           window.history.pushState({}, '', newUrl)
         }
       } else {
-        console.error('Failed to fetch data from the server.')
+        toast.error('Failed to fetch data from the server.', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        })
       }
     } catch (error) {
-      console.error('An error occurred:', error)
+      toast.error('An error occurred: ' + error, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
     } finally {
       setTimeout(() => {
         setLoading(false)
@@ -96,6 +120,53 @@ const SearchPage: React.FC = () => {
 
   const handleSearchClick = (e: React.FormEvent<HTMLFormElement>) => {
     fetchData(e)
+  }
+
+  // HandleDelete function to delete articles
+  const handleDelete = async (articleId: string, source: DeleteSource) => {
+    const user: User | any = session?.user
+
+    // Get User Token
+    const token = user.accessToken
+
+    try {
+      // Determine the endpoint based on the source
+      const endpoint =
+        source === DeleteSource.Submissions
+          ? DeleteSource.Submissions
+          : source === DeleteSource.Analyst
+          ? DeleteSource.Analyst
+          : DeleteSource.Moderator
+
+      // Send a DELETE request to the appropriate endpoint
+      const response = await fetch(`${API_ENDPOINT}${endpoint}/${articleId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      // Remove the deleted article from the state
+      if (source === DeleteSource.Analyst) {
+        setData((prevArticles) => prevArticles.filter((article) => article._id !== articleId))
+      }
+    } catch (error) {
+      toast.error('Error deleting article: ' + error, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
+    }
   }
 
   return (
@@ -143,7 +214,14 @@ const SearchPage: React.FC = () => {
               <p>Loading...</p>
             </div>
           ) : (
-            <>{data.length > 0 && <SearchResultsTable data={data} />}</>
+            <>
+              {data.length > 0 && (
+                <SearchResultsTable
+                  data={data}
+                  onDelete={(articleId) => handleDelete(articleId, DeleteSource.Analyst)}
+                />
+              )}
+            </>
           )}
         </div>
         <div className="mt-20">
