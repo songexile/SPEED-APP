@@ -8,4 +8,8 @@ async function bootstrap() {
   app.enableCors();
   await app.listen(process.env.PORT, () => console.log(`\nApp listen at http://localhost:${process.env.PORT}/`));
 }
-bootstrap();
+
+// Handle the promise returned by bootstrap()
+bootstrap().catch((err) => {
+  console.error(err);
+});
