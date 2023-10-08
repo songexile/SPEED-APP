@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './schemas/user.schema';
@@ -14,7 +14,7 @@ export class AuthService {
         @InjectModel(User.name)
         private userModel: Model<User>,
         private jwtService: JwtService,
-    ) {}
+    ) { }
 
     async signUp(signUpDto: SignUpDto): Promise<{ token: string }> {
         const { username, email, password, role } = signUpDto;
@@ -56,5 +56,21 @@ export class AuthService {
         const token = this.jwtService.sign({ id: user._id, role: user.role, username: user.username });
 
         return { token };
+    }
+
+    async findAll(): Promise<User[]> {
+        const users = await this.userModel.find().exec();
+        return users as User[];
+    }
+
+    async deleteById(id: string): Promise<User | null> {
+        const deletedSubmission = await this.userModel
+            .findByIdAndDelete(id)
+            .exec();
+
+        if (!deletedSubmission) {
+            throw new NotFoundException('Account not found');
+        }
+        return deletedSubmission;
     }
 }

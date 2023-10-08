@@ -1,7 +1,9 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { SignUpDto } from './dto/signup.dto';
+import { JwtAuthGuard } from 'src/auth.guard';
+import { User } from './schemas/user.schema';
 
 @Controller('auth')
 export class AuthController {
@@ -25,5 +27,18 @@ export class AuthController {
         } catch (error) {
             throw new BadRequestException(error.message);
         }
+    }
+
+    @Get()
+    @UseGuards(JwtAuthGuard)
+    async getAllUsers(): Promise<User[]> {
+        const users = await this.authService.findAll();
+        return users;
+    }
+
+    @Delete(':id')
+    @UseGuards(JwtAuthGuard)
+    async deleteUserAccount(@Param('id') id: string) {
+        return this.authService.deleteById(id);
     }
 }
