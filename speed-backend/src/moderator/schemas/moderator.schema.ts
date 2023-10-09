@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-export const SubmissionSchema = new Schema({
+export const ModeratorSchema = new Schema({
   title: { type: String, required: true },
   authors: { type: String, required: true },
   journal: { type: String, required: true },
