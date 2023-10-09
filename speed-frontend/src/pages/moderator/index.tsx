@@ -19,6 +19,20 @@ const Moderator = () => {
 
   const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
 
+  const redirectToHomePage = () => {
+    router.push('/')
+  }
+
+  const user: User | undefined = session?.user
+
+  if (!user || !user.accessToken) {
+    redirectToHomePage()
+    return null
+  }
+
+  // Get user role
+  const token = user.accessToken
+
   useEffect(() => {
     const redirectToHomePage = () => {
       router.push('/')
@@ -32,12 +46,13 @@ const Moderator = () => {
       return
     }
 
+    // Get user role
     const token = user.accessToken
     const decodedToken: DecodedToken = jwt_decode(token)
     const userRole = decodedToken.role
 
     if (userRole !== 'moderator' && userRole !== 'admin') {
-      toast.error('Only Moderator and Admin can access this page!', {
+      toast.error('Only Moderators and Admins can access this page!', {
         position: 'top-right',
         autoClose: 3000,
         hideProgressBar: false,
@@ -89,6 +104,75 @@ const Moderator = () => {
     }
   }, [session, router])
 
+  const handleAcceptArticle = async (articleId: string) => {
+    try {
+      // Send a POST request to accept the article with the bearer token
+      const acceptedArticle = articles.find((article) => article._id === articleId)
+
+      if (!acceptedArticle) {
+        // Handle the case where the article with the given articleId was not found
+        console.error('Article not found')
+        return
+      }
+
+      // Construct the payload for accepting the article using the article's data
+      const payload = {
+        title: acceptedArticle.title,
+        authors: acceptedArticle.authors,
+        journal: acceptedArticle.journal,
+        year: acceptedArticle.year,
+        volume: acceptedArticle.volume,
+        pages: acceptedArticle.pages,
+        doi: acceptedArticle.doi,
+      }
+
+      const response = await fetch(`${API_ENDPOINT}submissions/`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to accept article: ${response.statusText}`)
+      }
+
+      // Remove the accepted article from the state (assuming you have a state to manage articles)
+      setArticles((prevArticles: any) =>
+        prevArticles.filter((article: any) => article._id !== articleId)
+      )
+    } catch (error) {
+      console.error('Error accepting article:', error)
+      // Handle error (e.g., show an error message)
+    }
+  }
+
+  const handleRejectArticle = async (articleId: string) => {
+    try {
+      // Send a DELETE request to reject the article with the bearer token
+      const response = await fetch(`${API_ENDPOINT}submissions/${articleId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to reject article: ${response.statusText}`)
+      }
+
+      // Remove the rejected article from the state (assuming you have a state to manage articles)
+      setArticles((prevArticles: any) =>
+        prevArticles.filter((article: any) => article._id !== articleId)
+      )
+    } catch (error) {
+      console.error('Error rejecting article:', error)
+    }
+  }
+
   return (
     <main>
       <section>
@@ -99,8 +183,11 @@ const Moderator = () => {
           <>
             {isModerator || isAdmin ? (
               <div className="bg-gray-100 dark:bg-gray-800 min-h-screen">
-                {/* Pass the articles data as a prop */}
-                <ModeratorDashboard articles={articles} />
+                <ModeratorDashboard
+                  articles={articles}
+                  handleAcceptArticle={handleAcceptArticle}
+                  handleRejectArticle={handleRejectArticle}
+                />
               </div>
             ) : (
               <></>
