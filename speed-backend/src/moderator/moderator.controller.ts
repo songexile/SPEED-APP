@@ -14,7 +14,7 @@ import { JwtAuthGuard } from '../auth.guard';
 
 @Controller('moderator')
 export class ModeratorController {
-  constructor(private readonly moderatorService: ModeratorService) { }
+  constructor(private readonly moderatorService: ModeratorService) {}
 
   @Post()
   async addModerator(@Body() createModeratorDto: any): Promise<any> {

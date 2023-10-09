@@ -7,7 +7,7 @@ import { User } from './schemas/user.schema';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService) { }
+    constructor(private authService: AuthService) {}
 
     @Post('/signup')
     async signUp(@Body() signUpDto: SignUpDto): Promise<{ token: string }> {

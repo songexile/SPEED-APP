@@ -7,7 +7,7 @@ import { Moderator } from './interfaces/moderator.interface';
 export class ModeratorService {
   constructor(
     @InjectModel('Moderator') private readonly moderatorModel: Model<any>,
-  ) { }
+  ) {}
 
   async findById(id: string): Promise<Moderator | null> {
     const moderator = await this.moderatorModel.findById(id).exec();

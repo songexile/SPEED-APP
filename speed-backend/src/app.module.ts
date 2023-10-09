@@ -14,6 +14,10 @@ import { AnalystSchema } from './analyst/schemas/analyst.schema';
 import { AnalystController } from './analyst/analyst.controller';
 import { AnalystService } from './analyst/analyst.service';
 
+import { SpeedSchema } from './speed/schemas/speed.schema';
+import { SpeedController } from './speed/speed.controller';
+import { SpeedService } from './speed/speed.service';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -24,10 +28,11 @@ import { AnalystService } from './analyst/analyst.service';
     MongooseModule.forFeature([
       { name: 'Moderator', schema: ModeratorSchema },
       { name: 'Analyst', schema: AnalystSchema },
+      { name: 'Speed', schema: SpeedSchema },
     ]),
-    AuthModule, // Inject schema
+    AuthModule,
   ],
-  controllers: [AppController, ModeratorController, AnalystController],
-  providers: [AppService, ModeratorService, AnalystService],
+  controllers: [AppController, ModeratorController, AnalystController, SpeedController],
+  providers: [AppService, ModeratorService, AnalystService, SpeedService],
 })
-export class AppModule { }
+export class AppModule {}
