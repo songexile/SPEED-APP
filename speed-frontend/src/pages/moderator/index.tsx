@@ -66,7 +66,7 @@ const Moderator = () => {
     } else if (userRole === 'moderator' || userRole === 'admin') {
       const fetchSubmissionArticles = async () => {
         try {
-          const submissionResponse = await fetch(`${API_ENDPOINT}submissions`, {
+          const submissionResponse = await fetch(`${API_ENDPOINT}moderator`, {
             method: 'GET',
             headers: {
               Authorization: `Bearer ${token}`,
@@ -111,7 +111,16 @@ const Moderator = () => {
 
       if (!acceptedArticle) {
         // Handle the case where the article with the given articleId was not found
-        console.error('Article not found')
+        toast.error('Article not found', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        })
         return
       }
 
@@ -126,7 +135,7 @@ const Moderator = () => {
         doi: acceptedArticle.doi,
       }
 
-      const response = await fetch(`${API_ENDPOINT}submissions/`, {
+      const response = await fetch(`${API_ENDPOINT}analyst/`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -139,20 +148,30 @@ const Moderator = () => {
         throw new Error(`Failed to accept article: ${response.statusText}`)
       }
 
+      // TODO delete the article in moderator DB?
+
       // Remove the accepted article from the state (assuming you have a state to manage articles)
       setArticles((prevArticles: any) =>
         prevArticles.filter((article: any) => article._id !== articleId)
       )
     } catch (error) {
-      console.error('Error accepting article:', error)
-      // Handle error (e.g., show an error message)
+      toast.error('Error accepting article: ' + error, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
     }
   }
 
   const handleRejectArticle = async (articleId: string) => {
     try {
       // Send a DELETE request to reject the article with the bearer token
-      const response = await fetch(`${API_ENDPOINT}submissions/${articleId}`, {
+      const response = await fetch(`${API_ENDPOINT}moderator/${articleId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -169,7 +188,16 @@ const Moderator = () => {
         prevArticles.filter((article: any) => article._id !== articleId)
       )
     } catch (error) {
-      console.error('Error rejecting article:', error)
+      toast.error('Error rejecting article: ' + error, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
     }
   }
 
