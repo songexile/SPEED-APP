@@ -108,6 +108,19 @@ const ArticleCard = ({ article, onAccept, onReject }: any) => {
         </button>
       </div>
       {error && <div className="text-red-500">{error}</div>}
+      <div className="text-gray-800">
+        {/* TODO ADD SOME QUALITY CHECK RULES */}
+        <input type="checkbox" id="quality1" name="quality1" />
+        <label htmlFor="quality1"> This Article ...</label>
+        <br />
+        <input type="checkbox" id="vehicle2" name="vehicle2" />
+        <label htmlFor="vehicle2"> This Article ...</label>
+        <br />
+        <input type="checkbox" id="vehicle3" name="vehicle3" />
+        <label htmlFor="vehicle3"> This Article ...</label>
+        <br />
+        <br />
+      </div>
     </div>
   )
 }

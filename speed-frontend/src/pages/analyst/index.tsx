@@ -85,7 +85,7 @@ const AnalystPage = () => {
   const fetchArticles = async () => {
     // Check if session and accessToken are available
     if (session && (session.user as any) && (session.user as any).accessToken) {
-      const url = `${API_ENDPOINT}submissions`
+      const url = `${API_ENDPOINT}analyst`
       const token = (session.user as any).accessToken
 
       try {
@@ -144,7 +144,7 @@ const AnalystPage = () => {
       const token = (session.user as any).accessToken
 
       try {
-        const response = await fetch(`${API_ENDPOINT}analyst`, {
+        const response = await fetch(`${API_ENDPOINT}speed`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -157,9 +157,10 @@ const AnalystPage = () => {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
 
+        // Delete article after submit it to SPEED DB
         const articleToDelete = articles[index]
         if (articleToDelete && articleToDelete._id) {
-          const deleteResponse = await fetch(`${API_ENDPOINT}submissions/${articleToDelete._id}`, {
+          const deleteResponse = await fetch(`${API_ENDPOINT}analyst/${articleToDelete._id}`, {
             method: 'DELETE',
             headers: {
               Authorization: `Bearer ${token}`,

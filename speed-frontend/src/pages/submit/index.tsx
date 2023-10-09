@@ -72,7 +72,7 @@ const SubmitPage = () => {
 
     const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || `http://localhost:3001/`
 
-    fetch(`${apiEndpoint}submissions`, {
+    fetch(`${apiEndpoint}moderator`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

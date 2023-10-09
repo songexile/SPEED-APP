@@ -52,7 +52,7 @@ const SearchResultsTable: React.FC<SearchResultsTableProps> = ({ data, onDelete 
 
   return (
     <div className="overflow-x-auto container">
-      <table className="table">
+      <table className="table mb-20">
         <thead>
           <tr>
             <th onClick={() => handleSort('title')}>Title {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
