@@ -1,5 +1,4 @@
-import { CustomReusableButton } from '@/components'
-import Nav from '@/components/Nav'
+import { Nav, CustomReusableButton } from '@/components'
 import { Meta } from '@/layouts/Meta'
 import { Errors, FormData } from '@/types'
 import { ChangeEvent, useState } from 'react'

@@ -1,4 +1,4 @@
-import Nav from '@/components/Nav'
+import { Nav } from '@/components'
 import { Meta } from '@/layouts/Meta'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
