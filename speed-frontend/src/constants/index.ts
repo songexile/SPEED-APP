@@ -1,1 +1,1 @@
-export const GETTING_SESSION_DELAY = 400;
+export const GETTING_SESSION_DELAY = 500;
