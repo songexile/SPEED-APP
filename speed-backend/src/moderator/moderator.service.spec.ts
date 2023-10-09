@@ -1,25 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SubmissionsService } from './submissions.service';
+import { ModeratorService } from './moderator.service';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-describe('SubmissionsService', () => {
-    let service: SubmissionsService;
+describe('ModeratorService', () => {
+    let service: ModeratorService;
     let model: Model<any>;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             providers: [
-                SubmissionsService,
+                ModeratorService,
                 {
-                    provide: getModelToken('Submission'), // Use the correct model token
+                    provide: getModelToken('Moderator'), // Use the correct model token
                     useValue: Model,
                 },
             ],
         }).compile();
 
-        service = module.get<SubmissionsService>(SubmissionsService);
-        // model = module.get<Model<any>>(getModelToken('Submission'));
+        service = module.get<ModeratorService>(ModeratorService);
+        // model = module.get<Model<any>>(getModelToken('Moderator'));
     });
 
     it('should be defined', () => {

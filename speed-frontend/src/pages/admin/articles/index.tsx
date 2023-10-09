@@ -1,4 +1,4 @@
-import Nav from '@/components/Nav'
+import { Nav } from '@/components'
 import { Meta } from '@/layouts/Meta'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
@@ -13,9 +13,11 @@ import { GETTING_SESSION_DELAY } from '@/constants'
 const Articles = () => {
   const { data: session } = useSession()
   const router = useRouter()
-  const [submissionArticles, setSubmissionArticles] = useState<Analyst[]>([])
+  const [moderatorArticles, setModeratorArticles] = useState<Analyst[]>([])
   const [analystArticles, setAnalystArticles] = useState<Analyst[]>([])
+  const [speedArticles, setSpeedArticles] = useState<Analyst[]>([])
   const [isAdmin, setIsAdmin] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
 
@@ -29,8 +31,8 @@ const Articles = () => {
     try {
       // Determine the endpoint based on the source
       const endpoint =
-        source === DeleteSource.Submissions
-          ? DeleteSource.Submissions
+        source === DeleteSource.Speed
+          ? DeleteSource.Speed
           : source === DeleteSource.Analyst
           ? DeleteSource.Analyst
           : DeleteSource.Moderator
@@ -49,15 +51,19 @@ const Articles = () => {
       }
 
       // Remove the deleted article from the state
-      if (source === DeleteSource.Submissions) {
-        setSubmissionArticles((prevArticles) =>
+      if (source === DeleteSource.Speed) {
+        setSpeedArticles((prevArticles) =>
           prevArticles.filter((article) => article._id !== articleId)
         )
       } else if (source === DeleteSource.Analyst) {
         setAnalystArticles((prevArticles) =>
           prevArticles.filter((article) => article._id !== articleId)
         )
-      } // Handle other cases (Moderator) later on
+      } else {
+        setModeratorArticles((prevArticles) =>
+          prevArticles.filter((article) => article._id !== articleId)
+        )
+      }
     } catch (error) {
       toast.error('Error deleting article: ' + error, {
         position: 'top-right',
@@ -94,6 +100,7 @@ const Articles = () => {
         redirectToHomePage()
         return
       } else {
+        setLoading(true)
         const user: User | undefined = session?.user
 
         // If the session.user object is not available or accessToken is missing
@@ -124,10 +131,10 @@ const Articles = () => {
           setIsAdmin(true)
         }
 
-        // Fetch Submission Articles for all users
-        const fetchSubmissionArticles = async () => {
+        // Fetch Moderator Articles
+        const fetchModeratorArticles = async () => {
           try {
-            const submissionResponse = await fetch(`${API_ENDPOINT}submissions`, {
+            const moderatorResponse = await fetch(`${API_ENDPOINT}moderator`, {
               method: 'GET',
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -135,16 +142,14 @@ const Articles = () => {
               },
             })
 
-            if (!submissionResponse.ok) {
-              throw new Error(
-                `Failed to fetch submission articles: ${submissionResponse.statusText}`
-              )
+            if (!moderatorResponse.ok) {
+              throw new Error(`Failed to fetch moderator articles: ${moderatorResponse.statusText}`)
             }
 
-            const submissionData = await submissionResponse.json()
-            setSubmissionArticles(submissionData)
+            const moderatorData = await moderatorResponse.json()
+            setModeratorArticles(moderatorData)
           } catch (error: any) {
-            toast.error(`Fetch error for submission articles: ${error.message}`, {
+            toast.error(`Fetch error for moderator articles: ${error.message}`, {
               position: 'top-right',
               autoClose: 5000,
               hideProgressBar: false,
@@ -154,15 +159,20 @@ const Articles = () => {
               progress: undefined,
               theme: 'dark',
             })
+          } finally {
+            setTimeout(() => {
+              setLoading(false)
+            }, GETTING_SESSION_DELAY)
           }
         }
 
-        // Fetch Analyst Articles for all users
+        // Fetch Analyst Articles
         const fetchAnalystArticles = async () => {
           try {
             const analystResponse = await fetch(`${API_ENDPOINT}analyst`, {
               method: 'GET',
               headers: {
+                Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
               },
             })
@@ -184,11 +194,64 @@ const Articles = () => {
               progress: undefined,
               theme: 'dark',
             })
+          } finally {
+            setTimeout(() => {
+              setLoading(false)
+            }, GETTING_SESSION_DELAY)
           }
         }
 
-        fetchSubmissionArticles()
-        fetchAnalystArticles()
+        // Fetch Speed Articles
+        const fetchSpeedArticles = async () => {
+          try {
+            const speedResponse = await fetch(`${API_ENDPOINT}speed`, {
+              method: 'GET',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+            })
+
+            if (!speedResponse.ok) {
+              throw new Error(`Failed to fetch speed articles: ${speedResponse.statusText}`)
+            }
+
+            const speedData = await speedResponse.json()
+            setSpeedArticles(speedData)
+          } catch (error: any) {
+            toast.error(`Fetch error for speed articles: ${error.message}`, {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: 'dark',
+            })
+          } finally {
+            setTimeout(() => {
+              setLoading(false)
+            }, GETTING_SESSION_DELAY)
+          }
+        }
+
+        try {
+          fetchModeratorArticles()
+          fetchAnalystArticles()
+          fetchSpeedArticles()
+        } catch (error: any) {
+          toast.error(`Fetch error for the articles: ${error.message}`, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'dark',
+          })
+        }
       }
     }, GETTING_SESSION_DELAY)
 
@@ -199,31 +262,50 @@ const Articles = () => {
     <main>
       <section>
         <Meta title="SPEED APP" description="Admin Dashboard" />
-        {isAdmin ? (
-          <div className="relative bg-base-100 items-center justify-center min-h-screen">
-            <div className="flex">
-              {/* Sidebar */}
-              <Sidebar />
-              <div className="h-screen flex-1 p-7">
-                <h1 className="text-2xl font-semibold mb-12">Articles List Below</h1>
 
-                <h2 className="text-lg font-semibold">Analyst Articles</h2>
-                <SearchResultsTable
-                  data={analystArticles}
-                  onDelete={(articleId) => handleDelete(articleId, DeleteSource.Analyst)}
-                />
-
-                <h2 className="text-lg font-semibold mt-20">Submission Articles</h2>
-                <SearchResultsTable
-                  data={submissionArticles}
-                  onDelete={(articleId) => handleDelete(articleId, DeleteSource.Submissions)}
-                />
-              </div>
+        {loading ? (
+          // Show loading skeleton while fetching data
+          <div className="bg-base-100 flex items-center justify-center min-h-screen">
+            <div className="text-center">
+              <span className="loading loading-spinner loading-lg"></span>
+              <p>Loading...</p>
             </div>
-            <Nav />
           </div>
         ) : (
-          <></>
+          <>
+            {isAdmin ? (
+              <div className="relative bg-base-100 items-center justify-center min-h-screen">
+                <div className="flex">
+                  {/* Sidebar */}
+                  <Sidebar />
+                  <div className="h-screen flex-1 p-7 mb-32">
+                    <h1 className="text-2xl font-semibold mb-12">Articles List Below</h1>
+
+                    <h2 className="text-lg font-semibold">Moderator Articles</h2>
+                    <SearchResultsTable
+                      data={moderatorArticles}
+                      onDelete={(articleId) => handleDelete(articleId, DeleteSource.Moderator)}
+                    />
+
+                    <h2 className="text-lg font-semibold">Analyst Articles</h2>
+                    <SearchResultsTable
+                      data={analystArticles}
+                      onDelete={(articleId) => handleDelete(articleId, DeleteSource.Analyst)}
+                    />
+
+                    <h2 className="text-lg font-semibold">Speed Articles</h2>
+                    <SearchResultsTable
+                      data={speedArticles}
+                      onDelete={(articleId) => handleDelete(articleId, DeleteSource.Speed)}
+                    />
+                  </div>
+                </div>
+                <Nav />
+              </div>
+            ) : (
+              <></>
+            )}
+          </>
         )}
       </section>
     </main>

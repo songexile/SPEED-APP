@@ -1,4 +1,4 @@
-export interface Submission extends Document {
+export interface Moderator extends Document {
     title: string;
     authors: string;
     journal: string;

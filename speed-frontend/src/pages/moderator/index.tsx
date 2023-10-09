@@ -1,59 +1,89 @@
-import Nav from '@/components/Nav'
 import { Meta } from '@/layouts/Meta'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import jwt_decode from 'jwt-decode'
-import { DecodedToken, User } from '../../types/index'
+import { DecodedToken, User, Analyst } from '@/types/index'
 import { toast } from 'react-toastify'
 import { GETTING_SESSION_DELAY } from '@/constants'
+import { Loading } from '@/components'
+import ModeratorDashboard from '@/components/Dashboard/ModeratorDashboard'
 
 const Moderator = () => {
   const { data: session } = useSession()
   const router = useRouter()
   const [isAdmin, setIsAdmin] = useState(false)
   const [isModerator, setIsModerator] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [articles, setArticles] = useState<Analyst[]>([])
+
+  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
+
+  const redirectToHomePage = () => {
+    router.push('/')
+  }
+
+  const user: User | undefined = session?.user
+
+  if (!user || !user.accessToken) {
+    redirectToHomePage()
+    return null
+  }
+
+  // Get user role
+  const token = user.accessToken
 
   useEffect(() => {
     const redirectToHomePage = () => {
       router.push('/')
     }
 
-    // Check if the session remains undefined or null after a delay
-    const sessionCheckTimeout = setTimeout(() => {
-      if (!session) {
-        // Redirect authenticated (NON logged-in) users to another page
-        toast.error('You need to log in to access this page!', {
-          position: 'top-right',
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'dark',
-        })
-        redirectToHomePage()
-        return
-      } else {
-        const user: User | undefined = session?.user
+    setLoading(true)
+    const user: User | undefined = session?.user
 
-        // If the session.user object is not available or accessToken is missing
-        if (!user || !user.accessToken) {
-          redirectToHomePage()
-          return
-        }
+    if (!user || !user.accessToken) {
+      redirectToHomePage()
+      return
+    }
 
-        // Get user role
-        const token = user.accessToken
-        const decodedToken: DecodedToken = jwt_decode(token)
-        const userRole = decodedToken.role
+    // Get user role
+    const token = user.accessToken
+    const decodedToken: DecodedToken = jwt_decode(token)
+    const userRole = decodedToken.role
 
-        if (userRole !== 'moderator' && userRole !== 'admin') {
-          // Redirect or deny access to unauthorized users
-          toast.error('Only Moderator and Admin can access this page!', {
+    if (userRole !== 'moderator' && userRole !== 'admin') {
+      toast.error('Only Moderators and Admins can access this page!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
+      redirectToHomePage()
+    } else if (userRole === 'moderator' || userRole === 'admin') {
+      const fetchSubmissionArticles = async () => {
+        try {
+          const submissionResponse = await fetch(`${API_ENDPOINT}moderator`, {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          })
+
+          if (!submissionResponse.ok) {
+            throw new Error(`Failed to fetch submission articles: ${submissionResponse.statusText}`)
+          }
+
+          const submissionData = await submissionResponse.json()
+          setArticles(submissionData)
+        } catch (error: any) {
+          toast.error(`Fetch error for submission articles: ${error.message}`, {
             position: 'top-right',
-            autoClose: 3000,
+            autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -61,33 +91,144 @@ const Moderator = () => {
             progress: undefined,
             theme: 'dark',
           })
-          redirectToHomePage()
-        } else if (userRole == 'moderator') {
-          setIsModerator(true)
-        } else {
-          setIsAdmin(true)
+        } finally {
+          setTimeout(() => {
+            setIsModerator(userRole === 'moderator')
+            setIsAdmin(userRole === 'admin')
+            setLoading(false)
+          }, GETTING_SESSION_DELAY)
         }
       }
-    }, GETTING_SESSION_DELAY)
 
-    return () => clearTimeout(sessionCheckTimeout)
+      fetchSubmissionArticles()
+    }
   }, [session, router])
+
+  const handleAcceptArticle = async (articleId: string) => {
+    try {
+      // Send a POST request to accept the article with the bearer token
+      const acceptedArticle = articles.find((article) => article._id === articleId)
+
+      if (!acceptedArticle) {
+        // Handle the case where the article with the given articleId was not found
+        toast.error('Article not found', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        })
+        return
+      }
+
+      // Construct the payload for accepting the article using the article's data
+      const payload = {
+        title: acceptedArticle.title,
+        authors: acceptedArticle.authors,
+        journal: acceptedArticle.journal,
+        year: acceptedArticle.year,
+        volume: acceptedArticle.volume,
+        pages: acceptedArticle.pages,
+        doi: acceptedArticle.doi,
+      }
+
+      const response = await fetch(`${API_ENDPOINT}analyst/`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to accept article: ${response.statusText}`)
+      }
+
+      // TODO delete the article in moderator DB?
+
+      // Remove the accepted article from the state (assuming you have a state to manage articles)
+      setArticles((prevArticles: any) =>
+        prevArticles.filter((article: any) => article._id !== articleId)
+      )
+    } catch (error) {
+      toast.error('Error accepting article: ' + error, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
+    }
+  }
+
+  const handleRejectArticle = async (articleId: string) => {
+    try {
+      // Send a DELETE request to reject the article with the bearer token
+      const response = await fetch(`${API_ENDPOINT}moderator/${articleId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to reject article: ${response.statusText}`)
+      }
+
+      // Remove the rejected article from the state (assuming you have a state to manage articles)
+      setArticles((prevArticles: any) =>
+        prevArticles.filter((article: any) => article._id !== articleId)
+      )
+    } catch (error) {
+      toast.error('Error rejecting article: ' + error, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
+    }
+  }
 
   return (
     <main>
       <section>
         <Meta title="SPEED APP" description="Moderator Dashboard" />
-        {isModerator || isAdmin ? (
-          <div className="relative bg-base-100 items-center justify-center min-h-screen">
-            <h1>Moderator Dashboard</h1>
-            <Nav />
-          </div>
+        {loading ? (
+          <Loading />
         ) : (
-          <></>
+          <>
+            {isModerator || isAdmin ? (
+              <div className="bg-gray-100 dark:bg-gray-800 min-h-screen">
+                <ModeratorDashboard
+                  articles={articles}
+                  handleAcceptArticle={handleAcceptArticle}
+                  handleRejectArticle={handleRejectArticle}
+                />
+              </div>
+            ) : (
+              <></>
+            )}
+          </>
         )}
       </section>
     </main>
   )
 }
+
+// Add the requireAuth property to the page component
+// To protect the page from unauthenticated users
+Moderator.requireAuth = true
 
 export default Moderator

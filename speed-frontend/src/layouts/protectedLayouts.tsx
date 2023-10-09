@@ -1,6 +1,7 @@
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import { toast } from 'react-toastify'
 
 type Props = {
   children: React.ReactElement
@@ -28,9 +29,18 @@ export const ProtectedLayout = ({ children }: Props): JSX.Element => {
     // if the user is not authorized, redirect to the login page
     // with a return url to the current page
     if (unAuthorized) {
-      console.log('not authorized')
+      toast.error('You need to log in to access this page!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
       router.push({
-        pathname: '/auth/signIn',
+        pathname: '/',
         query: { returnUrl: router.asPath },
       })
     }

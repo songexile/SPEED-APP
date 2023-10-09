@@ -1,5 +1,4 @@
-import { CustomReusableButton } from '@/components'
-import Nav from '@/components/Nav'
+import { Nav, CustomReusableButton } from '@/components'
 import { Meta } from '@/layouts/Meta'
 import { Errors, FormData } from '@/types'
 import { ChangeEvent, useState } from 'react'
@@ -73,7 +72,7 @@ const SubmitPage = () => {
 
     const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || `http://localhost:3001/`
 
-    fetch(`${apiEndpoint}submissions`, {
+    fetch(`${apiEndpoint}moderator`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

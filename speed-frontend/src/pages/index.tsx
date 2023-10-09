@@ -2,8 +2,7 @@ import { Meta } from '@/layouts/Meta'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 
-import Nav from '@/components/Nav'
-import { CustomReusableButton } from '@/components'
+import { Nav, CustomReusableButton } from '@/components'
 
 export default function Home() {
   const { data: session } = useSession()

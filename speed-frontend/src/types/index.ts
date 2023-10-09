@@ -101,9 +101,9 @@ export interface DecodedToken {
 }
 
 export enum DeleteSource {
-  Submissions = 'submissions',
-  Analyst = 'analyst',
   Moderator = 'moderator',
+  Analyst = 'analyst',
+  Speed = 'speed',
 }
 
 export interface Account {

@@ -1,8 +1,7 @@
-import Nav from '@/components/Nav'
 import { Meta } from '@/layouts/Meta'
 import { ChangeEvent, useState, useEffect } from 'react'
 import { Analyst, AnalystFormData, DecodedToken, User } from '@/types'
-import { CustomReusableButton, FormComponent } from '@/components'
+import { Nav, CustomReusableButton, FormComponent } from '@/components'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import jwt_decode from 'jwt-decode'
@@ -18,6 +17,7 @@ const AnalystPage = () => {
   const [showArticles, setShowArticles] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
   const [isAnalyst, setIsAnalyst] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const { data: session } = useSession()
   const router = useRouter()
@@ -44,6 +44,7 @@ const AnalystPage = () => {
         redirectToHomePage()
         return
       } else {
+        setLoading(true)
         const user: User | undefined = session?.user
 
         // If the session.user object is not available or accessToken is missing
@@ -70,10 +71,10 @@ const AnalystPage = () => {
             theme: 'dark',
           })
           redirectToHomePage()
-        } else if (userRole == 'analyst') {
-          setIsAnalyst(true)
-        } else {
-          setIsAdmin(true)
+        } else if (userRole === 'analyst' || userRole === 'admin') {
+          setIsAnalyst(userRole === 'analyst')
+          setIsAdmin(userRole === 'admin')
+          setLoading(false)
         }
       }
     }, GETTING_SESSION_DELAY)
@@ -84,7 +85,7 @@ const AnalystPage = () => {
   const fetchArticles = async () => {
     // Check if session and accessToken are available
     if (session && (session.user as any) && (session.user as any).accessToken) {
-      const url = `${API_ENDPOINT}submissions`
+      const url = `${API_ENDPOINT}analyst`
       const token = (session.user as any).accessToken
 
       try {
@@ -143,7 +144,7 @@ const AnalystPage = () => {
       const token = (session.user as any).accessToken
 
       try {
-        const response = await fetch(`${API_ENDPOINT}analyst`, {
+        const response = await fetch(`${API_ENDPOINT}speed`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -156,9 +157,10 @@ const AnalystPage = () => {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
 
+        // Delete article after submit it to SPEED DB
         const articleToDelete = articles[index]
         if (articleToDelete && articleToDelete._id) {
-          const deleteResponse = await fetch(`${API_ENDPOINT}submissions/${articleToDelete._id}`, {
+          const deleteResponse = await fetch(`${API_ENDPOINT}analyst/${articleToDelete._id}`, {
             method: 'DELETE',
             headers: {
               Authorization: `Bearer ${token}`,
@@ -213,36 +215,48 @@ const AnalystPage = () => {
     <main>
       <section>
         <Meta title="SPEED APP" description="Search Software Engineering methods to find claims." />
-        {isAnalyst || isAdmin ? (
-          <>
-            <div className="bg-base-100 flex flex-col items-center min-h-screen text-white">
-              <h1 className="text-4xl font-bold text-center mt-8">Analyst Page</h1>
-
-              {!showArticles ? (
-                <CustomReusableButton
-                  text="View all articles"
-                  className="btn btn-primary mt-4"
-                  onClick={fetchArticles}
-                />
-              ) : (
-                articles.map((article, index) => (
-                  <FormComponent
-                    key={index}
-                    article={article}
-                    index={index}
-                    formData={formData}
-                    buttonDisabled={buttonDisabled}
-                    handleChange={handleChange}
-                    handleSubmit={handleSubmit}
-                  />
-                ))
-              )}
+        {loading ? (
+          // Show loading skeleton while fetching data
+          <div className="bg-base-100 flex items-center justify-center min-h-screen">
+            <div className="text-center">
+              <span className="loading loading-spinner loading-lg"></span>
+              <p>Loading...</p>
             </div>
-            <div className="h-64 bg-base-100"></div>
-            <Nav />
-          </>
+          </div>
         ) : (
-          <></>
+          <>
+            {isAnalyst || isAdmin ? (
+              <>
+                <div className="bg-base-100 flex flex-col items-center min-h-screen text-white">
+                  <h1 className="text-4xl font-bold text-center mt-8">Analyst Page</h1>
+
+                  {!showArticles ? (
+                    <CustomReusableButton
+                      text="View all articles"
+                      className="btn btn-primary mt-4"
+                      onClick={fetchArticles}
+                    />
+                  ) : (
+                    articles.map((article, index) => (
+                      <FormComponent
+                        key={index}
+                        article={article}
+                        index={index}
+                        formData={formData}
+                        buttonDisabled={buttonDisabled}
+                        handleChange={handleChange}
+                        handleSubmit={handleSubmit}
+                      />
+                    ))
+                  )}
+                </div>
+                <div className="h-64 bg-base-100"></div>
+                <Nav />
+              </>
+            ) : (
+              <></>
+            )}
+          </>
         )}
       </section>
     </main>

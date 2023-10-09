@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import Nav from '@/components/Nav'
-import SearchResultsTable from '@/components/SearchResultsTable'
+import { Nav, CustomReusableButton, SearchResultsTable } from '@/components'
 import { Meta } from '@/layouts/Meta'
 import { ArticleProps, DeleteSource } from '@/types/index'
-import { CustomReusableButton } from '@/components'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 import { User } from 'next-auth'
 import { toast } from 'react-toastify'
+import { GETTING_SESSION_DELAY } from '@/constants'
 
 const SearchPage: React.FC = () => {
   const [data, setData] = useState<ArticleProps[]>([])
@@ -41,7 +40,7 @@ const SearchPage: React.FC = () => {
 
     const isNumeric = (value: any) => !isNaN(value) && isFinite(value)
 
-    let url = `${API_ENDPOINT}analyst`
+    let url = `${API_ENDPOINT}speed`
 
     // This if statement
     // Will run if the user input only one field
@@ -51,7 +50,7 @@ const SearchPage: React.FC = () => {
         setError('Start year cannot be greater than end year.')
         return
       }
-      url = `${API_ENDPOINT}analyst/by-year-range?startYear=${startYear}&endYear=${endYear}`
+      url = `${API_ENDPOINT}speed/by-year-range?startYear=${startYear}&endYear=${endYear}`
     } else if (startYear || endYear) {
       // Display an error message if either startYear or endYear is not numeric
       setError(
@@ -114,7 +113,7 @@ const SearchPage: React.FC = () => {
     } finally {
       setTimeout(() => {
         setLoading(false)
-      }, 300)
+      }, GETTING_SESSION_DELAY)
     }
   }
 
@@ -131,12 +130,7 @@ const SearchPage: React.FC = () => {
 
     try {
       // Determine the endpoint based on the source
-      const endpoint =
-        source === DeleteSource.Submissions
-          ? DeleteSource.Submissions
-          : source === DeleteSource.Analyst
-          ? DeleteSource.Analyst
-          : DeleteSource.Moderator
+      const endpoint = 'speed'
 
       // Send a DELETE request to the appropriate endpoint
       const response = await fetch(`${API_ENDPOINT}${endpoint}/${articleId}`, {
@@ -152,11 +146,22 @@ const SearchPage: React.FC = () => {
       }
 
       // Remove the deleted article from the state
-      if (source === DeleteSource.Analyst) {
+      if (source === DeleteSource.Speed) {
         setData((prevArticles) => prevArticles.filter((article) => article._id !== articleId))
       }
     } catch (error) {
       toast.error('Error deleting article: ' + error, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
+    } finally {
+      toast.success('Success Delete Article!', {
         position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
@@ -218,7 +223,7 @@ const SearchPage: React.FC = () => {
               {data.length > 0 && (
                 <SearchResultsTable
                   data={data}
-                  onDelete={(articleId) => handleDelete(articleId, DeleteSource.Analyst)}
+                  onDelete={(articleId) => handleDelete(articleId, DeleteSource.Speed)}
                 />
               )}
             </>
