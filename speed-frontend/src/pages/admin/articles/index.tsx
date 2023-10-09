@@ -8,13 +8,14 @@ import Sidebar from '@/components/Dashboard/Sidebar'
 import SearchResultsTable from '@/components/SearchResultsTable'
 import { useRouter } from 'next/router'
 import { toast } from 'react-toastify'
+import { GETTING_SESSION_DELAY } from '@/constants'
 
 const Articles = () => {
   const { data: session } = useSession()
   const router = useRouter()
   const [submissionArticles, setSubmissionArticles] = useState<Analyst[]>([])
   const [analystArticles, setAnalystArticles] = useState<Analyst[]>([])
-  const [calledPush, setCalledPush] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
 
@@ -73,17 +74,13 @@ const Articles = () => {
 
   useEffect(() => {
     const redirectToHomePage = () => {
-      // check if we have previously called router.push() before redirecting
-      if (calledPush) {
-        return // no need to call router.push() again
-      }
       router.push('/')
-      setCalledPush(true)
     }
 
-    // Redirect authenticated (NON logged-in) users to another page
-    if (!session) {
-      if (!calledPush) {
+    // Check if the session remains undefined or null after a delay
+    const sessionCheckTimeout = setTimeout(() => {
+      if (!session) {
+        // Redirect authenticated (NON logged-in) users to another page
         toast.error('You need to log in to access this page!', {
           position: 'top-right',
           autoClose: 3000,
@@ -95,119 +92,139 @@ const Articles = () => {
           theme: 'dark',
         })
         redirectToHomePage()
-      }
-      return
-    }
+        return
+      } else {
+        const user: User | undefined = session?.user
 
-    const user: User | undefined = session?.user
-
-    // If the session.user object is not available or accessToken is missing
-    if (!user || !user.accessToken) {
-      redirectToHomePage()
-      return
-    }
-
-    // Get User Role
-    const token = user.accessToken
-    const decodedToken: DecodedToken = jwt_decode(token)
-    const userRole = decodedToken.role
-
-    if (userRole !== 'admin') {
-      // Redirect or deny access to unauthorized users
-      redirectToHomePage()
-    }
-
-    // Fetch Submission Articles for all users
-    const fetchSubmissionArticles = async () => {
-      try {
-        const submissionResponse = await fetch(`${API_ENDPOINT}submissions`, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        })
-
-        if (!submissionResponse.ok) {
-          throw new Error(`Failed to fetch submission articles: ${submissionResponse.statusText}`)
+        // If the session.user object is not available or accessToken is missing
+        if (!user || !user.accessToken) {
+          redirectToHomePage()
+          return
         }
 
-        const submissionData = await submissionResponse.json()
-        setSubmissionArticles(submissionData)
-      } catch (error: any) {
-        toast.error(`Fetch error for submission articles: ${error.message}`, {
-          position: 'top-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'dark',
-        })
-      }
-    }
+        // Get User Role
+        const token = user.accessToken
+        const decodedToken: DecodedToken = jwt_decode(token)
+        const userRole = decodedToken.role
 
-    // Fetch Analyst Articles for all users
-    const fetchAnalystArticles = async () => {
-      try {
-        const analystResponse = await fetch(`${API_ENDPOINT}analyst`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-
-        if (!analystResponse.ok) {
-          throw new Error(`Failed to fetch analyst articles: ${analystResponse.statusText}`)
+        if (userRole !== 'admin') {
+          // Redirect or deny access to unauthorized users
+          toast.error('Only Admin can access this page!', {
+            position: 'top-right',
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'dark',
+          })
+          redirectToHomePage()
+        } else {
+          setIsAdmin(true)
         }
 
-        const analystData = await analystResponse.json()
-        setAnalystArticles(analystData)
-      } catch (error: any) {
-        toast.error(`Fetch error for analyst articles: ${error.message}`, {
-          position: 'top-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'dark',
-        })
-      }
-    }
+        // Fetch Submission Articles for all users
+        const fetchSubmissionArticles = async () => {
+          try {
+            const submissionResponse = await fetch(`${API_ENDPOINT}submissions`, {
+              method: 'GET',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+            })
 
-    fetchSubmissionArticles()
-    fetchAnalystArticles()
+            if (!submissionResponse.ok) {
+              throw new Error(
+                `Failed to fetch submission articles: ${submissionResponse.statusText}`
+              )
+            }
+
+            const submissionData = await submissionResponse.json()
+            setSubmissionArticles(submissionData)
+          } catch (error: any) {
+            toast.error(`Fetch error for submission articles: ${error.message}`, {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: 'dark',
+            })
+          }
+        }
+
+        // Fetch Analyst Articles for all users
+        const fetchAnalystArticles = async () => {
+          try {
+            const analystResponse = await fetch(`${API_ENDPOINT}analyst`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+
+            if (!analystResponse.ok) {
+              throw new Error(`Failed to fetch analyst articles: ${analystResponse.statusText}`)
+            }
+
+            const analystData = await analystResponse.json()
+            setAnalystArticles(analystData)
+          } catch (error: any) {
+            toast.error(`Fetch error for analyst articles: ${error.message}`, {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: 'dark',
+            })
+          }
+        }
+
+        fetchSubmissionArticles()
+        fetchAnalystArticles()
+      }
+    }, GETTING_SESSION_DELAY)
+
+    return () => clearTimeout(sessionCheckTimeout)
   }, [session, router])
 
   return (
     <main>
       <section>
         <Meta title="SPEED APP" description="Admin Dashboard" />
-        <div className="relative bg-base-100 items-center justify-center min-h-screen">
-          <div className="flex">
-            {/* Sidebar */}
-            <Sidebar />
-            <div className="h-screen flex-1 p-7">
-              <h1 className="text-2xl font-semibold mb-12">Articles List Below</h1>
+        {isAdmin ? (
+          <div className="relative bg-base-100 items-center justify-center min-h-screen">
+            <div className="flex">
+              {/* Sidebar */}
+              <Sidebar />
+              <div className="h-screen flex-1 p-7">
+                <h1 className="text-2xl font-semibold mb-12">Articles List Below</h1>
 
-              <h2 className="text-lg font-semibold">Analyst Articles</h2>
-              <SearchResultsTable
-                data={analystArticles}
-                onDelete={(articleId) => handleDelete(articleId, DeleteSource.Analyst)}
-              />
+                <h2 className="text-lg font-semibold">Analyst Articles</h2>
+                <SearchResultsTable
+                  data={analystArticles}
+                  onDelete={(articleId) => handleDelete(articleId, DeleteSource.Analyst)}
+                />
 
-              <h2 className="text-lg font-semibold mt-20">Submission Articles</h2>
-              <SearchResultsTable
-                data={submissionArticles}
-                onDelete={(articleId) => handleDelete(articleId, DeleteSource.Submissions)}
-              />
+                <h2 className="text-lg font-semibold mt-20">Submission Articles</h2>
+                <SearchResultsTable
+                  data={submissionArticles}
+                  onDelete={(articleId) => handleDelete(articleId, DeleteSource.Submissions)}
+                />
+              </div>
             </div>
+            <Nav />
           </div>
-          <Nav />
-        </div>
+        ) : (
+          <></>
+        )}
       </section>
     </main>
   )

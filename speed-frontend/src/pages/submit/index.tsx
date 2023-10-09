@@ -84,6 +84,16 @@ const SubmitPage = () => {
         if (response.ok) {
           setSuccess(true)
           setFailure(false)
+          toast.success('Success Adding Article', {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'dark',
+          })
         } else {
           toast.error('API request failed', {
             position: 'top-right',
