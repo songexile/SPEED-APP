@@ -8,12 +8,13 @@ import { DecodedToken, User, Account } from '@/types/index'
 import Sidebar from '@/components/Dashboard/Sidebar'
 import UserTable from '@/components/Dashboard/UserTable'
 import { toast } from 'react-toastify'
+import { GETTING_SESSION_DELAY } from '@/constants'
 
 const Accounts = () => {
   const { data: session } = useSession()
   const router = useRouter()
   const [userAccounts, setUserAccounts] = useState<Account[]>([])
-  const [calledPush, setCalledPush] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
 
@@ -90,17 +91,13 @@ const Accounts = () => {
 
   useEffect(() => {
     const redirectToHomePage = () => {
-      // check if we have previously called router.push() before redirecting
-      if (calledPush) {
-        return // no need to call router.push() again
-      }
       router.push('/')
-      setCalledPush(true)
     }
 
-    // Redirect authenticated (NON logged-in) users to another page
-    if (!session) {
-      if (!calledPush) {
+    // Check if the session remains undefined or null after a delay
+    const sessionCheckTimeout = setTimeout(() => {
+      if (!session) {
+        // Redirect authenticated (NON logged-in) users to another page
         toast.error('You need to log in to access this page!', {
           position: 'top-right',
           autoClose: 3000,
@@ -112,83 +109,100 @@ const Accounts = () => {
           theme: 'dark',
         })
         redirectToHomePage()
-      }
-      return
-    }
+        return
+      } else {
+        const currentUser: User | undefined = session?.user
 
-    const currentUser: User | undefined = session?.user
-
-    if (!currentUser || !currentUser.accessToken) {
-      // If the session.user object is not available or accessToken is missing
-      redirectToHomePage()
-      return
-    }
-
-    // Get User Role
-    const token = currentUser.accessToken
-    const decodedToken: DecodedToken = jwt_decode(token)
-    const userRole = decodedToken.role
-
-    if (userRole !== 'admin') {
-      // Redirect or deny access to unauthorized users
-      redirectToHomePage()
-    }
-
-    // Fetch All users
-    const fetchUsersAccounts = async () => {
-      try {
-        const accountResponse = await fetch(`${API_ENDPOINT}auth`, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        })
-
-        if (accountResponse.ok) {
-          const userAccountsData = await accountResponse.json()
-          setUserAccounts(userAccountsData) // Update the state with fetched accounts
+        if (!currentUser || !currentUser.accessToken) {
+          // If the session.user object is not available or accessToken is missing
+          redirectToHomePage()
+          return
         }
-      } catch (error) {
-        toast.error('Error fetching user accounts: ' + error, {
-          position: 'top-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'dark',
-        })
-      }
-    }
 
-    fetchUsersAccounts()
+        // Get User Role
+        const token = currentUser.accessToken
+        const decodedToken: DecodedToken = jwt_decode(token)
+        const userRole = decodedToken.role
+
+        if (userRole !== 'admin') {
+          // Redirect or deny access to unauthorized users
+          toast.error('Only Admin can access this page!', {
+            position: 'top-right',
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'dark',
+          })
+          redirectToHomePage()
+        } else {
+          setIsAdmin(true)
+        }
+
+        // Fetch All users
+        const fetchUsersAccounts = async () => {
+          try {
+            const accountResponse = await fetch(`${API_ENDPOINT}auth`, {
+              method: 'GET',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+            })
+
+            if (accountResponse.ok) {
+              const userAccountsData = await accountResponse.json()
+              setUserAccounts(userAccountsData) // Update the state with fetched accounts
+            }
+          } catch (error) {
+            toast.error('Error fetching user accounts: ' + error, {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: 'dark',
+            })
+          }
+        }
+        fetchUsersAccounts()
+      }
+    }, GETTING_SESSION_DELAY)
+
+    return () => clearTimeout(sessionCheckTimeout)
   }, [session, router])
 
   return (
     <main>
       <section>
         <Meta title="SPEED APP" description="Admin Dashboard" />
-        <div className="relative bg-base-100 items-center justify-center min-h-screen">
-          <div className="flex">
-            {/* Sidebar */}
-            <Sidebar />
-            <div className="h-screen flex-1 p-7">
-              <h1 className="text-2xl font-semibold mb-12">Account List Below</h1>
+        {isAdmin ? (
+          <div className="relative bg-base-100 items-center justify-center min-h-screen">
+            <div className="flex">
+              {/* Sidebar */}
+              <Sidebar />
+              <div className="h-screen flex-1 p-7">
+                <h1 className="text-2xl font-semibold mb-12">Account List Below</h1>
 
-              <h2 className="text-lg font-semibold">User Accounts</h2>
-              {session && (
-                <UserTable
-                  users={userAccounts}
-                  onDelete={(id) => handleDelete(id)}
-                  userRole={userRole}
-                />
-              )}
+                <h2 className="text-lg font-semibold">User Accounts</h2>
+                {isAdmin && (
+                  <UserTable
+                    users={userAccounts}
+                    onDelete={(id) => handleDelete(id)}
+                    userRole={userRole}
+                  />
+                )}
+              </div>
             </div>
+            <Nav />
           </div>
-          <Nav />
-        </div>
+        ) : (
+          <></>
+        )}
       </section>
     </main>
   )
