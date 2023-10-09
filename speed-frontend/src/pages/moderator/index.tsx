@@ -13,6 +13,7 @@ const Moderator = () => {
   const router = useRouter()
   const [isAdmin, setIsAdmin] = useState(false)
   const [isModerator, setIsModerator] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const redirectToHomePage = () => {
@@ -36,6 +37,7 @@ const Moderator = () => {
         redirectToHomePage()
         return
       } else {
+        setLoading(true)
         const user: User | undefined = session?.user
 
         // If the session.user object is not available or accessToken is missing
@@ -62,10 +64,12 @@ const Moderator = () => {
             theme: 'dark',
           })
           redirectToHomePage()
-        } else if (userRole == 'moderator') {
-          setIsModerator(true)
-        } else {
-          setIsAdmin(true)
+        } else if (userRole === 'moderator' || userRole === 'admin') {
+          setTimeout(() => {
+            setIsModerator(userRole === 'moderator')
+            setIsAdmin(userRole === 'admin')
+            setLoading(false)
+          }, GETTING_SESSION_DELAY)
         }
       }
     }, GETTING_SESSION_DELAY)
@@ -77,13 +81,26 @@ const Moderator = () => {
     <main>
       <section>
         <Meta title="SPEED APP" description="Moderator Dashboard" />
-        {isModerator || isAdmin ? (
-          <div className="relative bg-base-100 items-center justify-center min-h-screen">
-            <h1>Moderator Dashboard</h1>
-            <Nav />
+
+        {loading ? (
+          // Show loading skeleton while fetching data
+          <div className="bg-base-100 flex items-center justify-center min-h-screen">
+            <div className="text-center">
+              <span className="loading loading-spinner loading-lg"></span>
+              <p>Loading...</p>
+            </div>
           </div>
         ) : (
-          <></>
+          <>
+            {isModerator || isAdmin ? (
+              <div className="relative bg-base-100 items-center justify-center min-h-screen">
+                <h1>Moderator Dashboard</h1>
+                <Nav />
+              </div>
+            ) : (
+              <></>
+            )}
+          </>
         )}
       </section>
     </main>

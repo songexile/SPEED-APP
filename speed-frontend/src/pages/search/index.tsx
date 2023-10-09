@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 import { User } from 'next-auth'
 import { toast } from 'react-toastify'
+import { GETTING_SESSION_DELAY } from '@/constants'
 
 const SearchPage: React.FC = () => {
   const [data, setData] = useState<ArticleProps[]>([])
@@ -114,7 +115,7 @@ const SearchPage: React.FC = () => {
     } finally {
       setTimeout(() => {
         setLoading(false)
-      }, 300)
+      }, GETTING_SESSION_DELAY)
     }
   }
 

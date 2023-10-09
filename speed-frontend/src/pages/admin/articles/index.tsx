@@ -16,6 +16,7 @@ const Articles = () => {
   const [submissionArticles, setSubmissionArticles] = useState<Analyst[]>([])
   const [analystArticles, setAnalystArticles] = useState<Analyst[]>([])
   const [isAdmin, setIsAdmin] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
 
@@ -94,6 +95,7 @@ const Articles = () => {
         redirectToHomePage()
         return
       } else {
+        setLoading(true)
         const user: User | undefined = session?.user
 
         // If the session.user object is not available or accessToken is missing
@@ -154,6 +156,10 @@ const Articles = () => {
               progress: undefined,
               theme: 'dark',
             })
+          } finally {
+            setTimeout(() => {
+              setLoading(false)
+            }, GETTING_SESSION_DELAY)
           }
         }
 
@@ -184,11 +190,28 @@ const Articles = () => {
               progress: undefined,
               theme: 'dark',
             })
+          } finally {
+            setTimeout(() => {
+              setLoading(false)
+            }, GETTING_SESSION_DELAY)
           }
         }
 
-        fetchSubmissionArticles()
-        fetchAnalystArticles()
+        try {
+          fetchSubmissionArticles()
+          fetchAnalystArticles()
+        } catch (error: any) {
+          toast.error(`Fetch error for the articles: ${error.message}`, {
+            position: 'top-right',
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'dark',
+          })
+        }
       }
     }, GETTING_SESSION_DELAY)
 
@@ -199,31 +222,44 @@ const Articles = () => {
     <main>
       <section>
         <Meta title="SPEED APP" description="Admin Dashboard" />
-        {isAdmin ? (
-          <div className="relative bg-base-100 items-center justify-center min-h-screen">
-            <div className="flex">
-              {/* Sidebar */}
-              <Sidebar />
-              <div className="h-screen flex-1 p-7">
-                <h1 className="text-2xl font-semibold mb-12">Articles List Below</h1>
 
-                <h2 className="text-lg font-semibold">Analyst Articles</h2>
-                <SearchResultsTable
-                  data={analystArticles}
-                  onDelete={(articleId) => handleDelete(articleId, DeleteSource.Analyst)}
-                />
-
-                <h2 className="text-lg font-semibold mt-20">Submission Articles</h2>
-                <SearchResultsTable
-                  data={submissionArticles}
-                  onDelete={(articleId) => handleDelete(articleId, DeleteSource.Submissions)}
-                />
-              </div>
+        {loading ? (
+          // Show loading skeleton while fetching data
+          <div className="bg-base-100 flex items-center justify-center min-h-screen">
+            <div className="text-center">
+              <span className="loading loading-spinner loading-lg"></span>
+              <p>Loading...</p>
             </div>
-            <Nav />
           </div>
         ) : (
-          <></>
+          <>
+            {isAdmin ? (
+              <div className="relative bg-base-100 items-center justify-center min-h-screen">
+                <div className="flex">
+                  {/* Sidebar */}
+                  <Sidebar />
+                  <div className="h-screen flex-1 p-7">
+                    <h1 className="text-2xl font-semibold mb-12">Articles List Below</h1>
+
+                    <h2 className="text-lg font-semibold">Analyst Articles</h2>
+                    <SearchResultsTable
+                      data={analystArticles}
+                      onDelete={(articleId) => handleDelete(articleId, DeleteSource.Analyst)}
+                    />
+
+                    <h2 className="text-lg font-semibold mt-20">Submission Articles</h2>
+                    <SearchResultsTable
+                      data={submissionArticles}
+                      onDelete={(articleId) => handleDelete(articleId, DeleteSource.Submissions)}
+                    />
+                  </div>
+                </div>
+                <Nav />
+              </div>
+            ) : (
+              <></>
+            )}
+          </>
         )}
       </section>
     </main>
