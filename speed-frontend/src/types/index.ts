@@ -117,10 +117,18 @@ export interface UserTableProps {
   users: Account[]
   onDelete?: (id: string) => void
   userRole: string;
+  isLoading: boolean
 }
 
 export interface CardProps {
   title: string;
   count: number;
   icon: React.ReactNode;
+  isLoading: boolean
+}
+
+export interface SearchResultsTableProps {
+  data: SearchResultData[]
+  onDelete?: (id: string) => void
+  isLoading: boolean
 }

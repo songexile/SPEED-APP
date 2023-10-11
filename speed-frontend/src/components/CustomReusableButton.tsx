@@ -1,4 +1,4 @@
-import { CustomReusableButtonProps } from '../types/index'
+import { CustomReusableButtonProps } from '@/types/index'
 
 const CustomReusableButton: React.FC<CustomReusableButtonProps> = ({
   text,

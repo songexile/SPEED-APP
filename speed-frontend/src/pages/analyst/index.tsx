@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import jwt_decode from 'jwt-decode'
 import { toast } from 'react-toastify'
 import { GETTING_SESSION_DELAY } from '@/constants'
+import Skeleton from 'react-loading-skeleton'
 
 const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
 
@@ -17,7 +18,7 @@ const AnalystPage = () => {
   const [showArticles, setShowArticles] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
   const [isAnalyst, setIsAnalyst] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const { data: session } = useSession()
   const router = useRouter()
@@ -44,7 +45,6 @@ const AnalystPage = () => {
         redirectToHomePage()
         return
       } else {
-        setLoading(true)
         const user: User | undefined = session?.user
 
         // If the session.user object is not available or accessToken is missing
@@ -74,7 +74,6 @@ const AnalystPage = () => {
         } else if (userRole === 'analyst' || userRole === 'admin') {
           setIsAnalyst(userRole === 'analyst')
           setIsAdmin(userRole === 'admin')
-          setLoading(false)
         }
       }
     }, GETTING_SESSION_DELAY)
@@ -118,6 +117,8 @@ const AnalystPage = () => {
           progress: undefined,
           theme: 'dark',
         })
+      } finally {
+        setLoading(false)
       }
     }
   }
@@ -215,48 +216,34 @@ const AnalystPage = () => {
     <main>
       <section>
         <Meta title="SPEED APP" description="Search Software Engineering methods to find claims." />
-        {loading ? (
-          // Show loading skeleton while fetching data
-          <div className="bg-base-100 flex items-center justify-center min-h-screen">
-            <div className="text-center">
-              <span className="loading loading-spinner loading-lg"></span>
-              <p>Loading...</p>
-            </div>
-          </div>
-        ) : (
-          <>
-            {isAnalyst || isAdmin ? (
-              <>
-                <div className="bg-base-100 flex flex-col items-center min-h-screen text-white">
-                  <h1 className="text-4xl font-bold text-center mt-8">Analyst Page</h1>
-
-                  {!showArticles ? (
-                    <CustomReusableButton
-                      text="View all articles"
-                      className="btn btn-primary mt-4"
-                      onClick={fetchArticles}
-                    />
-                  ) : (
-                    articles.map((article, index) => (
-                      <FormComponent
-                        key={index}
-                        article={article}
-                        index={index}
-                        formData={formData}
-                        buttonDisabled={buttonDisabled}
-                        handleChange={handleChange}
-                        handleSubmit={handleSubmit}
-                      />
-                    ))
-                  )}
-                </div>
-                <div className="h-64 bg-base-100"></div>
-                <Nav />
-              </>
+        {(isAnalyst || isAdmin) && (
+          <div className="bg-base-100 flex flex-col items-center min-h-screen text-white">
+            <h1 className="text-4xl font-bold text-center mt-8">Analyst Page</h1>
+            {!showArticles ? (
+              <CustomReusableButton
+                text="View all articles"
+                className="btn btn-primary mt-4"
+                onClick={fetchArticles}
+              />
+            ) : loading ? (
+              <Skeleton count={6} baseColor="#202020" highlightColor="#444" />
             ) : (
-              <></>
+              articles.map((article, index) => (
+                <FormComponent
+                  key={index}
+                  article={article}
+                  index={index}
+                  formData={formData}
+                  buttonDisabled={buttonDisabled}
+                  handleChange={handleChange}
+                  handleSubmit={handleSubmit}
+                  isLoading={loading}
+                />
+              ))
             )}
-          </>
+            <div className="h-64 bg-base-100"></div>
+            <Nav />
+          </div>
         )}
       </section>
     </main>

@@ -9,6 +9,7 @@ import SearchResultsTable from '@/components/SearchResultsTable'
 import { useRouter } from 'next/router'
 import { toast } from 'react-toastify'
 import { GETTING_SESSION_DELAY } from '@/constants'
+import Skeleton from 'react-loading-skeleton'
 
 const Articles = () => {
   const { data: session } = useSession()
@@ -17,7 +18,7 @@ const Articles = () => {
   const [analystArticles, setAnalystArticles] = useState<Analyst[]>([])
   const [speedArticles, setSpeedArticles] = useState<Analyst[]>([])
   const [isAdmin, setIsAdmin] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [skeletonLoading, setSkeletonLoading] = useState(true)
 
   const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
 
@@ -100,7 +101,6 @@ const Articles = () => {
         redirectToHomePage()
         return
       } else {
-        setLoading(true)
         const user: User | undefined = session?.user
 
         // If the session.user object is not available or accessToken is missing
@@ -148,6 +148,7 @@ const Articles = () => {
 
             const moderatorData = await moderatorResponse.json()
             setModeratorArticles(moderatorData)
+            setSkeletonLoading(false)
           } catch (error: any) {
             toast.error(`Fetch error for moderator articles: ${error.message}`, {
               position: 'top-right',
@@ -160,9 +161,7 @@ const Articles = () => {
               theme: 'dark',
             })
           } finally {
-            setTimeout(() => {
-              setLoading(false)
-            }, GETTING_SESSION_DELAY)
+            setTimeout(() => {}, GETTING_SESSION_DELAY)
           }
         }
 
@@ -183,6 +182,7 @@ const Articles = () => {
 
             const analystData = await analystResponse.json()
             setAnalystArticles(analystData)
+            setSkeletonLoading(false)
           } catch (error: any) {
             toast.error(`Fetch error for analyst articles: ${error.message}`, {
               position: 'top-right',
@@ -195,9 +195,7 @@ const Articles = () => {
               theme: 'dark',
             })
           } finally {
-            setTimeout(() => {
-              setLoading(false)
-            }, GETTING_SESSION_DELAY)
+            setTimeout(() => {}, GETTING_SESSION_DELAY)
           }
         }
 
@@ -218,6 +216,7 @@ const Articles = () => {
 
             const speedData = await speedResponse.json()
             setSpeedArticles(speedData)
+            setSkeletonLoading(false)
           } catch (error: any) {
             toast.error(`Fetch error for speed articles: ${error.message}`, {
               position: 'top-right',
@@ -230,9 +229,7 @@ const Articles = () => {
               theme: 'dark',
             })
           } finally {
-            setTimeout(() => {
-              setLoading(false)
-            }, GETTING_SESSION_DELAY)
+            setTimeout(() => {}, GETTING_SESSION_DELAY)
           }
         }
 
@@ -263,50 +260,43 @@ const Articles = () => {
       <section>
         <Meta title="SPEED APP" description="Admin Dashboard" />
 
-        {loading ? (
-          // Show loading skeleton while fetching data
-          <div className="bg-base-100 flex items-center justify-center min-h-screen">
-            <div className="text-center">
-              <span className="loading loading-spinner loading-lg"></span>
-              <p>Loading...</p>
+        <div className="relative bg-base-100 items-center justify-center min-h-screen">
+          <div className="flex">
+            {/* Sidebar */}
+            <Sidebar />
+            <div className="h-screen flex-1 p-7 mb-32">
+              <h1 className="text-2xl font-semibold mb-12">Articles List Below</h1>
+
+              {isAdmin ? (
+                <>
+                  <h2 className="text-lg font-semibold">Moderator Articles</h2>
+                  <SearchResultsTable
+                    data={moderatorArticles}
+                    onDelete={(articleId) => handleDelete(articleId, DeleteSource.Moderator)}
+                    isLoading={skeletonLoading}
+                  />
+
+                  <h2 className="text-lg font-semibold">Analyst Articles</h2>
+                  <SearchResultsTable
+                    data={analystArticles}
+                    onDelete={(articleId) => handleDelete(articleId, DeleteSource.Analyst)}
+                    isLoading={skeletonLoading}
+                  />
+
+                  <h2 className="text-lg font-semibold">Speed Articles</h2>
+                  <SearchResultsTable
+                    data={speedArticles}
+                    onDelete={(articleId) => handleDelete(articleId, DeleteSource.Speed)}
+                    isLoading={skeletonLoading}
+                  />
+                </>
+              ) : (
+                <Skeleton count={3} baseColor="#202020" highlightColor="#444" />
+              )}
             </div>
           </div>
-        ) : (
-          <>
-            {isAdmin ? (
-              <div className="relative bg-base-100 items-center justify-center min-h-screen">
-                <div className="flex">
-                  {/* Sidebar */}
-                  <Sidebar />
-                  <div className="h-screen flex-1 p-7 mb-32">
-                    <h1 className="text-2xl font-semibold mb-12">Articles List Below</h1>
-
-                    <h2 className="text-lg font-semibold">Moderator Articles</h2>
-                    <SearchResultsTable
-                      data={moderatorArticles}
-                      onDelete={(articleId) => handleDelete(articleId, DeleteSource.Moderator)}
-                    />
-
-                    <h2 className="text-lg font-semibold">Analyst Articles</h2>
-                    <SearchResultsTable
-                      data={analystArticles}
-                      onDelete={(articleId) => handleDelete(articleId, DeleteSource.Analyst)}
-                    />
-
-                    <h2 className="text-lg font-semibold">Speed Articles</h2>
-                    <SearchResultsTable
-                      data={speedArticles}
-                      onDelete={(articleId) => handleDelete(articleId, DeleteSource.Speed)}
-                    />
-                  </div>
-                </div>
-                <Nav />
-              </div>
-            ) : (
-              <></>
-            )}
-          </>
-        )}
+          <Nav />
+        </div>
       </section>
     </main>
   )

@@ -1,15 +1,11 @@
 import React, { useState } from 'react'
-import { DecodedToken, SearchResultData } from '../types/index'
+import { DecodedToken, SearchResultData, SearchResultsTableProps } from '@/types/index'
 import { useSession } from 'next-auth/react'
 import jwt_decode from 'jwt-decode'
 import { User } from 'next-auth'
+import Skeleton from 'react-loading-skeleton'
 
-interface SearchResultsTableProps {
-  data: SearchResultData[]
-  onDelete?: (id: string) => void
-}
-
-const SearchResultsTable: React.FC<SearchResultsTableProps> = ({ data, onDelete }) => {
+const SearchResultsTable: React.FC<SearchResultsTableProps> = ({ data, onDelete, isLoading }) => {
   const [sortColumn, setSortColumn] = useState<string | null>(null)
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
 
@@ -52,55 +48,67 @@ const SearchResultsTable: React.FC<SearchResultsTableProps> = ({ data, onDelete 
 
   return (
     <div className="overflow-x-auto container">
-      <table className="table mb-20">
-        <thead>
-          <tr>
-            <th onClick={() => handleSort('title')}>Title {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
-            <th onClick={() => handleSort('authors')}>
-              Authors {sortOrder === 'asc' ? ' ▲' : ' ▼'}
-            </th>
-            <th onClick={() => handleSort('journal')}>
-              Journal {sortOrder === 'asc' ? ' ▲' : ' ▼'}
-            </th>
-            <th onClick={() => handleSort('year')}>Year {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
-            <th onClick={() => handleSort('volume')}>Volume {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
-            <th onClick={() => handleSort('pages')}>
-              Number of Pages {sortOrder === 'asc' ? ' ▲' : ' ▼'}
-            </th>
-            <th onClick={() => handleSort('doi')}>Doi {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
-            <th onClick={() => handleSort('claim')}>Claim {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
-            <th onClick={() => handleSort('method')}>
-              SE Method {sortOrder === 'asc' ? ' ▲' : ' ▼'}
-            </th>
-            {userRole === 'admin' && <th>Actions</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {sortedData.map((result) => (
-            <tr key={result._id}>
-              <td>{result.title}</td>
-              <td>{result.authors}</td>
-              <td>{result.journal}</td>
-              <td>{result.year}</td>
-              <td>{result.volume}</td>
-              <td>{result.pages}</td>
-              <td>{result.doi}</td>
-              <td>{result.claim}</td>
-              <td>{result.method}</td>
-              {userRole === 'admin' && (
-                <td>
-                  <button
-                    onClick={() => onDelete && onDelete(result._id)}
-                    className="text-red-500 hover:underline cursor-pointer"
-                  >
-                    Delete
-                  </button>
-                </td>
-              )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <>
+        {isLoading ? (
+          <Skeleton count={6} baseColor="#202020" highlightColor="#444" />
+        ) : (
+          <table className="table mb-20">
+            <thead>
+              <tr>
+                <th onClick={() => handleSort('title')}>
+                  Title {sortOrder === 'asc' ? ' ▲' : ' ▼'}
+                </th>
+                <th onClick={() => handleSort('authors')}>
+                  Authors {sortOrder === 'asc' ? ' ▲' : ' ▼'}
+                </th>
+                <th onClick={() => handleSort('journal')}>
+                  Journal {sortOrder === 'asc' ? ' ▲' : ' ▼'}
+                </th>
+                <th onClick={() => handleSort('year')}>Year {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
+                <th onClick={() => handleSort('volume')}>
+                  Volume {sortOrder === 'asc' ? ' ▲' : ' ▼'}
+                </th>
+                <th onClick={() => handleSort('pages')}>
+                  Number of Pages {sortOrder === 'asc' ? ' ▲' : ' ▼'}
+                </th>
+                <th onClick={() => handleSort('doi')}>Doi {sortOrder === 'asc' ? ' ▲' : ' ▼'}</th>
+                <th onClick={() => handleSort('claim')}>
+                  Claim {sortOrder === 'asc' ? ' ▲' : ' ▼'}
+                </th>
+                <th onClick={() => handleSort('method')}>
+                  SE Method {sortOrder === 'asc' ? ' ▲' : ' ▼'}
+                </th>
+                {userRole === 'admin' && <th>Actions</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {sortedData.map((result) => (
+                <tr key={result._id}>
+                  <td>{result.title}</td>
+                  <td>{result.authors}</td>
+                  <td>{result.journal}</td>
+                  <td>{result.year}</td>
+                  <td>{result.volume}</td>
+                  <td>{result.pages}</td>
+                  <td>{result.doi}</td>
+                  <td>{result.claim}</td>
+                  <td>{result.method}</td>
+                  {userRole === 'admin' && (
+                    <td>
+                      <button
+                        onClick={() => onDelete && onDelete(result._id)}
+                        className="text-red-500 hover:underline cursor-pointer"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </>
     </div>
   )
 }

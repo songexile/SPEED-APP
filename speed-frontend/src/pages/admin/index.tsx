@@ -213,13 +213,12 @@ const Admin = () => {
                             <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
                           </svg>
                         }
+                        isLoading={!count.totalModeratorArticles}
                       />
-
                       <CardComponent
                         title="Total Analyst Articles"
                         count={count.totalAnalystArticles}
                         icon={
-                          // https://iconsvg.xyz/
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="35"
@@ -235,13 +234,12 @@ const Admin = () => {
                             <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
                           </svg>
                         }
+                        isLoading={!count.totalAnalystArticles}
                       />
-
                       <CardComponent
                         title="Total SPEED Articles"
                         count={count.totalSpeedArticles}
                         icon={
-                          // https://iconsvg.xyz/
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="35"
@@ -257,13 +255,12 @@ const Admin = () => {
                             <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
                           </svg>
                         }
+                        isLoading={!count.totalSpeedArticles}
                       />
-
                       <CardComponent
                         title="Total Accounts"
                         count={count.totalAccounts}
                         icon={
-                          // https://iconsvg.xyz/
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="35"
@@ -279,6 +276,7 @@ const Admin = () => {
                             <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
                           </svg>
                         }
+                        isLoading={!count.totalAccounts}
                       />
                     </div>
                   </div>
