@@ -16,7 +16,7 @@ const Admin = () => {
 
   const [userName, setUserName] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
 
@@ -49,7 +49,6 @@ const Admin = () => {
         redirectToHomePage()
         return
       } else {
-        setLoading(true)
         const user: User | undefined = session?.user
 
         // If the session.user object is not available or accessToken is missing
@@ -70,8 +69,6 @@ const Admin = () => {
 
         const fetchData = async () => {
           try {
-            setLoading(true)
-
             // Fetch Total Moderator Articles
             const moderatorResponse = await fetch(`${API_ENDPOINT}moderator`, {
               method: 'GET',
@@ -158,9 +155,7 @@ const Admin = () => {
         } else {
           fetchData()
           setIsAdmin(true)
-          setTimeout(() => {
-            setLoading(false)
-          }, GETTING_SESSION_DELAY)
+          setTimeout(() => {}, GETTING_SESSION_DELAY)
         }
       }
     }, GETTING_SESSION_DELAY)
@@ -172,121 +167,117 @@ const Admin = () => {
     <main>
       <section>
         <Meta title="SPEED APP" description="Admin Dashboard" />
+        {isAdmin ? (
+          <div className="relative bg-base-100 items-center justify-center min-h-screen">
+            <div className="flex">
+              {/* Sidebar */}
+              <Sidebar />
+              <div className="h-fit flex-1 p-7 mb-52">
+                <h1 className="text-2xl font-semibold mb-12">{`Welcome Back, ${userName}`}</h1>
 
-        {loading ? (
-          // Show loading skeleton while fetching data
-          <div className="bg-base-100 flex items-center justify-center min-h-screen">
-            <div className="text-center">
-              <span className="loading loading-spinner loading-lg"></span>
-              <p>Loading...</p>
+                {/* Content */}
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+                  <CardComponent
+                    title="Total Moderator Articles"
+                    count={count.totalModeratorArticles}
+                    icon={
+                      // https://iconsvg.xyz/
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="35"
+                        height="35"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#7be63e"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
+                        <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
+                      </svg>
+                    }
+                    isLoading={!count.totalModeratorArticles}
+                  />
+                  <CardComponent
+                    title="Total Analyst Articles"
+                    count={count.totalAnalystArticles}
+                    icon={
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="35"
+                        height="35"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#7be63e"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
+                        <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
+                      </svg>
+                    }
+                    isLoading={!count.totalAnalystArticles}
+                  />
+                  <CardComponent
+                    title="Total SPEED Articles"
+                    count={count.totalSpeedArticles}
+                    icon={
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="35"
+                        height="35"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#7be63e"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
+                        <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
+                      </svg>
+                    }
+                    isLoading={!count.totalSpeedArticles}
+                  />
+                  <CardComponent
+                    title="Total Accounts"
+                    count={count.totalAccounts}
+                    icon={
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="35"
+                        height="35"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#7be63e"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
+                        <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
+                      </svg>
+                    }
+                    isLoading={!count.totalAccounts}
+                  />
+                </div>
+              </div>
             </div>
+            <Nav />
           </div>
         ) : (
-          <>
-            {isAdmin ? (
-              <div className="relative bg-base-100 items-center justify-center min-h-screen">
-                <div className="flex">
-                  {/* Sidebar */}
-                  <Sidebar />
-                  <div className="h-fit flex-1 p-7 mb-52">
-                    <h1 className="text-2xl font-semibold mb-12">{`Welcome Back, ${userName}`}</h1>
-
-                    {/* Content */}
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-                      <CardComponent
-                        title="Total Moderator Articles"
-                        count={count.totalModeratorArticles}
-                        icon={
-                          // https://iconsvg.xyz/
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="35"
-                            height="35"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#7be63e"
-                            strokeWidth="2.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
-                            <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
-                          </svg>
-                        }
-                        isLoading={!count.totalModeratorArticles}
-                      />
-                      <CardComponent
-                        title="Total Analyst Articles"
-                        count={count.totalAnalystArticles}
-                        icon={
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="35"
-                            height="35"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#7be63e"
-                            strokeWidth="2.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
-                            <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
-                          </svg>
-                        }
-                        isLoading={!count.totalAnalystArticles}
-                      />
-                      <CardComponent
-                        title="Total SPEED Articles"
-                        count={count.totalSpeedArticles}
-                        icon={
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="35"
-                            height="35"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#7be63e"
-                            strokeWidth="2.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
-                            <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
-                          </svg>
-                        }
-                        isLoading={!count.totalSpeedArticles}
-                      />
-                      <CardComponent
-                        title="Total Accounts"
-                        count={count.totalAccounts}
-                        icon={
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="35"
-                            height="35"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#7be63e"
-                            strokeWidth="2.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
-                            <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
-                          </svg>
-                        }
-                        isLoading={!count.totalAccounts}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <Nav />
+          <div className="relative bg-base-100 items-center justify-center min-h-screen">
+            <div className="flex">
+              {/* Sidebar */}
+              <Sidebar />
+              <div className="h-fit flex-1 p-7 mb-52">
+                <h1 className="text-2xl font-semibold mb-12">{`Welcome Back, ${userName}`}</h1>
               </div>
-            ) : (
-              <></>
-            )}
-          </>
+            </div>
+            <Nav />
+          </div>
         )}
       </section>
     </main>
