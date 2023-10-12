@@ -74,6 +74,7 @@ const AnalystPage = () => {
         } else if (userRole === 'analyst' || userRole === 'admin') {
           setIsAnalyst(userRole === 'analyst')
           setIsAdmin(userRole === 'admin')
+          setLoading(false)
         }
       }
     }, GETTING_SESSION_DELAY)
