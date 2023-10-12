@@ -12,6 +12,7 @@ const SearchPage: React.FC = () => {
   const [data, setData] = useState<ArticleProps[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [selectedMethod, setSelectedMethod] = useState<string>('')
 
   const { data: session } = useSession()
   const router = useRouter()
@@ -35,8 +36,8 @@ const SearchPage: React.FC = () => {
   const fetchData = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const startYear = (document.getElementById('startYear') as HTMLInputElement)?.value
-    const endYear = (document.getElementById('endYear') as HTMLInputElement)?.value
+    const startYear = (document.querySelector('#startYear') as HTMLInputElement)?.value
+    const endYear = (document.querySelector('#endYear') as HTMLInputElement)?.value
 
     const isNumeric = (value: any) => !isNaN(value) && isFinite(value)
 
@@ -51,8 +52,13 @@ const SearchPage: React.FC = () => {
         return
       }
       url = `${API_ENDPOINT}speed/by-year-range?startYear=${startYear}&endYear=${endYear}`
+
+      if (selectedMethod) {
+        url = `${API_ENDPOINT}speed/by-year-range-and-method?startYear=${startYear}&endYear=${endYear}&method=${selectedMethod}`
+      }
+    } else if (selectedMethod) {
+      url += `/by-method?method=${selectedMethod}`
     } else if (startYear || endYear) {
-      // Display an error message if either startYear or endYear is not numeric
       setError(
         'Please input both start and end years with valid numbers. Otherwise leave it empty to display all articles.'
       )
@@ -77,15 +83,15 @@ const SearchPage: React.FC = () => {
           setData(data)
 
           // Update the URL with the selected filters
-          const queryParams = new URLSearchParams()
-          queryParams.set('startYear', startYear)
-          queryParams.set('endYear', endYear)
+          const queryParams = {
+            startYear,
+            endYear,
+          }
 
-          // Add more parameters as needed later on
-          // queryParams.set('method', selectedMethod);
-
-          const newUrl = `${window.location.pathname}?${queryParams.toString()}`
-          window.history.pushState({}, '', newUrl)
+          router.push({
+            pathname: window.location.pathname,
+            query: queryParams,
+          })
         }
       } else {
         toast.error('Failed to fetch data from the server.', {
@@ -185,16 +191,16 @@ const SearchPage: React.FC = () => {
           <form onSubmit={handleSearchClick}>
             <div className="space-y-4 flex flex-col">
               <label className="label mt-4">
-                {/* TODO Make This Work */}
-                <span className="">Choose a Software Engineering Method</span>
+                <span>Choose a Software Engineering Method</span>
               </label>
               <select
                 className="select select-bordered w-full max-w-xs bg-secondary"
-                defaultValue="Choose a method"
+                value={selectedMethod}
+                onChange={(e) => setSelectedMethod(e.target.value)}
               >
-                <option>Choose a method</option>
-                <option>Waterfall</option>
-                <option>Agile</option>
+                <option value="">Choose a method</option>
+                <option value="Waterfall">Waterfall</option>
+                <option value="Agile">Agile</option>
               </select>
 
               <input
