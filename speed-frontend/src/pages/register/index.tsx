@@ -40,7 +40,7 @@ const Register = () => {
         password: formData.password,
       }
 
-      const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || `http://localhost:3001/`
+      const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT_URI
 
       const response = await fetch(`${apiEndpoint}auth/signup`, {
         method: 'POST',

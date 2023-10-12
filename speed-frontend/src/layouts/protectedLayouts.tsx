@@ -41,7 +41,7 @@ export const ProtectedLayout = ({ children }: Props): JSX.Element => {
       })
       router.push({
         pathname: '/',
-        query: { returnUrl: router.asPath },
+        // query: { returnUrl: router.asPath },
       })
     }
   }, [loading, unAuthorized, sessionStatus, router])

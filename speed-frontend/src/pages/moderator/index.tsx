@@ -6,7 +6,7 @@ import jwt_decode from 'jwt-decode'
 import { DecodedToken, User, Analyst } from '@/types/index'
 import { toast } from 'react-toastify'
 import { GETTING_SESSION_DELAY } from '@/constants'
-import { Loading } from '@/components'
+import { Loading, Nav } from '@/components'
 import ModeratorDashboard from '@/components/Dashboard/ModeratorDashboard'
 
 const Moderator = () => {
@@ -17,7 +17,7 @@ const Moderator = () => {
   const [loading, setLoading] = useState(false)
   const [articles, setArticles] = useState<Analyst[]>([])
 
-  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
+  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI
 
   const redirectToHomePage = () => {
     router.push('/')
@@ -146,11 +146,25 @@ const Moderator = () => {
 
       if (!response.ok) {
         throw new Error(`Failed to accept article: ${response.statusText}`)
+      } else {
+        // Delete the article in moderator DB
+        // After accepting, send a DELETE request to remove the article from the moderator DB
+        const deleteResponse = await fetch(`${API_ENDPOINT}moderator/${articleId}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        })
+
+        if (!deleteResponse.ok) {
+          throw new Error(
+            `Failed to delete article from moderator DB: ${deleteResponse.statusText}`
+          )
+        }
       }
 
-      // TODO delete the article in moderator DB?
-
-      // Remove the accepted article from the state (assuming you have a state to manage articles)
+      // Remove the accepted article from the state
       setArticles((prevArticles: any) =>
         prevArticles.filter((article: any) => article._id !== articleId)
       )
@@ -222,6 +236,7 @@ const Moderator = () => {
             )}
           </>
         )}
+        <Nav />
       </section>
     </main>
   )

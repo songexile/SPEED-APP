@@ -1,4 +1,3 @@
-import { Nav } from '@/components'
 import ArticleCard from './ArticleCard'
 
 const ModeratorDashboard = ({ articles, handleAcceptArticle, handleRejectArticle }: any) => {
@@ -15,7 +14,6 @@ const ModeratorDashboard = ({ articles, handleAcceptArticle, handleRejectArticle
           />
         ))}
       </div>
-      <Nav />
     </div>
   )
 }

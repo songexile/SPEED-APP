@@ -15,9 +15,9 @@ const Accounts = () => {
   const router = useRouter()
   const [userAccounts, setUserAccounts] = useState<Account[]>([])
   const [isAdmin, setIsAdmin] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [skeletonLoading, setSkeletonLoading] = useState(true)
 
-  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
+  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI
 
   const user: User | any = session?.user
 
@@ -112,7 +112,6 @@ const Accounts = () => {
         redirectToHomePage()
         return
       } else {
-        setLoading(true)
         const currentUser: User | undefined = session?.user
 
         if (!currentUser || !currentUser.accessToken) {
@@ -157,6 +156,17 @@ const Accounts = () => {
             if (accountResponse.ok) {
               const userAccountsData = await accountResponse.json()
               setUserAccounts(userAccountsData) // Update the state with fetched accounts
+            } else {
+              toast.error('Error fetching user accounts', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: 'dark',
+              })
             }
           } catch (error) {
             toast.error('Error fetching user accounts: ' + error, {
@@ -170,9 +180,8 @@ const Accounts = () => {
               theme: 'dark',
             })
           } finally {
-            setTimeout(() => {
-              setLoading(false)
-            }, GETTING_SESSION_DELAY)
+            // Set skeletonLoading to false when the data is fetched
+            setSkeletonLoading(false)
           }
         }
         fetchUsersAccounts()
@@ -186,44 +195,46 @@ const Accounts = () => {
     <main>
       <section>
         <Meta title="SPEED APP" description="Admin Dashboard" />
-        {loading ? (
-          // Show loading skeleton while fetching data
-          <div className="bg-base-100 flex items-center justify-center min-h-screen">
-            <div className="text-center">
-              <span className="loading loading-spinner loading-lg"></span>
-              <p>Loading...</p>
+        {isAdmin ? (
+          <div className="relative bg-base-100 items-center justify-center min-h-screen">
+            <div className="flex">
+              {/* Sidebar */}
+              <Sidebar />
+              <div className="h-screen flex-1 p-7">
+                <h1 className="text-2xl font-semibold mb-12">Account List Below</h1>
+                <h2 className="text-lg font-semibold">User Accounts</h2>
+                {isAdmin && (
+                  <UserTable
+                    users={userAccounts}
+                    onDelete={(id) => handleDelete(id)}
+                    userRole={userRole}
+                    isLoading={skeletonLoading}
+                  />
+                )}
+              </div>
             </div>
+            <Nav />
           </div>
         ) : (
-          <>
-            {isAdmin ? (
-              <div className="relative bg-base-100 items-center justify-center min-h-screen">
-                <div className="flex">
-                  {/* Sidebar */}
-                  <Sidebar />
-                  <div className="h-screen flex-1 p-7">
-                    <h1 className="text-2xl font-semibold mb-12">Account List Below</h1>
-
-                    <h2 className="text-lg font-semibold">User Accounts</h2>
-                    {isAdmin && (
-                      <UserTable
-                        users={userAccounts}
-                        onDelete={(id) => handleDelete(id)}
-                        userRole={userRole}
-                      />
-                    )}
-                  </div>
-                </div>
-                <Nav />
+          <div className="relative bg-base-100 items-center justify-center min-h-screen">
+            <div className="flex">
+              {/* Sidebar */}
+              <Sidebar />
+              <div className="h-screen flex-1 p-7">
+                <h1 className="text-2xl font-semibold mb-12">Account List Below</h1>
+                <h2 className="text-lg font-semibold">User Accounts</h2>
               </div>
-            ) : (
-              <></>
-            )}
-          </>
+            </div>
+            <Nav />
+          </div>
         )}
       </section>
     </main>
   )
 }
+
+// Add the requireAuth property to the page component
+// To protect the page from unauthenticated users
+Accounts.requireAuth = true
 
 export default Accounts

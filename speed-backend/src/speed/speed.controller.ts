@@ -13,18 +13,39 @@ export class SpeedController {
     async addSpeed(@Body() speedServiceDta: any): Promise<any> {
         return await this.speedService.create(speedServiceDta);
     }
-
+    
     @Get('by-year-range')
-    async findSubmissionsByYearRange(
+    async findSpeedByYearRange(
         @Query('startYear') startYear: string,
         @Query('endYear') endYear: string,
     ): Promise<Speed[]> {
         const parsedStartYear = parseInt(startYear, 10);
         const parsedEndYear = parseInt(endYear, 10);
 
-        return this.speedService.findSubmissionsByYearRange(
+        return this.speedService.findSpeedByYearRange(
             parsedStartYear,
             parsedEndYear,
+        );
+    }
+
+    @Get('by-method')
+    async findSpeedByMethod(@Query('method') method: string): Promise<Speed[]> {
+        return this.speedService.findSpeedByMethod(method);
+    }
+
+    @Get('by-year-range-and-method')
+    async findSpeedByYearRangeAndMethod(
+        @Query('startYear') startYear: string,
+        @Query('endYear') endYear: string,
+        @Query('method') method: string,
+    ): Promise<Speed[]> {
+        const parsedStartYear = parseInt(startYear, 10);
+        const parsedEndYear = parseInt(endYear, 10);
+
+        return this.speedService.findSpeedByYearRangeAndMethod(
+            parsedStartYear,
+            parsedEndYear,
+            method,
         );
     }
 

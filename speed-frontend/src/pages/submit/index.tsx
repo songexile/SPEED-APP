@@ -70,7 +70,7 @@ const SubmitPage = () => {
       return // If form is not valid, do not submit
     }
 
-    const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || `http://localhost:3001/`
+    const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT_URI
 
     fetch(`${apiEndpoint}moderator`, {
       method: 'POST',

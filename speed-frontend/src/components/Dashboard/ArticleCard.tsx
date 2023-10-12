@@ -9,6 +9,7 @@ const ArticleCard = ({ article, onAccept, onReject }: any) => {
   const handleAccept = async () => {
     setIsSubmitting(true)
     setError(null)
+
     try {
       const success = await onAccept(_id)
 
@@ -38,7 +39,6 @@ const ArticleCard = ({ article, onAccept, onReject }: any) => {
         progress: undefined,
         theme: 'dark',
       })
-      setError('Error accepting article. Please try again later.')
     } finally {
       setIsSubmitting(false)
     }
@@ -47,6 +47,7 @@ const ArticleCard = ({ article, onAccept, onReject }: any) => {
   const handleReject = async () => {
     setIsSubmitting(true)
     setError(null)
+
     try {
       const success = await onReject(_id)
 
@@ -76,7 +77,6 @@ const ArticleCard = ({ article, onAccept, onReject }: any) => {
         progress: undefined,
         theme: 'dark',
       })
-      setError('Error rejecting article. Please try again later.')
     } finally {
       setIsSubmitting(false)
     }
@@ -108,18 +108,39 @@ const ArticleCard = ({ article, onAccept, onReject }: any) => {
         </button>
       </div>
       {error && <div className="text-red-500">{error}</div>}
-      <div className="text-gray-800">
-        {/* TODO ADD SOME QUALITY CHECK RULES */}
-        <input type="checkbox" id="quality1" name="quality1" />
-        <label htmlFor="quality1"> This Article ...</label>
-        <br />
-        <input type="checkbox" id="vehicle2" name="vehicle2" />
-        <label htmlFor="vehicle2"> This Article ...</label>
-        <br />
-        <input type="checkbox" id="vehicle3" name="vehicle3" />
-        <label htmlFor="vehicle3"> This Article ...</label>
-        <br />
-        <br />
+      <div className="text-gray-800 form-control">
+        <p>Quality Checklist</p>
+        <form>
+          <label className="cursor-pointer flex items-center my-2">
+            <input
+              type="checkbox"
+              id="quality1"
+              name="quality1"
+              className="checkbox checkbox-primary"
+            />
+            <span className="label-text pl-3">This Article Is ...</span>
+          </label>
+
+          <label className="cursor-pointer flex items-center my-2">
+            <input
+              type="checkbox"
+              id="quality1"
+              name="quality1"
+              className="checkbox checkbox-primary"
+            />
+            <span className="label-text pl-3">This Article Is ...</span>
+          </label>
+
+          <label className="cursor-pointer flex items-center my-2">
+            <input
+              type="checkbox"
+              id="quality1"
+              name="quality1"
+              className="checkbox checkbox-primary"
+            />
+            <span className="label-text pl-3">This Article Is ...</span>
+          </label>
+        </form>
       </div>
     </div>
   )
