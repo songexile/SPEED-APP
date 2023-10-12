@@ -13,32 +13,26 @@ const SearchPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [selectedMethod, setSelectedMethod] = useState<string>('')
-
+  const [searchText, setSearchText] = useState('')
   const { data: session } = useSession()
   const router = useRouter()
-
   const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI
 
   useEffect(() => {
     const { startYear, endYear } = router.query
+    const startYearInput = document.getElementById('startYear') as HTMLInputElement
+    const endYearInput = document.getElementById('endYear') as HTMLInputElement
 
-    if (startYear && endYear) {
-      const startYearInput = document.getElementById('startYear') as HTMLInputElement
-      const endYearInput = document.getElementById('endYear') as HTMLInputElement
-
-      if (startYearInput && endYearInput) {
-        startYearInput.value = startYear as string
-        endYearInput.value = endYear as string
-      }
+    if (startYear && endYear && startYearInput && endYearInput) {
+      startYearInput.value = startYear as string
+      endYearInput.value = endYear as string
     }
   }, [router.query])
 
   const fetchData = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
     const startYear = (document.querySelector('#startYear') as HTMLInputElement)?.value
     const endYear = (document.querySelector('#endYear') as HTMLInputElement)?.value
-
     const isNumeric = (value: any) => !isNaN(value) && isFinite(value)
 
     let url = `${API_ENDPOINT}speed`
@@ -52,7 +46,6 @@ const SearchPage: React.FC = () => {
         return
       }
       url = `${API_ENDPOINT}speed/by-year-range?startYear=${startYear}&endYear=${endYear}`
-
       if (selectedMethod) {
         url = `${API_ENDPOINT}speed/by-year-range-and-method?startYear=${startYear}&endYear=${endYear}&method=${selectedMethod}`
       }
@@ -70,28 +63,27 @@ const SearchPage: React.FC = () => {
       setError(null)
 
       const response = await fetch(url)
-      if (response.ok) {
-        const data = await response.json()
 
-        if (data.length === 0) {
+      if (response.ok) {
+        const responseData = await response.json()
+
+        if (responseData.length === 0) {
           setError('No results found.')
-          setData(data)
+          setData(responseData)
         } else {
           if (error?.length) {
             setError('')
           }
-          setData(data)
 
-          // Update the URL with the selected filters
-          const queryParams = {
-            startYear,
-            endYear,
-          }
+          const filteredArticles = responseData.filter((article: ArticleProps) =>
+            article.title.toLowerCase().includes(searchText.toLowerCase())
+          )
 
-          router.push({
-            pathname: window.location.pathname,
-            query: queryParams,
-          })
+          setData(filteredArticles)
+          console.log(filteredArticles)
+
+          const queryParams = { startYear, endYear }
+          router.push({ pathname: window.location.pathname, query: queryParams })
         }
       } else {
         toast.error('Failed to fetch data from the server.', {
@@ -124,10 +116,10 @@ const SearchPage: React.FC = () => {
   }
 
   const handleSearchClick = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     fetchData(e)
   }
 
-  // HandleDelete function to delete articles
   const handleDelete = async (articleId: string, source: DeleteSource) => {
     const user: User | any = session?.user
 
@@ -135,9 +127,7 @@ const SearchPage: React.FC = () => {
     const token = user.accessToken
 
     try {
-      // Determine the endpoint based on the source
       const endpoint = 'speed'
-
       // Send a DELETE request to the appropriate endpoint
       const response = await fetch(`${API_ENDPOINT}${endpoint}/${articleId}`, {
         method: 'DELETE',
@@ -151,12 +141,10 @@ const SearchPage: React.FC = () => {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      // Remove the deleted article from the state
       if (source === DeleteSource.Speed) {
         setData((prevArticles) => prevArticles.filter((article) => article._id !== articleId))
       }
-    } catch (error) {
-      toast.error('Error deleting article: ' + error, {
+      toast.success('Success Delete Article!', {
         position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
@@ -166,8 +154,8 @@ const SearchPage: React.FC = () => {
         progress: undefined,
         theme: 'dark',
       })
-    } finally {
-      toast.success('Success Delete Article!', {
+    } catch (error) {
+      toast.error('Error deleting article: ' + error, {
         position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
@@ -202,38 +190,43 @@ const SearchPage: React.FC = () => {
                 <option value="Waterfall">Waterfall</option>
                 <option value="Agile">Agile</option>
               </select>
-
+              <input
+                type="text"
+                placeholder="Search by Title"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                className="input input-bordered w-full max-w-xs"
+              />
               <input
                 type="text"
                 placeholder="Start Year"
                 className="input input-bordered w-full max-w-xs"
                 id="startYear"
-              ></input>
+              />
               <input
                 type="text"
                 placeholder="End Year"
                 className="input input-bordered w-full max-w-xs"
                 id="endYear"
-              ></input>
+              />
               <CustomReusableButton text="Search" className="btn btn-primary" type="submit" />
             </div>
           </form>
           {error && <div className="text-red-500">{error}</div>}
           {loading ? (
-            // Show loading skeleton while fetching data
             <div className="container mt-5 w-max">
               <span className="loading loading-spinner loading-lg"></span>
               <p>Loading...</p>
             </div>
           ) : (
-            <>
+            <div>
               {data.length > 0 && (
                 <SearchResultsTable
                   data={data}
                   onDelete={(articleId) => handleDelete(articleId, DeleteSource.Speed)}
                 />
               )}
-            </>
+            </div>
           )}
         </div>
         <div className="mt-20">
