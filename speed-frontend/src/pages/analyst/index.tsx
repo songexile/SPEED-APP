@@ -216,35 +216,36 @@ const AnalystPage = () => {
     <main>
       <section>
         <Meta title="SPEED APP" description="Search Software Engineering methods to find claims." />
-        {(isAnalyst || isAdmin) && (
-          <div className="bg-base-100 flex flex-col items-center min-h-screen text-white">
-            <h1 className="text-4xl font-bold text-center mt-8">Analyst Page</h1>
-            {!showArticles ? (
-              <CustomReusableButton
-                text="View all articles"
-                className="btn btn-primary mt-4"
-                onClick={fetchArticles}
-              />
-            ) : loading ? (
-              <Skeleton count={6} baseColor="#202020" highlightColor="#444" />
-            ) : (
-              articles.map((article, index) => (
-                <FormComponent
-                  key={index}
-                  article={article}
-                  index={index}
-                  formData={formData}
-                  buttonDisabled={buttonDisabled}
-                  handleChange={handleChange}
-                  handleSubmit={handleSubmit}
-                  isLoading={loading}
+        <div className="bg-base-100 flex flex-col items-center min-h-screen text-white">
+          <h1 className="text-4xl font-bold text-center mt-8">Analyst Page</h1>
+          {(isAnalyst || isAdmin) && (
+            <>
+              {!showArticles ? (
+                <CustomReusableButton
+                  text="View all articles"
+                  className="btn btn-primary mt-4"
+                  onClick={fetchArticles}
                 />
-              ))
-            )}
-            <div className="h-64 bg-base-100"></div>
-            <Nav />
-          </div>
-        )}
+              ) : loading ? (
+                <Skeleton count={6} baseColor="#202020" highlightColor="#444" />
+              ) : (
+                articles.map((article, index) => (
+                  <FormComponent
+                    key={index}
+                    article={article}
+                    index={index}
+                    formData={formData}
+                    buttonDisabled={buttonDisabled}
+                    handleChange={handleChange}
+                    handleSubmit={handleSubmit}
+                    isLoading={loading}
+                  />
+                ))
+              )}
+            </>
+          )}
+        </div>
+        <Nav />
       </section>
     </main>
   )
