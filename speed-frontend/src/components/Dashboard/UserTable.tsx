@@ -7,7 +7,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, onDelete, userRole, isLoad
       <>
         {isLoading ? (
           <Skeleton count={6} baseColor="#202020" highlightColor="#444" />
-        ) : (
+        ) : users.length > 0 ? ( // Check if there are users in the array
           <table className="table">
             <thead>
               <tr>
@@ -37,6 +37,8 @@ const UserTable: React.FC<UserTableProps> = ({ users, onDelete, userRole, isLoad
               ))}
             </tbody>
           </table>
+        ) : (
+          <p>No users found.</p>
         )}
       </>
     </div>

@@ -6,7 +6,7 @@ import jwt_decode from 'jwt-decode'
 import { DecodedToken, User, Analyst } from '@/types/index'
 import { toast } from 'react-toastify'
 import { GETTING_SESSION_DELAY } from '@/constants'
-import { Loading } from '@/components'
+import { Loading, Nav } from '@/components'
 import ModeratorDashboard from '@/components/Dashboard/ModeratorDashboard'
 
 const Moderator = () => {
@@ -236,6 +236,7 @@ const Moderator = () => {
             )}
           </>
         )}
+        <Nav />
       </section>
     </main>
   )

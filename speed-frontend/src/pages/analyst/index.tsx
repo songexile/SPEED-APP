@@ -252,4 +252,8 @@ const AnalystPage = () => {
   )
 }
 
+// Add the requireAuth property to the page component
+// To protect the page from unauthenticated users
+AnalystPage.requireAuth = true
+
 export default AnalystPage

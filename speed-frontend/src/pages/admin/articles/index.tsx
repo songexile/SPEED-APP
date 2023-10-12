@@ -302,4 +302,8 @@ const Articles = () => {
   )
 }
 
+// Add the requireAuth property to the page component
+// To protect the page from unauthenticated users
+Articles.requireAuth = true
+
 export default Articles
