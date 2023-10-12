@@ -16,7 +16,6 @@ const Admin = () => {
 
   const [userName, setUserName] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
-  const [loading, setLoading] = useState(true)
 
   const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI
 
@@ -83,6 +82,17 @@ const Admin = () => {
                 ...prevCount,
                 totalModeratorArticles: moderatorData.length,
               }))
+            } else {
+              toast.error('Error Fetching Moderator Articles!', {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: 'dark',
+              })
             }
 
             // Fetch Total Analyst Articles
@@ -99,6 +109,17 @@ const Admin = () => {
                 ...prevCount,
                 totalAnalystArticles: analystData.length,
               }))
+            } else {
+              toast.error('Error Fetching Analyst Articles!', {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: 'dark',
+              })
             }
 
             // Fetch Total Speed Articles
@@ -115,6 +136,17 @@ const Admin = () => {
                 ...prevCount,
                 totalSpeedArticles: speedData.length,
               }))
+            } else {
+              toast.error('Error Fetching SPEED Articles!', {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: 'dark',
+              })
             }
 
             // Fetch Total User Accounts
@@ -131,11 +163,29 @@ const Admin = () => {
                 ...prevCount,
                 totalAccounts: userAccountsData.length,
               }))
+            } else {
+              toast.error('Error Fetching Accounts!', {
+                position: 'top-right',
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: 'dark',
+              })
             }
           } catch (error) {
-            // Handle errors here
-          } finally {
-            setLoading(false)
+            toast.error('Error Fetching!', {
+              position: 'top-right',
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: 'dark',
+            })
           }
         }
 
@@ -283,5 +333,9 @@ const Admin = () => {
     </main>
   )
 }
+
+// Add the requireAuth property to the page component
+// To protect the page from unauthenticated users
+Admin.requireAuth = true
 
 export default Admin
