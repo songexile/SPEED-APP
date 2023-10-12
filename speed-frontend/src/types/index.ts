@@ -130,5 +130,5 @@ export interface CardProps {
 export interface SearchResultsTableProps {
   data: SearchResultData[]
   onDelete?: (id: string) => void
-  isLoading: boolean
+  isLoading?: boolean
 }

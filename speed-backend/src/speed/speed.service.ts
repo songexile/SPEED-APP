@@ -38,15 +38,32 @@ export class SpeedService {
         return deletedSubmission;
     }
 
-    async findSubmissionsByYearRange(
+    async findSpeedByYearRange(
         startYear: number,
         endYear: number,
     ): Promise<Speed[]> {
-        const submissions = await this.speedModel
+        const speed = await this.speedModel
             .find({
                 year: { $gte: startYear, $lte: endYear },
             })
             .exec();
-        return submissions as Speed[];
+        return speed as Speed[];
+    }
+
+    async findSpeedByMethod(method: string): Promise<Speed[]> {
+        return this.speedModel.find({ method }).exec();
+    }
+    async findSpeedByYearRangeAndMethod(
+        startYear: number,
+        endYear: number,
+        method: string,
+    ): Promise<Speed[]> {
+        const speed = await this.speedModel
+            .find({
+                year: { $gte: startYear, $lte: endYear },
+                method: method,
+            })
+            .exec();
+        return speed as Speed[];
     }
 }
