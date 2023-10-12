@@ -156,6 +156,17 @@ const Accounts = () => {
             if (accountResponse.ok) {
               const userAccountsData = await accountResponse.json()
               setUserAccounts(userAccountsData) // Update the state with fetched accounts
+            } else {
+              toast.error('Error fetching user accounts', {
+                position: 'top-right',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: 'dark',
+              })
             }
           } catch (error) {
             toast.error('Error fetching user accounts: ' + error, {
@@ -221,5 +232,9 @@ const Accounts = () => {
     </main>
   )
 }
+
+// Add the requireAuth property to the page component
+// To protect the page from unauthenticated users
+Accounts.requireAuth = true
 
 export default Accounts
