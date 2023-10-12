@@ -146,11 +146,25 @@ const Moderator = () => {
 
       if (!response.ok) {
         throw new Error(`Failed to accept article: ${response.statusText}`)
+      } else {
+        // Delete the article in moderator DB
+        // After accepting, send a DELETE request to remove the article from the moderator DB
+        const deleteResponse = await fetch(`${API_ENDPOINT}moderator/${articleId}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        })
+
+        if (!deleteResponse.ok) {
+          throw new Error(
+            `Failed to delete article from moderator DB: ${deleteResponse.statusText}`
+          )
+        }
       }
 
-      // TODO delete the article in moderator DB?
-
-      // Remove the accepted article from the state (assuming you have a state to manage articles)
+      // Remove the accepted article from the state
       setArticles((prevArticles: any) =>
         prevArticles.filter((article: any) => article._id !== articleId)
       )
