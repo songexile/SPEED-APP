@@ -20,7 +20,7 @@ const Articles = () => {
   const [isAdmin, setIsAdmin] = useState(false)
   const [skeletonLoading, setSkeletonLoading] = useState(true)
 
-  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
+  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI
 
   // HandleDelete function to delete articles
   const handleDelete = async (articleId: string, source: DeleteSource) => {

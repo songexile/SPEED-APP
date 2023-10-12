@@ -17,7 +17,7 @@ const SearchPage: React.FC = () => {
   const { data: session } = useSession()
   const router = useRouter()
 
-  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || `http://localhost:3001/`
+  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI
 
   useEffect(() => {
     const { startYear, endYear } = router.query

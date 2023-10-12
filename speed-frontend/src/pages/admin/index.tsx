@@ -18,7 +18,7 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
+  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI
 
   const [count, setCount] = useState({
     totalModeratorArticles: 0,

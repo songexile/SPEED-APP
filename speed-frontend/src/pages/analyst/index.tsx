@@ -9,7 +9,7 @@ import { toast } from 'react-toastify'
 import { GETTING_SESSION_DELAY } from '@/constants'
 import Skeleton from 'react-loading-skeleton'
 
-const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
+const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI
 
 const AnalystPage = () => {
   const [articles, setArticles] = useState<Analyst[]>([])

@@ -17,7 +17,7 @@ const Moderator = () => {
   const [loading, setLoading] = useState(false)
   const [articles, setArticles] = useState<Analyst[]>([])
 
-  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI || 'http://localhost:3001/'
+  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI
 
   const redirectToHomePage = () => {
     router.push('/')
