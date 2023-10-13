@@ -76,9 +76,6 @@ export interface SearchResultData {
   method: string
 }
 
-export interface ArticleProps extends SearchResultData {
-}
-
 export interface CustomReusableButtonProps {
   text: string;
   className?: string;

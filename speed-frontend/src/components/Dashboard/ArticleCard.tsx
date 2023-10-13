@@ -94,14 +94,14 @@ const ArticleCard = ({ article, onAccept, onReject }: any) => {
       <div className="mt-4 flex justify-end">
         <button
           onClick={handleAccept}
-          className="bg-green-500 text-white px-2 py-1 rounded-md mr-2"
+          className="btn btn-success bg-green-500 text-white px-2 py-1 rounded-md mr-2"
           disabled={isSubmitting}
         >
           Accept
         </button>
         <button
           onClick={handleReject}
-          className="bg-red-500 text-white px-2 py-1 rounded-md"
+          className="btn btn-success bg-red-500 text-white px-2 py-1 rounded-md"
           disabled={isSubmitting}
         >
           Reject

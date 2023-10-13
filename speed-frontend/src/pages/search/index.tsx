@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Nav, CustomReusableButton, SearchResultsTable } from '@/components'
 import { Meta } from '@/layouts/Meta'
-import { ArticleProps, DeleteSource } from '@/types/index'
+import { SearchResultData, DeleteSource } from '@/types/index'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 import { User } from 'next-auth'
@@ -9,7 +9,7 @@ import { toast } from 'react-toastify'
 import { GETTING_SESSION_DELAY } from '@/constants'
 
 const SearchPage: React.FC = () => {
-  const [data, setData] = useState<ArticleProps[]>([])
+  const [data, setData] = useState<SearchResultData[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [selectedMethod, setSelectedMethod] = useState<string>('')
@@ -67,22 +67,21 @@ const SearchPage: React.FC = () => {
       if (response.ok) {
         const responseData = await response.json()
 
-        if (responseData.length === 0) {
+        const filteredArticles = responseData.filter((article: SearchResultData) =>
+          article.title.toLowerCase().includes(searchText.toLowerCase())
+        )
+
+        if (filteredArticles.length === 0) {
           setError('No results found.')
-          setData(responseData)
+          setData(filteredArticles)
         } else {
           if (error?.length) {
             setError('')
           }
 
-          const filteredArticles = responseData.filter((article: ArticleProps) =>
-            article.title.toLowerCase().includes(searchText.toLowerCase())
-          )
-
           setData(filteredArticles)
-          console.log(filteredArticles)
 
-          const queryParams = { startYear, endYear }
+          const queryParams = { searchText, startYear, endYear }
           router.push({ pathname: window.location.pathname, query: queryParams })
         }
       } else {
