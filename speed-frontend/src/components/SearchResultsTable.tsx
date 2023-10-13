@@ -36,6 +36,19 @@ const SearchResultsTable: React.FC<SearchResultsTableProps> = ({ data, onDelete,
     sortedData.sort((a, b) => {
       const aValue = a[sortColumn as keyof SearchResultData]
       const bValue = b[sortColumn as keyof SearchResultData]
+
+      if (sortColumn === 'year' || sortColumn === 'volume' || sortColumn === 'pages') {
+        // Convert the string representations to numbers and use type assertion
+        const numericA = parseInt(aValue as string, 10)
+        const numericB = parseInt(bValue as string, 10)
+
+        if (!isNaN(numericA) && !isNaN(numericB)) {
+          // Sort numerically
+          return sortOrder === 'asc' ? numericA - numericB : numericB - numericA
+        }
+      }
+
+      // Default to string comparison for non-numeric columns
       if (aValue < bValue) {
         return sortOrder === 'asc' ? -1 : 1
       }
