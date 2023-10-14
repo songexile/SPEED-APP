@@ -6,15 +6,16 @@ import jwt_decode from 'jwt-decode'
 import { DecodedToken, User, Analyst } from '@/types/index'
 import { toast } from 'react-toastify'
 import { GETTING_SESSION_DELAY } from '@/constants'
-import { Loading, Nav } from '@/components'
+import { Nav } from '@/components'
 import ModeratorDashboard from '@/components/Dashboard/ModeratorDashboard'
+import Skeleton from 'react-loading-skeleton'
 
 const Moderator = () => {
   const { data: session } = useSession()
   const router = useRouter()
   const [isAdmin, setIsAdmin] = useState(false)
   const [isModerator, setIsModerator] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [skeletonLoading, setSkeletonLoading] = useState(true)
   const [articles, setArticles] = useState<Analyst[]>([])
 
   const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI
@@ -38,7 +39,6 @@ const Moderator = () => {
       router.push('/')
     }
 
-    setLoading(true)
     const user: User | undefined = session?.user
 
     if (!user || !user.accessToken) {
@@ -95,7 +95,7 @@ const Moderator = () => {
           setTimeout(() => {
             setIsModerator(userRole === 'moderator')
             setIsAdmin(userRole === 'admin')
-            setLoading(false)
+            setSkeletonLoading(false)
           }, GETTING_SESSION_DELAY)
         }
       }
@@ -219,23 +219,21 @@ const Moderator = () => {
     <main>
       <section>
         <Meta title="SPEED APP" description="Moderator Dashboard" />
-        {loading ? (
-          <Loading />
-        ) : (
-          <>
-            {isModerator || isAdmin ? (
-              <div className="bg-gray-100 dark:bg-gray-800 min-h-screen">
+        <div className="bg-[#211621] min-h-screen">
+          {skeletonLoading ? (
+            <Skeleton count={6} baseColor="#202020" highlightColor="#444" />
+          ) : (
+            <>
+              {isModerator || isAdmin ? (
                 <ModeratorDashboard
                   articles={articles}
                   handleAcceptArticle={handleAcceptArticle}
                   handleRejectArticle={handleRejectArticle}
                 />
-              </div>
-            ) : (
-              <></>
-            )}
-          </>
-        )}
+              ) : null}
+            </>
+          )}
+        </div>
         <Nav />
       </section>
     </main>

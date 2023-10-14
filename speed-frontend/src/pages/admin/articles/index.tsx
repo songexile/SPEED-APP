@@ -85,7 +85,7 @@ const Articles = () => {
     }
 
     // Check if the session remains undefined or null after a delay
-    const sessionCheckTimeout = setTimeout(() => {
+    const sessionCheckTimeout = setTimeout(async () => {
       if (!session) {
         // Redirect authenticated (NON logged-in) users to another page
         toast.error('You need to log in to access this page!', {
@@ -148,20 +148,8 @@ const Articles = () => {
 
             const moderatorData = await moderatorResponse.json()
             setModeratorArticles(moderatorData)
-            setSkeletonLoading(false)
           } catch (error: any) {
-            toast.error(`Fetch error for moderator articles: ${error.message}`, {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: 'dark',
-            })
-          } finally {
-            setTimeout(() => {}, GETTING_SESSION_DELAY)
+            throw new Error(`Fetch error for moderator articles: ${error.message}`)
           }
         }
 
@@ -182,20 +170,8 @@ const Articles = () => {
 
             const analystData = await analystResponse.json()
             setAnalystArticles(analystData)
-            setSkeletonLoading(false)
           } catch (error: any) {
-            toast.error(`Fetch error for analyst articles: ${error.message}`, {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: 'dark',
-            })
-          } finally {
-            setTimeout(() => {}, GETTING_SESSION_DELAY)
+            throw new Error(`Fetch error for analyst articles: ${error.message}`)
           }
         }
 
@@ -216,29 +192,20 @@ const Articles = () => {
 
             const speedData = await speedResponse.json()
             setSpeedArticles(speedData)
-            setSkeletonLoading(false)
           } catch (error: any) {
-            toast.error(`Fetch error for speed articles: ${error.message}`, {
-              position: 'top-right',
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: 'dark',
-            })
-          } finally {
-            setTimeout(() => {}, GETTING_SESSION_DELAY)
+            throw new Error(`Fetch error for speed articles: ${error.message}`)
           }
         }
 
         try {
-          fetchModeratorArticles()
-          fetchAnalystArticles()
-          fetchSpeedArticles()
+          // Fetch articles concurrently using Promise.all
+          await Promise.all([
+            fetchModeratorArticles(),
+            fetchAnalystArticles(),
+            fetchSpeedArticles(),
+          ])
         } catch (error: any) {
-          toast.error(`Fetch error for the articles: ${error.message}`, {
+          toast.error(`Error Fetching Data: ${error.message}`, {
             position: 'top-right',
             autoClose: 5000,
             hideProgressBar: false,
@@ -248,6 +215,9 @@ const Articles = () => {
             progress: undefined,
             theme: 'dark',
           })
+        } finally {
+          setSkeletonLoading(false)
+          setTimeout(() => {}, GETTING_SESSION_DELAY)
         }
       }
     }, GETTING_SESSION_DELAY)

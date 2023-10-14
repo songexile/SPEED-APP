@@ -68,115 +68,60 @@ const Admin = () => {
 
         const fetchData = async () => {
           try {
-            // Fetch Total Moderator Articles
-            const moderatorResponse = await fetch(`${API_ENDPOINT}moderator`, {
-              method: 'GET',
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
-            })
-            if (moderatorResponse.ok) {
-              const moderatorData = await moderatorResponse.json()
-              setCount((prevCount) => ({
-                ...prevCount,
-                totalModeratorArticles: moderatorData.length,
-              }))
-            } else {
-              toast.error('Error Fetching Moderator Articles!', {
-                position: 'top-right',
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: 'dark',
-              })
-            }
+            // Create an array of promises for parallel requests
+            const requests = [
+              fetch(`${API_ENDPOINT}moderator`, {
+                method: 'GET',
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                },
+              }),
+              fetch(`${API_ENDPOINT}analyst`, {
+                method: 'GET',
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                },
+              }),
+              fetch(`${API_ENDPOINT}speed`, {
+                method: 'GET',
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                },
+              }),
+              fetch(`${API_ENDPOINT}auth`, {
+                method: 'GET',
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                },
+              }),
+            ]
 
-            // Fetch Total Analyst Articles
-            const analystResponse = await fetch(`${API_ENDPOINT}analyst`, {
-              method: 'GET',
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
-            })
-            if (analystResponse.ok) {
-              const analystData = await analystResponse.json()
-              setCount((prevCount) => ({
-                ...prevCount,
-                totalAnalystArticles: analystData.length,
-              }))
-            } else {
-              toast.error('Error Fetching Analyst Articles!', {
-                position: 'top-right',
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: 'dark',
-              })
-            }
+            // Execute all requests in parallel
+            const responses = await Promise.all(requests)
 
-            // Fetch Total Speed Articles
-            const speedResponse = await fetch(`${API_ENDPOINT}speed`, {
-              method: 'GET',
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
-            })
-            if (speedResponse.ok) {
-              const speedData = await speedResponse.json()
-              setCount((prevCount) => ({
-                ...prevCount,
-                totalSpeedArticles: speedData.length,
-              }))
-            } else {
-              toast.error('Error Fetching SPEED Articles!', {
-                position: 'top-right',
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: 'dark',
+            // Check responses and update the state
+            const data = await Promise.all(
+              responses.map(async (response) => {
+                if (response.ok) {
+                  return response.json()
+                } else {
+                  throw new Error('Error Fetching Data')
+                }
               })
-            }
+            )
 
-            // Fetch Total User Accounts
-            const accountResponse = await fetch(`${API_ENDPOINT}auth`, {
-              method: 'GET',
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
+            setCount({
+              totalModeratorArticles: data[0].length,
+              totalAnalystArticles: data[1].length,
+              totalSpeedArticles: data[2].length,
+              totalAccounts: data[3].length,
             })
-            if (accountResponse.ok) {
-              const userAccountsData = await accountResponse.json()
-              setCount((prevCount) => ({
-                ...prevCount,
-                totalAccounts: userAccountsData.length,
-              }))
-            } else {
-              toast.error('Error Fetching Accounts!', {
-                position: 'top-right',
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: 'dark',
-              })
-            }
           } catch (error) {
-            toast.error('Error Fetching!', {
+            toast.error('Error Fetching Data!', {
               position: 'top-right',
               autoClose: 3000,
               hideProgressBar: false,
