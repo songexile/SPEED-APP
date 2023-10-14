@@ -118,27 +118,45 @@ const ArticleCard = ({ article, onAccept, onReject }: any) => {
               name="quality1"
               className="checkbox checkbox-primary"
             />
-            <span className="label-text pl-3">This Article Is ...</span>
+            <span className="label-text pl-3">
+              Relevance: This Article Is Relevant to the platform's theme or subject matter.
+            </span>
           </label>
 
           <label className="cursor-pointer flex items-center my-2">
             <input
               type="checkbox"
-              id="quality1"
-              name="quality1"
+              id="quality2"
+              name="quality2"
               className="checkbox checkbox-primary"
             />
-            <span className="label-text pl-3">This Article Is ...</span>
+            <span className="label-text pl-3">
+              Accuracy: This Article Is Accurate with reliable sources and proper citations.
+            </span>
           </label>
 
           <label className="cursor-pointer flex items-center my-2">
             <input
               type="checkbox"
-              id="quality1"
-              name="quality1"
+              id="quality3"
+              name="quality3"
               className="checkbox checkbox-primary"
             />
-            <span className="label-text pl-3">This Article Is ...</span>
+            <span className="label-text pl-3">
+              Clarity: This Article Uses Clear and Understandable Language.
+            </span>
+          </label>
+
+          <label className="cursor-pointer flex items-center my-2">
+            <input
+              type="checkbox"
+              id="quality4"
+              name="quality4"
+              className="checkbox checkbox-primary"
+            />
+            <span className="label-text pl-3">
+              Originality: This Article Is Original and not plagiarized from other sources.
+            </span>
           </label>
         </form>
       </div>
