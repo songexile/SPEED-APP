@@ -224,7 +224,7 @@ const Moderator = () => {
         ) : (
           <>
             {isModerator || isAdmin ? (
-              <div className="bg-gray-100 dark:bg-gray-800 min-h-screen">
+              <div className="bg-[#211621] min-h-screen">
                 <ModeratorDashboard
                   articles={articles}
                   handleAcceptArticle={handleAcceptArticle}
