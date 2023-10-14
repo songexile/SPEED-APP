@@ -48,7 +48,7 @@ export const ProtectedLayout = ({ children }: Props): JSX.Element => {
 
   // if the user refreshed the page or somehow navigated to the protected page
   if (loading) {
-    return <>Loading app...</>
+    return <div className="bg-[#211621]">Loading app...</div>
   }
 
   // if the user is authorized, render the page
