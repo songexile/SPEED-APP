@@ -248,8 +248,8 @@ const SubmitPage = () => {
             </div>
           )}
           {failure && <div>Please fix the errors listed above and then we can submit.😀.</div>}
-          <Nav />
         </div>
+        <Nav />
       </section>
     </main>
   )
