@@ -38,8 +38,8 @@ export default function Home() {
               </>
             )}
           </div>
-          <Nav />
         </div>
+        <Nav />
       </section>
     </main>
   )

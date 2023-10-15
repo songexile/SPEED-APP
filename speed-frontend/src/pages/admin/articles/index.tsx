@@ -234,7 +234,7 @@ const Articles = () => {
           <div className="flex">
             {/* Sidebar */}
             <Sidebar />
-            <div className="h-screen flex-1 p-7 mb-32">
+            <div className="max-w-full overflow-x-auto h-screen flex-auto mb-20">
               <h1 className="text-2xl font-semibold mb-12">Articles List Below</h1>
 
               {isAdmin ? (
@@ -265,8 +265,8 @@ const Articles = () => {
               )}
             </div>
           </div>
-          <Nav />
         </div>
+        <Nav />
       </section>
     </main>
   )

@@ -200,20 +200,21 @@ const Accounts = () => {
             <div className="flex">
               {/* Sidebar */}
               <Sidebar />
-              <div className="h-screen flex-1 p-7">
+              <div className="max-w-full overflow-x-auto h-screen flex-auto">
                 <h1 className="text-2xl font-semibold mb-12">Account List Below</h1>
                 <h2 className="text-lg font-semibold">User Accounts</h2>
-                {isAdmin && (
-                  <UserTable
-                    users={userAccounts}
-                    onDelete={(id) => handleDelete(id)}
-                    userRole={userRole}
-                    isLoading={skeletonLoading}
-                  />
-                )}
+                <div className="">
+                  {isAdmin && (
+                    <UserTable
+                      users={userAccounts}
+                      onDelete={(id) => handleDelete(id)}
+                      userRole={userRole}
+                      isLoading={skeletonLoading}
+                    />
+                  )}
+                </div>
               </div>
             </div>
-            <Nav />
           </div>
         ) : (
           <div className="relative bg-base-100 items-center justify-center min-h-screen">
@@ -225,9 +226,9 @@ const Accounts = () => {
                 <h2 className="text-lg font-semibold">User Accounts</h2>
               </div>
             </div>
-            <Nav />
           </div>
         )}
+        <Nav />
       </section>
     </main>
   )

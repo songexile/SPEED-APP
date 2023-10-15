@@ -218,7 +218,7 @@ const SearchPage: React.FC = () => {
               <p>Loading...</p>
             </div>
           ) : (
-            <div>
+            <div className="max-w-full overflow-x-auto">
               {data.length > 0 && (
                 <SearchResultsTable
                   data={data}

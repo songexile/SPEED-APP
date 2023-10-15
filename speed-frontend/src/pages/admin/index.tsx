@@ -260,7 +260,6 @@ const Admin = () => {
                 </div>
               </div>
             </div>
-            <Nav />
           </div>
         ) : (
           <div className="relative bg-base-100 items-center justify-center min-h-screen">
@@ -271,9 +270,9 @@ const Admin = () => {
                 <h1 className="text-2xl font-semibold mb-12">{`Welcome Back, ${userName}`}</h1>
               </div>
             </div>
-            <Nav />
           </div>
         )}
+        <Nav />
       </section>
     </main>
   )
