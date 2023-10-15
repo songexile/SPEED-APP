@@ -64,7 +64,8 @@ const SubmitPage = () => {
     return Object.keys(newErrors).length === 0
   }
 
-  const submitToDb = () => {
+  const submitToDb = async () => {
+    // Validate the form
     if (!validateForm()) {
       setFailure(true)
       return // If form is not valid, do not submit
@@ -72,42 +73,19 @@ const SubmitPage = () => {
 
     const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT_URI
 
-    fetch(`${apiEndpoint}moderator`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => {
-        if (response.ok) {
-          setSuccess(true)
-          setFailure(false)
-          toast.success('Success Adding Article', {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'dark',
-          })
-        } else {
-          toast.error('API request failed', {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'dark',
-          })
-        }
+    try {
+      const response = await fetch(`${apiEndpoint}moderator`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       })
-      .catch((error) => {
-        toast.error('An error occurred while making the API request: ' + error, {
+
+      if (response.ok) {
+        setSuccess(true)
+        setFailure(false)
+        toast.success('Success Adding Article', {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,
@@ -117,7 +95,32 @@ const SubmitPage = () => {
           progress: undefined,
           theme: 'dark',
         })
+      } else if (response.status === 409) {
+        toast.error('Duplicate Entry Detected!', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        })
+      } else {
+        throw new Error('API request failed')
+      }
+    } catch (error) {
+      toast.error('An error occurred while making the API request: ' + error, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
       })
+    }
   }
 
   return (

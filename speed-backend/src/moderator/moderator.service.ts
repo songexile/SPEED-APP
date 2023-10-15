@@ -17,6 +17,11 @@ export class ModeratorService {
     return moderator;
   }
 
+  async isContentUnique(title: string, authors: string): Promise<boolean> {
+    const existingRecord = await this.moderatorModel.findOne({ title, authors }).exec();
+    return !existingRecord;
+  }
+
   async create(moderator: Moderator): Promise<Moderator> {
     const newModerator = new this.moderatorModel(moderator);
     return await newModerator.save();

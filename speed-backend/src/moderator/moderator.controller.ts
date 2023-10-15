@@ -7,6 +7,7 @@ import {
   NotFoundException,
   Delete,
   UseGuards,
+  ConflictException,
 } from '@nestjs/common';
 import { ModeratorService } from './moderator.service';
 import { Moderator } from './interfaces/moderator.interface';
@@ -18,6 +19,12 @@ export class ModeratorController {
 
   @Post()
   async addModerator(@Body() createModeratorDto: any): Promise<any> {
+    const isUnique = await this.moderatorService.isContentUnique(createModeratorDto.title, createModeratorDto.authors);
+
+    if (!isUnique) {
+      throw new ConflictException('Entry with the same title and authors already exists');
+    }
+
     return await this.moderatorService.create(createModeratorDto);
   }
 
