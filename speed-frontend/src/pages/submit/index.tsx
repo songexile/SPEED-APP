@@ -125,13 +125,13 @@ const SubmitPage = () => {
 
   return (
     <main>
-      <section>
+      <section className="bg-base-100">
         <Meta
           title="SPEED APP"
           description="Submit Your Favorite Claim Article About Software Engineering Methods"
         />
-        <div className="bg-base-100 flex flex-col items-center justify-center min-h-screen">
-          <div className="grid grid-cols-2 gap-4 ml-3">
+        <div className="container flex flex-col items-center justify-center min-h-screen">
+          <div className="grid grid-cols-2 gap-4">
             {/* Title */}
             <div>
               <label htmlFor="title">
