@@ -2,8 +2,8 @@ import ArticleCard from './ArticleCard'
 
 const ModeratorDashboard = ({ articles, handleAcceptArticle, handleRejectArticle }: any) => {
   return (
-    <div className="container relative items-center justify-center min-h-screen">
-      <h1>Moderator Dashboard</h1>
+    <div className="container relative items-center justify-center">
+      <h1 className="text-4xl font-bold text-center mt-8">Moderator Dashboard</h1>
 
       {articles.length === 0 ? (
         <>
