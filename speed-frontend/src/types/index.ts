@@ -1,79 +1,68 @@
 export interface IMetaProps {
-  title: string
-  description: string
-  canonical?: string
+  title: string;
+  description: string;
+  canonical?: string;
 }
 
-export type Errors = {
-  title?: string
-  authors?: string
-  journal?: string
-  year?: string
-  volume?: string
-  pages?: string
-  doi?: string
-}
+export type Errors = Record<string, string>;
 
 export type FormData = {
-  title: string
-  authors: string
-  journal: string
-  year: number | any
-  volume: string
-  pages: string
-  doi: string
-}
+  title: string;
+  authors: string;
+  journal: string;
+  year: number | any;
+  volume: string;
+  pages: string;
+  doi: string;
+};
 
 export interface Analyst extends FormData {
-  _id: any
-  claim: string
-  method: string
-  agreeDisagree?: string
+  _id: any;
+  claim: string;
+  method: string;
+  ratings: number;
+  agreeDisagree?: string;
 }
 
 export interface AnalystFormData {
-  claim?: string
-  method?: string
-  agreeDisagree?: string
+  claim?: string;
+  method?: string;
+  agreeDisagree?: string;
 }
 
 export interface CustomNavButtonsProps {
-  href: string
-  icon: JSX.Element
-  label: string
+  href: string;
+  icon: JSX.Element;
+  label: string;
 }
 
 export interface IconProps {
-  path: string
-  className: string
+  path: string;
+  className: string;
 }
 
-export interface LoginProps {
-  csrfToken: string
-}
-
-export interface RegisterProps {
-  csrfToken: string
+export interface AuthProps {
+  csrfToken: string;
 }
 
 export interface UserNextAuthTypes {
-  // other properties
-  token: string
-  refreshToken: string
-  accessTokenExpires: number
+  token: string;
+  refreshToken: string;
+  accessTokenExpires: number;
 }
 
 export interface SearchResultData {
-  _id: string
-  title: string
-  authors: string
-  journal: string
-  year: number
-  volume: string
-  pages: string
-  doi: string
-  claim: string
-  method: string
+  _id: string;
+  title: string;
+  authors: string;
+  journal: string;
+  year: number;
+  volume: string;
+  pages: string;
+  doi: string;
+  claim: string;
+  method: string;
+  ratings: number;
 }
 
 export interface CustomReusableButtonProps {
@@ -111,21 +100,21 @@ export interface Account {
 }
 
 export interface UserTableProps {
-  users: Account[]
-  onDelete?: (id: string) => void
+  users: Account[];
+  onDelete?: (id: string) => void;
   userRole: string;
-  isLoading: boolean
+  isLoading: boolean;
 }
 
 export interface CardProps {
   title: string;
   count: number;
   icon: React.ReactNode;
-  isLoading: boolean
+  isLoading: boolean;
 }
 
 export interface SearchResultsTableProps {
-  data: SearchResultData[]
-  onDelete?: (id: string) => void
-  isLoading?: boolean
+  data: SearchResultData[];
+  onDelete?: (id: string) => void;
+  isLoading?: boolean;
 }

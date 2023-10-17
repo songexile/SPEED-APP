@@ -9,8 +9,6 @@ import { toast } from 'react-toastify'
 import { GETTING_SESSION_DELAY } from '@/constants'
 import Skeleton from 'react-loading-skeleton'
 
-const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI
-
 const AnalystPage = () => {
   const [articles, setArticles] = useState<Analyst[]>([])
   const [formData, setFormData] = useState<AnalystFormData[]>([])
@@ -23,63 +21,53 @@ const AnalystPage = () => {
   const { data: session } = useSession()
   const router = useRouter()
 
+  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT_URI
+
+  const redirectToHomePage = () => {
+    router.push('/')
+  }
+
+  const user: User | undefined = session?.user
+
+  if (!user || !user.accessToken) {
+    redirectToHomePage()
+    return null
+  }
+
   useEffect(() => {
-    const redirectToHomePage = () => {
-      router.push('/')
+    const user: User | undefined = session?.user
+
+    // If the session.user object is not available or accessToken is missing
+    if (!user || !user.accessToken) {
+      redirectToHomePage()
+      return
     }
 
-    // Check if the session remains undefined or null after a delay
-    const sessionCheckTimeout = setTimeout(() => {
-      if (!session) {
-        // Redirect authenticated (NON logged-in) users to another page
-        toast.error('You need to log in to access this page!', {
-          position: 'top-right',
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'dark',
-        })
-        redirectToHomePage()
-        return
-      } else {
-        const user: User | undefined = session?.user
+    // Get user role
+    const token = user.accessToken
+    const decodedToken: DecodedToken = jwt_decode(token)
+    const userRole = decodedToken.role
 
-        // If the session.user object is not available or accessToken is missing
-        if (!user || !user.accessToken) {
-          redirectToHomePage()
-          return
-        }
-
-        // Get user role
-        const token = user.accessToken
-        const decodedToken: DecodedToken = jwt_decode(token)
-        const userRole = decodedToken.role
-
-        if (userRole !== 'analyst' && userRole !== 'admin') {
-          // Redirect or deny access to unauthorized users
-          toast.error('Only Analyst and Admin can access this page!', {
-            position: 'top-right',
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'dark',
-          })
-          redirectToHomePage()
-        } else if (userRole === 'analyst' || userRole === 'admin') {
-          setIsAnalyst(userRole === 'analyst')
-          setIsAdmin(userRole === 'admin')
-          setLoading(false)
-        }
-      }
-    }, GETTING_SESSION_DELAY)
-
-    return () => clearTimeout(sessionCheckTimeout)
+    if (userRole !== 'analyst' && userRole !== 'admin') {
+      // Redirect or deny access to unauthorized users
+      toast.error('Only Analyst and Admin can access this page!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+      })
+      redirectToHomePage()
+    } else if (userRole === 'analyst' || userRole === 'admin') {
+      setTimeout(() => {
+        setIsAnalyst(userRole === 'analyst')
+        setIsAdmin(userRole === 'admin')
+        setLoading(false)
+      }, GETTING_SESSION_DELAY)
+    }
   }, [session, router])
 
   const fetchArticles = async () => {

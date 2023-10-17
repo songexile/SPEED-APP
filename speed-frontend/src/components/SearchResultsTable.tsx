@@ -91,6 +91,9 @@ const SearchResultsTable: React.FC<SearchResultsTableProps> = ({ data, onDelete,
                 <th onClick={() => handleSort('method')}>
                   SE Method {sortOrder === 'asc' ? ' ▲' : ' ▼'}
                 </th>
+                <th onClick={() => handleSort('ratings')}>
+                  Ratings {sortOrder === 'asc' ? ' ▲' : ' ▼'}
+                </th>
                 {userRole === 'admin' && <th>Actions</th>}
               </tr>
             </thead>
@@ -106,6 +109,7 @@ const SearchResultsTable: React.FC<SearchResultsTableProps> = ({ data, onDelete,
                   <td>{result.doi}</td>
                   <td>{result.claim}</td>
                   <td>{result.method}</td>
+                  <td>{result.ratings}</td>
                   {userRole === 'admin' && (
                     <td>
                       <button
