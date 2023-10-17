@@ -7,7 +7,7 @@ const ModeratorDashboard = ({ articles, handleAcceptArticle, handleRejectArticle
 
       {articles.length === 0 ? (
         <>
-          <h1>NO ARTICLE FOUND!</h1>
+          <h1 className='text-center'>NO ARTICLE FOUND!</h1>
         </>
       ) : (
         <div className="my-20">

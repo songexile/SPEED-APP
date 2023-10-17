@@ -172,7 +172,7 @@ const SearchPage: React.FC = () => {
       <section className="bg-base-100">
         <Meta title="SPEED APP" description="Search Software Engineering methods to find claims." />
         <TopNav />
-        <div className="container flex flex-col items-center justify-center min-h-screen">
+        <div className="container flex flex-col items-center justify-center min-h-[80vh]">
           <h1 className="text-4xl font-bold text-center">
             Search Software Engineering methods to find claims.
           </h1>

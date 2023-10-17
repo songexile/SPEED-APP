@@ -218,7 +218,7 @@ const AnalystPage = () => {
       <section className="bg-base-100">
         <Meta title="SPEED APP" description="Search Software Engineering methods to find claims." />
         <TopNav />
-        <div className="container flex flex-col items-center justify-center min-h-screen text-white">
+        <div className="container flex flex-col items-center justify-center text-white">
           <h1 className="text-4xl font-bold text-center mt-8">Analyst Page</h1>
           {isAnalyst ||
             (isAdmin && (

@@ -131,7 +131,7 @@ const SubmitPage = () => {
           description="Submit Your Favorite Claim Article About Software Engineering Methods"
         />
         <TopNav />
-        <div className="container flex flex-col items-center justify-center min-h-screen">
+        <div className="container flex flex-col items-center justify-center min-h-[80vh]">
           <div className="grid grid-cols-2 gap-4">
             {/* Title */}
             <div>
