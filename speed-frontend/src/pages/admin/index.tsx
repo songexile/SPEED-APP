@@ -1,4 +1,4 @@
-import { Nav } from '@/components'
+import { TopNav, Nav } from '@/components'
 import { Meta } from '@/layouts/Meta'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
@@ -160,10 +160,11 @@ const Admin = () => {
 
   return (
     <main>
-      <section>
+      <section className="bg-base-100">
         <Meta title="SPEED APP" description="Admin Dashboard" />
+        <TopNav />
         {isAdmin ? (
-          <div className="relative bg-base-100 items-center justify-center min-h-screen">
+          <div className="relative items-center justify-center min-h-screen">
             <div className="flex">
               {/* Sidebar */}
               <Sidebar />

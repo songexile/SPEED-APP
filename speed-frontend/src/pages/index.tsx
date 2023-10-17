@@ -2,16 +2,17 @@ import { Meta } from '@/layouts/Meta'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 
-import { Nav, CustomReusableButton } from '@/components'
+import { Nav, CustomReusableButton, TopNav } from '@/components'
 
 export default function Home() {
   const { data: session } = useSession()
 
   return (
     <main>
-      <section>
+      <section className="bg-base-100">
         <Meta title="SPEED APP" description="This is Next Gen Group SPEED APP For CISE (2023)" />
-        <div className="relative bg-base-100 flex flex-col items-center justify-center min-h-screen">
+        <TopNav />
+        <div className="container flex flex-col items-center justify-center min-h-screen">
           <h1 className="text-6xl font-bold text-center">Welcome to SPEED!</h1>
           <p className="text-center">
             The best place to find true{' '}
