@@ -220,7 +220,7 @@ const Moderator = () => {
       <section className="bg-base-100">
         <Meta title="SPEED APP" description="Moderator Dashboard" />
         <TopNav />
-        <div className="container flex flex-col items-center justify-center min-h-screen">
+        <div className="container flex flex-col items-center justify-center min-h-[10vh]">
           {skeletonLoading ? (
             <Skeleton count={6} baseColor="#202020" highlightColor="#444" />
           ) : (
