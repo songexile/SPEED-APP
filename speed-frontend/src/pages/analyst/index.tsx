@@ -1,7 +1,7 @@
 import { Meta } from '@/layouts/Meta'
 import { ChangeEvent, useState, useEffect } from 'react'
 import { Analyst, AnalystFormData, DecodedToken, User } from '@/types'
-import { Nav, CustomReusableButton, FormComponent } from '@/components'
+import { Nav, CustomReusableButton, FormComponent, TopNav } from '@/components'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import jwt_decode from 'jwt-decode'
@@ -215,9 +215,10 @@ const AnalystPage = () => {
 
   return (
     <main>
-      <section>
+      <section className="bg-base-100">
         <Meta title="SPEED APP" description="Search Software Engineering methods to find claims." />
-        <div className="bg-base-100 flex flex-col items-center min-h-screen text-white">
+        <TopNav />
+        <div className="container flex flex-col items-center justify-center min-h-screen text-white">
           <h1 className="text-4xl font-bold text-center mt-8">Analyst Page</h1>
           {isAnalyst ||
             (isAdmin && (

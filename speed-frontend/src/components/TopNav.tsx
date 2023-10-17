@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
+import { navLinks } from '@/constants/index'
 
 const TopNav = () => {
   const [toggle, setToggle] = useState(false)
@@ -29,16 +30,15 @@ const TopNav = () => {
             </svg>
           </button>
           {toggle && (
-            <>
-              <ul className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                <li>
-                  <Link href="/">Home</Link>
+            <ul className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+              {navLinks.map((link, index) => (
+                <li key={index}>
+                  <Link href={link.href}>
+                    <div>{link.text}</div>
+                  </Link>
                 </li>
-                <li>
-                  <Link href="/search">Search</Link>
-                </li>
-              </ul>
-            </>
+              ))}
+            </ul>
           )}
         </div>
         <div className="flex-1">

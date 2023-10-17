@@ -6,7 +6,7 @@ import jwt_decode from 'jwt-decode'
 import { DecodedToken, User, Analyst } from '@/types/index'
 import { toast } from 'react-toastify'
 import { GETTING_SESSION_DELAY } from '@/constants'
-import { Nav } from '@/components'
+import { Nav, TopNav } from '@/components'
 import ModeratorDashboard from '@/components/Dashboard/ModeratorDashboard'
 import Skeleton from 'react-loading-skeleton'
 
@@ -217,9 +217,10 @@ const Moderator = () => {
 
   return (
     <main>
-      <section>
+      <section className="bg-base-100">
         <Meta title="SPEED APP" description="Moderator Dashboard" />
-        <div className="bg-[#211621] min-h-screen">
+        <TopNav />
+        <div className="container flex flex-col items-center justify-center min-h-screen">
           {skeletonLoading ? (
             <Skeleton count={6} baseColor="#202020" highlightColor="#444" />
           ) : (

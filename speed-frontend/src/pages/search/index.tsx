@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Nav, CustomReusableButton, SearchResultsTable } from '@/components'
+import { Nav, CustomReusableButton, SearchResultsTable, TopNav } from '@/components'
 import { Meta } from '@/layouts/Meta'
 import { SearchResultData, DeleteSource } from '@/types/index'
 import { useRouter } from 'next/router'
@@ -169,9 +169,10 @@ const SearchPage: React.FC = () => {
 
   return (
     <main>
-      <section>
+      <section className="bg-base-100">
         <Meta title="SPEED APP" description="Search Software Engineering methods to find claims." />
-        <div className="bg-base-100 flex flex-col items-center justify-center min-h-screen">
+        <TopNav />
+        <div className="container flex flex-col items-center justify-center min-h-screen">
           <h1 className="text-4xl font-bold text-center">
             Search Software Engineering methods to find claims.
           </h1>

@@ -1,4 +1,4 @@
-import { Nav, CustomReusableButton } from '@/components'
+import { Nav, CustomReusableButton, TopNav } from '@/components'
 import { Meta } from '@/layouts/Meta'
 import { Errors, FormData } from '@/types'
 import { ChangeEvent, useState } from 'react'
@@ -130,6 +130,7 @@ const SubmitPage = () => {
           title="SPEED APP"
           description="Submit Your Favorite Claim Article About Software Engineering Methods"
         />
+        <TopNav />
         <div className="container flex flex-col items-center justify-center min-h-screen">
           <div className="grid grid-cols-2 gap-4">
             {/* Title */}
