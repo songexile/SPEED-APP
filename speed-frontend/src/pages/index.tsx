@@ -2,7 +2,7 @@ import { Meta } from '@/layouts/Meta'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 
-import { Nav, CustomReusableButton } from '@/components'
+import { Nav, CustomReusableButton, TopNav } from '@/components'
 
 export default function Home() {
   const { data: session } = useSession()
@@ -11,6 +11,7 @@ export default function Home() {
     <main>
       <section>
         <Meta title="SPEED APP" description="This is Next Gen Group SPEED APP For CISE (2023)" />
+        <TopNav />
         <div className="relative bg-base-100 flex flex-col items-center justify-center min-h-screen">
           <h1 className="text-6xl font-bold text-center">Welcome to SPEED!</h1>
           <p className="text-center">
