@@ -1,7 +1,7 @@
 # SPEED App, The best place to find true software engineering claims! (CISE_1B_5508)
 
 <p align="center">
-  <a href="https://next-gen.miguelemmara.me/"><img height="350" src="screenshots/app_image.png?raw=true" alt="Next Gen Speed App"></a>
+  <a href="https://next-gen.miguelemmara.me/" target="_blank"><img height="350" src="screenshots/app_image.png?raw=true" alt="Next Gen Speed App"></a>
 </p>
 
 🚀 Speed App for CISE AUT PAPER 2023 Sem 2, Next Gen Group (5508)
@@ -10,11 +10,11 @@ BackEnd | Nest.js, MongoDB
 <br>
 FrontEnd | Next.js, TypeScript, ESLint, Prettier, Jest, Vercel, Tailwind CSS, DaisyUI
 
-### Live Demo: [next-gen](https://next-gen.miguelemmara.me/)
+### Live Demo: <a href="https://next-gen.miguelemmara.me/" target="_blank">next-gen</a>
 
-### Live Demo Backend: [next-gen-api](https://next-gen-api.miguelemmara.me/)
+### Live Demo Backend: <a href="https://next-gen-api.miguelemmara.me/" target="_blank">next-gen-api</a>
 
-### Documentation: [next-gen-docs](https://next-gen-docs.miguelemmara.me/)
+### Documentation: <a href="https://next-gen-docs.miguelemmara.me/" target="_blank">next-gen-docs</a>
 
 ### Features
 
@@ -33,21 +33,21 @@ FrontEnd | Next.js, TypeScript, ESLint, Prettier, Jest, Vercel, Tailwind CSS, Da
 
 ### Getting started
 
-[Back End Getting Started](https://next-gen-docs.miguelemmara.me/documentation/backend/getting-started.html)
+<a href="https://next-gen-docs.miguelemmara.me/documentation/backend/getting-started.html" target="_blank">Back End Getting Started</a>
 <br>
-[Front End Getting Started](https://next-gen-docs.miguelemmara.me/documentation/frontend/getting-started.html)
+<a href="https://next-gen-docs.miguelemmara.me/documentation/frontend/getting-started.html" target="_blank">Front End Getting Started</a>
 
 ### APIs Documentation
 
-[Endpoints](https://next-gen-docs.miguelemmara.me/documentation/backend/api-documentation.html)
+<a href="https://next-gen-docs.miguelemmara.me/documentation/backend/api-documentation.html" target="_blank">Endpoints</a>
 
 ### Iterations
 
-[One](https://next-gen-docs.miguelemmara.me/iterations/iteration-1.html)
+<a href="https://next-gen-docs.miguelemmara.me/iterations/iteration-1.html" target="_blank">One</a>
 <br>
-[Two](https://next-gen-docs.miguelemmara.me/iterations/iteration-2.html)
+<a href="https://next-gen-docs.miguelemmara.me/iterations/iteration-2.html" target="_blank">Two</a>
 <br>
-[Three](https://next-gen-docs.miguelemmara.me/iterations/iteration-3.html)
+<a href="https://next-gen-docs.miguelemmara.me/iterations/iteration-3.html" target="_blank">Three</a>
 
 ### Author
 
