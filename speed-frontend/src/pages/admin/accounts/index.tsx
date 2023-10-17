@@ -1,4 +1,4 @@
-import { Nav } from '@/components'
+import { TopNav, Nav } from '@/components'
 import { Meta } from '@/layouts/Meta'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
@@ -193,26 +193,25 @@ const Accounts = () => {
 
   return (
     <main>
-      <section>
+      <section className="bg-base-100">
         <Meta title="SPEED APP" description="Admin Dashboard" />
+        <TopNav />
         {isAdmin ? (
-          <div className="relative bg-base-100 items-center justify-center min-h-screen">
+          <div className="relative items-center justify-center min-h-screen">
             <div className="flex">
               {/* Sidebar */}
               <Sidebar />
-              <div className="max-w-full overflow-x-auto h-screen flex-auto">
+              <div className="container max-w-full overflow-x-auto h-screen flex-auto">
                 <h1 className="text-2xl font-semibold mb-12">Account List Below</h1>
                 <h2 className="text-lg font-semibold">User Accounts</h2>
-                <div className="">
-                  {isAdmin && (
-                    <UserTable
-                      users={userAccounts}
-                      onDelete={(id) => handleDelete(id)}
-                      userRole={userRole}
-                      isLoading={skeletonLoading}
-                    />
-                  )}
-                </div>
+                {isAdmin && (
+                  <UserTable
+                    users={userAccounts}
+                    onDelete={(id) => handleDelete(id)}
+                    userRole={userRole}
+                    isLoading={skeletonLoading}
+                  />
+                )}
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { Nav } from '@/components'
+import { TopNav, Nav } from '@/components'
 import { Meta } from '@/layouts/Meta'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
@@ -227,14 +227,14 @@ const Articles = () => {
 
   return (
     <main>
-      <section>
+      <section className="bg-base-100">
         <Meta title="SPEED APP" description="Admin Dashboard" />
-
-        <div className="relative bg-base-100 items-center justify-center min-h-screen">
+        <TopNav />
+        <div className="relative items-center justify-center min-h-screen">
           <div className="flex">
             {/* Sidebar */}
             <Sidebar />
-            <div className="max-w-full overflow-x-auto h-screen flex-auto mb-20">
+            <div className="container max-w-full overflow-x-auto h-screen flex-auto mb-20">
               <h1 className="text-2xl font-semibold mb-12">Articles List Below</h1>
 
               {isAdmin ? (

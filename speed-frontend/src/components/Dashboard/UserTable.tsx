@@ -3,7 +3,7 @@ import Skeleton from 'react-loading-skeleton'
 
 const UserTable: React.FC<UserTableProps> = ({ users, onDelete, userRole, isLoading }) => {
   return (
-    <div className="overflow-x-auto container">
+    <div className="overflow-x-auto">
       <>
         {isLoading ? (
           <Skeleton count={6} baseColor="#202020" highlightColor="#444" />
