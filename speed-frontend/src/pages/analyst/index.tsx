@@ -216,7 +216,10 @@ const AnalystPage = () => {
   return (
     <main>
       <section className="bg-base-100">
-        <Meta title="SPEED APP" description="Search Software Engineering methods to find claims." />
+        <Meta
+          title="Next Gen SPEED App"
+          description="Search Software Engineering methods to find claims."
+        />
         <TopNav />
         <div className="container flex flex-col items-center justify-center text-white">
           <h1 className="text-4xl font-bold text-center mt-8">Analyst Page</h1>

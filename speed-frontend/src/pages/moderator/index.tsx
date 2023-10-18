@@ -218,7 +218,7 @@ const Moderator = () => {
   return (
     <main>
       <section className="bg-base-100">
-        <Meta title="SPEED APP" description="Moderator Dashboard" />
+        <Meta title="Next Gen SPEED App" description="Moderator Dashboard" />
         <TopNav />
         <div className="container flex flex-col items-center justify-center min-h-[10vh]">
           {skeletonLoading ? (

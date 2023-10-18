@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <main>
       <section className="bg-base-100">
-        <Meta title="SPEED APP" description="This is Next Gen Group SPEED APP For CISE (2023)" />
+        <Meta title="Next Gen SPEED App" description="This is Next Gen Group SPEED APP For CISE (2023)" />
         <TopNav />
         <div className="container flex flex-col items-center justify-center min-h-[80vh]">
           <h1 className="text-6xl font-bold text-center">Welcome to SPEED!</h1>
