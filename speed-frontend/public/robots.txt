@@ -1,0 +1,10 @@
+# Block sensitive pages
+User-agent: *
+Disallow: /login/
+Disallow: /admin/
+Disallow: /moderator/
+Disallow: /analyst/
+
+# Allow all crawlers
+User-agent: *
+Allow: /
