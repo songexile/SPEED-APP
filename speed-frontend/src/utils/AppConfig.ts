@@ -1,6 +1,4 @@
 export const AppConfig = {
-  site_name: 'SPEED',
-  title: 'CISE SPEED APP',
-  description: 'Next Gen Group',
+  site_name: 'Next Gen SPEED App',
   locale: 'en',
 };

@@ -194,7 +194,7 @@ const Accounts = () => {
   return (
     <main>
       <section className="bg-base-100">
-        <Meta title="SPEED APP" description="Admin Dashboard" />
+        <Meta title="Next Gen SPEED App" description="Admin Dashboard" />
         <TopNav />
         {isAdmin ? (
           <div className="relative items-center justify-center min-h-screen">
