@@ -7,12 +7,14 @@ import { toast } from 'react-toastify'
 const Register = () => {
   const router = useRouter()
   const { data: session } = useSession()
+  const [passwordVisible, setPasswordVisible] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
+    passwordConfirmation: '',
   })
 
   useEffect(() => {
@@ -27,8 +29,17 @@ const Register = () => {
     setError('')
 
     // Validate the form fields
-    if (!formData.username || !formData.email || !formData.password) {
+    if (
+      !formData.username ||
+      !formData.email ||
+      !formData.password ||
+      !formData.passwordConfirmation
+    ) {
       setError('All fields must be filled in.')
+      setIsLoading(false)
+      return
+    } else if (formData.password !== formData.passwordConfirmation) {
+      setError('Password not match.')
       setIsLoading(false)
       return
     }
@@ -83,6 +94,10 @@ const Register = () => {
     }))
   }
 
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible)
+  }
+
   return (
     <div className="relative flex flex-col items-center justify-center h-screen overflow-hidden">
       <div className="w-full p-6 bg-white border-t-4 border-gray-600 rounded-md shadow-md border-top lg:max-w-lg">
@@ -114,18 +129,45 @@ const Register = () => {
               onChange={handleInputChange}
             />
           </div>
-          <div>
+          <div className="relative w-full">
             <label className="label">
               <span className="text-base label-text">Password</span>
             </label>
             <input
-              type="password"
+              type={passwordVisible ? 'text' : 'password'}
               name="password"
               placeholder="Enter Password"
-              className="w-full input input-bordered mb-5"
+              className="w-full input input-bordered -mb-3"
               value={formData.password}
               onChange={handleInputChange}
             />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="absolute inset-y-0 right-0 px-2 py-1 mt-12"
+            >
+              {passwordVisible ? '🙈' : '👁️'}
+            </button>
+          </div>
+          <div className="relative w-full">
+            <label className="label">
+              <span className="text-base label-text">Re-enter Password</span>
+            </label>
+            <input
+              type={passwordVisible ? 'text' : 'password'}
+              name="passwordConfirmation"
+              placeholder="Re-enter Password"
+              className="w-full input input-bordered mb-5"
+              value={formData.passwordConfirmation}
+              onChange={handleInputChange}
+            />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="absolute inset-y-0 right-0 px-2 py-1 mt-5"
+            >
+              {passwordVisible ? '🙈' : '👁️'}
+            </button>
           </div>
           <div>
             <CustomReusableButton
