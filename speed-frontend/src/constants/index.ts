@@ -1,4 +1,4 @@
-export const GETTING_SESSION_DELAY = 500;
+export const GETTING_SESSION_DELAY = 350;
 
 export const navLinks = [
   { text: 'Home', href: '/' },
