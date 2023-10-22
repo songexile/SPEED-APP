@@ -65,15 +65,13 @@ const FormComponent = ({
           </div>
           <div className="w-full sm:w-3/5 mt-5">
             <span className="font-bold sm:mr-4">Software Engineering method:</span>
-            <select
+            <input
+              type="text"
               name="method"
-              className="select select-bordered w-full xs:max-w-xs bg-secondary"
+              placeholder="Type the SE method here"
+              className="input input-bordered input-primary w-full xs:max-w-xs"
               onChange={(e) => handleChange(e, index)}
-            >
-              <option value="">Select Method</option>
-              <option>Waterfall</option>
-              <option>Agile</option>
-            </select>
+            />
           </div>
         </div>
       </div>

@@ -1,6 +1,26 @@
+import { useEffect, useState } from 'react'
 import { CustomNavButtons, CustomButtonIcon } from '.'
+import { useSession } from 'next-auth/react'
+import { User } from 'next-auth'
+import { DecodedToken } from '@/types'
+import jwt_decode from 'jwt-decode'
 
 const Nav = () => {
+  const [role, setRole] = useState('')
+  const { data: session } = useSession()
+  const user: User | any = session?.user
+
+  useEffect(() => {
+    if (user) {
+      // Get User Role
+      const token = user.accessToken
+      const decodedToken: DecodedToken = jwt_decode(token)
+      const userRole = decodedToken.role
+
+      setRole(userRole)
+    }
+  }, [user])
+
   const homeIconPath =
     'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'
 
@@ -18,43 +38,30 @@ const Nav = () => {
   const adminIconPath =
     'M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z'
 
+  const navItems = [
+    { role: 'user', href: '/', iconPath: homeIconPath, label: 'Home', className: 'ml-2' },
+    { role: 'user', href: '/search', iconPath: searchIconPath, label: 'Search', className: 'ml-3' },
+    { role: 'user', href: '/submit', iconPath: submitIconPath, label: 'Submit', className: 'ml-3' },
+    { role: 'moderator', href: '/moderator', iconPath: moderatorIconPath, label: 'Moderator', className: 'ml-7' },
+    { role: 'analyst', href: '/analyst', iconPath: analystIconPath, label: 'Analyst', className: 'ml-4' },
+    { role: 'admin', href: '/moderator', iconPath: moderatorIconPath, label: 'Moderator', className: 'ml-7' },
+    { role: 'admin', href: '/analyst', iconPath: analystIconPath, label: 'Analyst', className: 'ml-4' },
+    { role: 'admin', href: '/admin', iconPath: adminIconPath, label: 'Admin', className: 'ml-3' },
+  ];
+
   return (
     <div className="btm-nav hidden sm:flex">
-      <CustomNavButtons
-        href="/"
-        icon={<CustomButtonIcon path={homeIconPath} className="ml-2" />}
-        label="Home"
-      />
-
-      <CustomNavButtons
-        href="/search"
-        icon={<CustomButtonIcon path={searchIconPath} className="ml-3" />}
-        label="Search"
-      />
-
-      <CustomNavButtons
-        href="/submit"
-        icon={<CustomButtonIcon path={submitIconPath} className="ml-3" />}
-        label="Submit"
-      />
-
-      <CustomNavButtons
-        href="/analyst"
-        icon={<CustomButtonIcon path={analystIconPath} className="ml-4" />}
-        label="Analyst"
-      />
-
-      <CustomNavButtons
-        href="/moderator"
-        icon={<CustomButtonIcon path={moderatorIconPath} className="ml-7" />}
-        label="Moderator"
-      />
-
-      <CustomNavButtons
-        href="/admin"
-        icon={<CustomButtonIcon path={adminIconPath} className="ml-3" />}
-        label="Admin"
-      />
+      {navItems.map(
+        (item, index) =>
+          (role === item.role || item.role === 'user') && (
+            <CustomNavButtons
+              key={index}
+              href={item.href}
+              icon={<CustomButtonIcon path={item.iconPath} className={item.className} />}
+              label={item.label}
+            />
+          )
+      )}
     </div>
   )
 }

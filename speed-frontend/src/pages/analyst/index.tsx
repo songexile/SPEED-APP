@@ -139,7 +139,15 @@ const AnalystPage = () => {
   }
 
   const handleSubmit = async (index: number) => {
-    const combinedData = { ...articles[index], ...formData[index] }
+    const combinedData: any = { ...articles[index], ...formData[index] }
+
+    // Capitalize only the first letter of
+    // each value in the combinedData
+    for (const key in combinedData) {
+      if (combinedData.hasOwnProperty(key) && typeof combinedData[key] === 'string') {
+        combinedData[key] = combinedData[key].charAt(0).toUpperCase() + combinedData[key].slice(1)
+      }
+    }
 
     // Check if session and accessToken are available
     if (session && (session.user as any) && (session.user as any).accessToken) {
@@ -223,37 +231,36 @@ const AnalystPage = () => {
         <TopNav />
         <div className="container flex flex-col items-center justify-center text-white">
           <h1 className="text-4xl font-bold text-center mt-8">Analyst Page</h1>
-          {isAnalyst ||
-            (isAdmin && (
-              <>
-                {!showArticles ? (
-                  <CustomReusableButton
-                    text="View all articles"
-                    className="btn btn-primary mt-4"
-                    onClick={fetchArticles}
+          {(isAnalyst || isAdmin) && (
+            <>
+              {!showArticles ? (
+                <CustomReusableButton
+                  text="View all articles"
+                  className="btn btn-primary mt-4"
+                  onClick={fetchArticles}
+                />
+              ) : loading ? (
+                <Skeleton count={6} baseColor="#202020" highlightColor="#444" />
+              ) : articles.length === 0 ? (
+                <>
+                  <h1>NO ARTICLE FOUND!</h1>
+                </>
+              ) : (
+                articles.map((article, index) => (
+                  <FormComponent
+                    key={index}
+                    article={article}
+                    index={index}
+                    formData={formData}
+                    buttonDisabled={buttonDisabled}
+                    handleChange={handleChange}
+                    handleSubmit={handleSubmit}
+                    isLoading={loading}
                   />
-                ) : loading ? (
-                  <Skeleton count={6} baseColor="#202020" highlightColor="#444" />
-                ) : articles.length === 0 ? (
-                  <>
-                    <h1>NO ARTICLE FOUND!</h1>
-                  </>
-                ) : (
-                  articles.map((article, index) => (
-                    <FormComponent
-                      key={index}
-                      article={article}
-                      index={index}
-                      formData={formData}
-                      buttonDisabled={buttonDisabled}
-                      handleChange={handleChange}
-                      handleSubmit={handleSubmit}
-                      isLoading={loading}
-                    />
-                  ))
-                )}
-              </>
-            ))}
+                ))
+              )}
+            </>
+          )}
         </div>
         <Nav />
       </section>

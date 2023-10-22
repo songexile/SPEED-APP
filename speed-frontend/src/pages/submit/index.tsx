@@ -1,7 +1,7 @@
 import { Nav, CustomReusableButton, TopNav } from '@/components'
 import { Meta } from '@/layouts/Meta'
 import { Errors, FormData } from '@/types'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 const SubmitPage = () => {
@@ -18,6 +18,111 @@ const SubmitPage = () => {
   const [errors, setErrors] = useState<Errors>({})
   const [success, setSuccess] = useState(false)
   const [failure, setFailure] = useState(false)
+
+  const [bibtexData, setBibtexData] = useState<string>('')
+
+  const stripMatchingBraces = (str: string) => {
+    // Remove matching curly braces, excluding escaped braces
+    while (str.match(/(^|[^\\])\{.*?([^\\])\}/s)) {
+      str = str.replace(/(^|[^\\])\{(.*?)([^\\])\}/s, '$1$2$3')
+    }
+    return str
+  }
+
+  const parseBibtexData = () => {
+    try {
+      if (bibtexData) {
+        const matches = bibtexData.match(/@[^{]*{[^,]*,((?:.|[\r\n])*)}/gs)
+
+        if (matches) {
+          const newData = { ...formData }
+
+          for (const match of matches) {
+            const strippedMatch = stripMatchingBraces(match)
+
+            const lines = strippedMatch.split('\n')
+
+            for (const line of lines) {
+              const [key, value] = line.split('=').map((item) => item.trim())
+
+              if (key && value) {
+                // Remove the trailing comma if it exists
+                const trimmedValue = value.replace(/,$/, '')
+
+                switch (key.trim()) {
+                  case 'title':
+                    newData.title = trimmedValue
+                    break
+                  case 'author':
+                    newData.authors = trimmedValue
+                    break
+                  case 'journal':
+                    newData.journal = trimmedValue
+                    break
+                  case 'year':
+                    newData.year = trimmedValue
+                    break
+                  case 'volume':
+                    newData.volume = trimmedValue
+                    break
+                  case 'pages':
+                    newData.pages = trimmedValue
+                    break
+                  case 'doi':
+                    newData.doi = trimmedValue
+                    break
+                  // Add more cases for other BibTeX fields as needed
+                }
+              }
+            }
+          }
+
+          setFormData(newData)
+          setErrors({ ...errors })
+        } else {
+          setErrors({ ...errors })
+        }
+      }
+    } catch (error) {
+      console.error('Error parsing BibTeX data:', error)
+      setErrors({ ...errors })
+    }
+  }
+
+  const handleBibtexChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) {
+      return
+    }
+
+    const readBibtexFile = (file: any) => {
+      return new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+
+        reader.onload = (event) => {
+          if (!event.target) {
+            reject(new Error('Failed to read the file.'))
+            return
+          }
+
+          resolve(event.target.result as string)
+        }
+
+        reader.onerror = () => {
+          reject(new Error('Failed to read the file.'))
+        }
+
+        reader.readAsText(file)
+      })
+    }
+
+    try {
+      const content = await readBibtexFile(file)
+      setBibtexData(content)
+    } catch (error) {
+      console.error('Error reading the file:', error)
+    }
+  }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -123,6 +228,12 @@ const SubmitPage = () => {
     }
   }
 
+  useEffect(() => {
+    if (bibtexData) {
+      parseBibtexData()
+    }
+  }, [bibtexData])
+
   return (
     <main>
       <section className="bg-base-100">
@@ -142,6 +253,7 @@ const SubmitPage = () => {
                 type="text"
                 name="title"
                 placeholder="Title"
+                value={formData.title}
                 onChange={handleChange}
                 className="input input-bordered w-full"
               />
@@ -157,6 +269,7 @@ const SubmitPage = () => {
                 type="text"
                 name="authors"
                 placeholder="Author(s)"
+                value={formData.authors}
                 onChange={handleChange}
                 className="input input-bordered w-full"
               />
@@ -172,6 +285,7 @@ const SubmitPage = () => {
                 type="text"
                 name="journal"
                 placeholder="Journal Name"
+                value={formData.journal}
                 onChange={handleChange}
                 className="input input-bordered w-full"
               />
@@ -187,6 +301,7 @@ const SubmitPage = () => {
                 type="text"
                 name="year"
                 placeholder="Year of publication"
+                value={formData.year}
                 onChange={handleChange}
                 className="input input-bordered w-full"
               />
@@ -202,6 +317,7 @@ const SubmitPage = () => {
                 type="text"
                 name="volume"
                 placeholder="Volume"
+                value={formData.volume}
                 onChange={handleChange}
                 className="input input-bordered w-full"
               />
@@ -217,6 +333,7 @@ const SubmitPage = () => {
                 type="text"
                 name="pages"
                 placeholder="Pages"
+                value={formData.pages}
                 onChange={handleChange}
                 className="input input-bordered w-full"
               />
@@ -232,12 +349,28 @@ const SubmitPage = () => {
                 type="text"
                 name="doi"
                 placeholder="DOI"
+                value={formData.doi}
                 onChange={handleChange}
                 className="input input-bordered w-full"
               />
               <div className="text-red-500 h-5">{errors.doi || ''}</div>
             </div>
           </div>
+
+          {/* Add BibTeX input */}
+          <div className="form-control w-full max-w-xs">
+            <label className="label" htmlFor="bibtex">
+              <span className="label-text">BibTeX File (Optional for auto complete)</span>
+            </label>
+            <input
+              type="file"
+              name="bibtex"
+              accept=".bib" // Specify accepted file type
+              onChange={handleBibtexChange}
+              className="file-input file-input-bordered file-input-warning w-full max-w-xs"
+            />
+          </div>
+
           <CustomReusableButton
             text="Submit"
             className="btn btn-primary mt-4 w-64"

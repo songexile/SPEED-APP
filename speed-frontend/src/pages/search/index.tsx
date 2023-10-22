@@ -217,9 +217,9 @@ const SearchPage: React.FC = () => {
           </form>
           {error && <div className="text-red-500">{error}</div>}
           {loading ? (
-            <div className="container mt-5 w-max">
+            <div className="container mt-5 w-max flex flex-row items-center">
               <span className="loading loading-spinner loading-lg"></span>
-              <p>Loading...</p>
+              <p className="ml-3">Loading...</p>
             </div>
           ) : (
             <div className="max-w-full overflow-x-auto">
