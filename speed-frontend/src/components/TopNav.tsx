@@ -94,10 +94,10 @@ const TopNav = () => {
               {role === 'admin' && (
                 <>
                   <li>
-                    <Link href="/analyst">Analyst Dashboard</Link>
+                    <Link href="/moderator">Moderator Dashboard</Link>
                   </li>
                   <li>
-                    <Link href="/moderator">Moderator Dashboard</Link>
+                    <Link href="/analyst">Analyst Dashboard</Link>
                   </li>
                   <li>
                     <Link href="/admin">Admin Dashboard</Link>

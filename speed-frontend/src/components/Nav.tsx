@@ -42,10 +42,10 @@ const Nav = () => {
     { role: 'user', href: '/', iconPath: homeIconPath, label: 'Home', className: 'ml-2' },
     { role: 'user', href: '/search', iconPath: searchIconPath, label: 'Search', className: 'ml-3' },
     { role: 'user', href: '/submit', iconPath: submitIconPath, label: 'Submit', className: 'ml-3' },
-    { role: 'analyst', href: '/analyst', iconPath: analystIconPath, label: 'Analyst', className: 'ml-4' },
     { role: 'moderator', href: '/moderator', iconPath: moderatorIconPath, label: 'Moderator', className: 'ml-7' },
-    { role: 'admin', href: '/analyst', iconPath: analystIconPath, label: 'Analyst', className: 'ml-4' },
+    { role: 'analyst', href: '/analyst', iconPath: analystIconPath, label: 'Analyst', className: 'ml-4' },
     { role: 'admin', href: '/moderator', iconPath: moderatorIconPath, label: 'Moderator', className: 'ml-7' },
+    { role: 'admin', href: '/analyst', iconPath: analystIconPath, label: 'Analyst', className: 'ml-4' },
     { role: 'admin', href: '/admin', iconPath: adminIconPath, label: 'Admin', className: 'ml-3' },
   ];
 
