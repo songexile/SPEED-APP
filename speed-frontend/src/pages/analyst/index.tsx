@@ -139,7 +139,15 @@ const AnalystPage = () => {
   }
 
   const handleSubmit = async (index: number) => {
-    const combinedData = { ...articles[index], ...formData[index] }
+    const combinedData: any = { ...articles[index], ...formData[index] }
+
+    // Capitalize only the first letter of
+    // each value in the combinedData
+    for (const key in combinedData) {
+      if (combinedData.hasOwnProperty(key) && typeof combinedData[key] === 'string') {
+        combinedData[key] = combinedData[key].charAt(0).toUpperCase() + combinedData[key].slice(1)
+      }
+    }
 
     // Check if session and accessToken are available
     if (session && (session.user as any) && (session.user as any).accessToken) {
